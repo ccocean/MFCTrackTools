@@ -185,9 +185,9 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	m_txtB.SetWindowPos(NULL, LEFT_PIXEL + 20, 230, 80, 20, SWP_NOZORDER);
 
 	m_txtTchArg.SetWindowPos(NULL, LEFT_PIXEL + 40, 200, 150, 20, SWP_NOZORDER);
-	m_txtTchArg.SetWindowTextW(_T("Rect(0, 0, 0, 0)"));
+	m_txtTchArg.SetWindowText(_T("Rect(0, 0, 0, 0)"));
 	m_txtBlkArg.SetWindowPos(NULL, LEFT_PIXEL + 40, 260, 150, 20, SWP_NOZORDER);
-	m_txtBlkArg.SetWindowTextW(_T("Rect(0, 0, 0, 0)"));
+	m_txtBlkArg.SetWindowText(_T("Rect(0, 0, 0, 0)"));
 	m_btnSaveTrack.SetWindowPos(NULL, LEFT_PIXEL + 120, 280, 80, 20, SWP_NOZORDER);
 
 	//预置位参数控件
@@ -204,13 +204,13 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	m_grpBoxThreshold.SetWindowPos(NULL, LEFT_PIXEL, UP_PIXEL + 460, 220, 150, SWP_NOZORDER);
 	m_txtStand.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 490, 80, 20, SWP_NOZORDER);
 	m_editStand.SetWindowPos(NULL, LEFT_PIXEL + 80, UP_PIXEL + 490, 80, 20, SWP_NOZORDER);
-	m_editStand.SetWindowTextW(_T("以秒为单位"));
+	m_editStand.SetWindowText(_T("以秒为单位"));
 	m_txtTargetArea.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 520, 80, 20, SWP_NOZORDER);
 	m_editTargetArea.SetWindowPos(NULL, LEFT_PIXEL + 80, UP_PIXEL + 520, 80, 20, SWP_NOZORDER);
-	m_editTargetArea.SetWindowTextW(_T("以像素为单位"));
+	m_editTargetArea.SetWindowText(_T("以像素为单位"));
 	m_txtOutSide.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 550, 80, 20, SWP_NOZORDER);
 	m_editOutSide.SetWindowPos(NULL, LEFT_PIXEL + 80, UP_PIXEL + 550, 80, 20, SWP_NOZORDER);
-	m_editOutSide.SetWindowTextW(_T("以像素为单位"));
+	m_editOutSide.SetWindowText(_T("以像素为单位"));
 	m_btnSaveThreshold.SetWindowPos(NULL, LEFT_PIXEL + 100, UP_PIXEL + 580, 80, 20, SWP_NOZORDER);
 	m_btnApply.SetWindowPos(NULL, LEFT_PIXEL + 120, UP_PIXEL + 630, 80, 20, SWP_NOZORDER);
 	m_btnDefault.SetWindowPos(NULL, LEFT_PIXEL + 10, UP_PIXEL + 630, 100, 20, SWP_NOZORDER);
@@ -489,7 +489,7 @@ void CMFCTrackToolsDlg::OnBnClickedbtnsavetch()
 		tmp.Format(_T("%d"), p2.y-p1.y);
 		str += tmp;
 		//LPCTSTR str;
-		m_txtTchArg.SetWindowTextW(str);
+		m_txtTchArg.SetWindowText(str);
 		str = _T("");
 		g_drawTch = 1;
 		p1.x = 0, p1.y = 0;
@@ -526,7 +526,7 @@ void CMFCTrackToolsDlg::OnBnClickedbtnsaveblk()
 		tmp.Format(_T("%d"), p2.y - p1.y);
 		str += tmp;
 		//LPCTSTR str;
-		m_txtBlkArg.SetWindowTextW(str);
+		m_txtBlkArg.SetWindowText(str);
 		str = _T("");
 		g_drawBlk = 1;
 		p1.x = 0, p1.y = 0;
@@ -541,8 +541,8 @@ void CMFCTrackToolsDlg::OnBnClickedbtnset()
 	// TODO:  在此添加控件通知处理程序代码
 	CString position, slide;
 	
-	m_editPos.GetWindowTextW(position);
-	m_editSlide.GetWindowTextW(slide);
+	m_editPos.GetWindowText(position);
+	m_editSlide.GetWindowText(slide);
 	if (position.IsEmpty()||slide.IsEmpty())
 	{
 		AfxMessageBox(_T("没有获得数据！"));
@@ -581,7 +581,7 @@ void CMFCTrackToolsDlg::OnBnClickedbtnsavepos()
 	{
 		m_editPos.EnableWindow(FALSE);
 		m_editSlide.EnableWindow(FALSE);
-		m_btnSavePos.SetWindowTextW(_T("修改"));
+		m_btnSavePos.SetWindowText(_T("修改"));
 		params.numOfPos = int_pos;
 		params.numOfSlide = int_slide;
 	}
@@ -589,7 +589,7 @@ void CMFCTrackToolsDlg::OnBnClickedbtnsavepos()
 	{
 		m_editPos.EnableWindow(TRUE);
 		m_editSlide.EnableWindow(TRUE);
-		m_btnSavePos.SetWindowTextW(_T("保存"));
+		m_btnSavePos.SetWindowText(_T("保存"));
 
 	}
 }
@@ -618,9 +618,9 @@ void CMFCTrackToolsDlg::OnBnClickedbtnsavethreshold()
 	// TODO:  在此添加控件通知处理程序代码
 	CString stand, targetArea, outside;
 	int _stand, _targetArea, _outside;
-	m_editStand.GetWindowTextW(stand);
-	m_editTargetArea.GetWindowTextW(targetArea);
-	m_editOutSide.GetWindowTextW(outside);
+	m_editStand.GetWindowText(stand);
+	m_editTargetArea.GetWindowText(targetArea);
+	m_editOutSide.GetWindowText(outside);
 	if (stand.IsEmpty() || targetArea.IsEmpty() || outside.IsEmpty())
 	{
 		AfxMessageBox(_T("没有获得数据！"));
@@ -649,7 +649,7 @@ void CMFCTrackToolsDlg::OnBnClickedbtnapply()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	CString text;
-	m_btnDefault.GetWindowTextW(text);
+	m_btnDefault.GetWindowText(text);
 	params.frame.width = 480;
 	params.frame.height = 264;
 	if (text=="使用默认参数")
@@ -684,10 +684,10 @@ void CMFCTrackToolsDlg::OnBnClickedbtndefault()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	CString text;
-	m_btnDefault.GetWindowTextW(text);
+	m_btnDefault.GetWindowText(text);
 	if (text=="使用默认参数")
 	{
-		m_btnDefault.SetWindowTextW(_T("自定义参数"));
+		m_btnDefault.SetWindowText(_T("自定义参数"));
 		m_btnSaveTch.EnableWindow(FALSE);
 		m_btnSaveBlk.EnableWindow(FALSE);
 		m_btnSavePos.EnableWindow(FALSE);
@@ -702,7 +702,7 @@ void CMFCTrackToolsDlg::OnBnClickedbtndefault()
 	}
 	else
 	{
-		m_btnDefault.SetWindowTextW(_T("使用默认参数"));
+		m_btnDefault.SetWindowText(_T("使用默认参数"));
 		m_btnSaveTch.EnableWindow(TRUE);
 		m_btnSaveBlk.EnableWindow(TRUE);
 		m_btnSavePos.EnableWindow(TRUE);

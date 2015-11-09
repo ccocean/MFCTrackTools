@@ -1,5 +1,7 @@
 #pragma onece
 #include "tch_params.h"
+#include "communtication.h"
+#include "share_stream.h"
 #include <list>
 using namespace std;
 #define STU_SETTRACK_CMD  0x100

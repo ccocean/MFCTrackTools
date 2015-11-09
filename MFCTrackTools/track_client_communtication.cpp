@@ -1,17 +1,18 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
+#include<string.h>
+#include<tchar.h>
 #include "track_client_commintication.h"
-#include "communtication.h"
-#include "share_stream.h"
+
 #define C_CONTROL_TRACK 10000
 Commutication_Handle_t g_track_clientHandle = NULL;
 
 
 static Track_cmd_info_t g_track_cmd[] =
 {
-	{ STU_SETTRACK_CMD, "ÉèÖÃÑ§Éú²ÎÊý" },
-	{ TEA_SETTRACK_CMD, "ÉèÖÃÀÏÊ¦²ÎÊý" },
-	{ STU_GETTRACK_CMD, "»ñÈ¡Ñ§Éú²ÎÊý" },
-	{ TEA_GETTRACK_CMD, "»ñÈ¡ÀÏÊ¦²ÎÊý" },
+	{ STU_SETTRACK_CMD, "è®¾ç½®å­¦ç”Ÿå‚æ•°" },
+	{ TEA_SETTRACK_CMD, "è®¾ç½®è€å¸ˆå‚æ•°" },
+	{ STU_GETTRACK_CMD, "èŽ·å–å­¦ç”Ÿå‚æ•°" },
+	{ TEA_GETTRACK_CMD, "èŽ·å–è€å¸ˆå‚æ•°" },
 };
 
 static  inline char *get_track_cmd_name(int cmd)
@@ -27,7 +28,7 @@ static  inline char *get_track_cmd_name(int cmd)
 }
 static int ctrlClient_process_trackHeart(char *buff)
 {
-	OutputDebugString("ctrlClient_process_trackHeart=====================\n");
+	OutputDebugString(_T("ctrlClient_process_trackHeart=====================\n"));
 	return 0;
 }
 
@@ -35,12 +36,12 @@ static int ctrl_init_track()
 {
 	return  0;
 }
-//»Øµ÷º¯Êý´¦Àí
+//å›žè°ƒå‡½æ•°å¤„ç†
 static int ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle)
 {
 	char errMsg[128] = { 0 };
 	if (NULL == head || NULL == msg || NULL == handle) {
-		MessageBox(NULL, "½ÓÊÕÐÅÏ¢Ê§°Ü", "±êÌâ", MB_OK);
+		MessageBox(NULL, _T("æŽ¥æ”¶ä¿¡æ¯å¤±è´¥"), _T("æ ‡é¢˜"), MB_OK);
 		return -1;
 	}
 	int return_code = 0;
@@ -48,8 +49,8 @@ static int ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, C
 
 	if (return_code != 0) 
 	{
-		sprintf_s(errMsg, sizeof(errMsg), "%sÊ§°Ü", get_track_cmd_name(head->cmd));
-		MessageBox(NULL, errMsg, "±êÌâ", MB_OK);
+		sprintf_s(errMsg, sizeof(errMsg), "%så¤±è´¥", get_track_cmd_name(head->cmd));
+		MessageBox(NULL, _T(errMsg), _T("æ ‡é¢˜"), MB_OK);
 		return -1;
 	}
 	switch (head->cmd)
@@ -71,8 +72,8 @@ static int ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, C
 								 break;
 		}
 	}
-	sprintf_s(errMsg, sizeof(errMsg), "%s³É¹¦", get_track_cmd_name(head->cmd));
-	MessageBox(NULL, errMsg, "±êÌâ", MB_OK);
+	sprintf_s(errMsg, sizeof(errMsg), "%sæˆåŠŸ", get_track_cmd_name(head->cmd));
+	MessageBox(NULL, _T(errMsg), _T("æ ‡é¢˜"), MB_OK);
 	return 0;
 }
 int ctrlClient_init_trackCommuntication()
@@ -80,13 +81,13 @@ int ctrlClient_init_trackCommuntication()
 
 	if (g_track_clientHandle != NULL) 
 	{
-		OutputDebugString("ctrlClient_init_trackCommuntication is init");
+		OutputDebugString(_T("ctrlClient_init_trackCommuntication is init"));
 		return -1;
 	}
 
 	g_track_clientHandle = communtication_create_clientHandle("192.168.11.140", C_CONTROL_TRACK, ctrlClient_process_trackMsg, ctrlClient_process_trackHeart, ctrl_init_track);
 	if (g_track_clientHandle == NULL) {
-		MessageBox(NULL, TEXT("´´½¨¿Í»§¶ËÊ§°Ü"), TEXT("±êÌâ"), MB_OK);
+		MessageBox(NULL, TEXT("åˆ›å»ºå®¢æˆ·ç«¯å¤±è´¥"), TEXT("æ ‡é¢˜"), MB_OK);
 		return -1;
 	}
 
@@ -95,7 +96,7 @@ int ctrlClient_init_trackCommuntication()
 int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param)
 {
 	if (g_track_clientHandle == NULL) {
-		MessageBox(NULL, TEXT("¿Í»§¶ËÁ¬½ÓÊ§°Ü"), TEXT("±êÌâ"), MB_OK);
+		MessageBox(NULL, TEXT("å®¢æˆ·ç«¯è¿žæŽ¥å¤±è´¥"), TEXT("æ ‡é¢˜"), MB_OK);
 		return -1;
 	}
 	Communtication_Head_t head;
@@ -106,14 +107,32 @@ int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param)
 }
 //netstream==================================================================================================================
 
+static int free_stream_message(Stream_Message_t *pStream_messgage)
+{
+	if (pStream_messgage == NULL)
+	{
 
+		//nslog(NS_ERROR, "free_stream_message is fail\n");
+		return -1;
+	}
+
+	if (pStream_messgage->stream_data)
+	{
+		free(pStream_messgage->stream_data);
+		pStream_messgage->stream_data = NULL;
+	}
+	free(pStream_messgage);
+	pStream_messgage = NULL;
+	return 0;
+
+}
 static int track_process_streamMsg(int msg_code, void *arg)
 {
 	Client_Handle_t* pClient_handle = (Client_Handle_t*)arg;
 
 	if (NULL == pClient_handle)
 	{
-		OutputDebugString( "net_info ==NUL \n");
+		OutputDebugString(_T("net_info ==NUL \n"));
 		return -1;
 	}
 	if (msg_code < 0)
@@ -128,7 +147,7 @@ static void *track_get_dataEmptyBuf(void *arg, void **pEmptyBufInfo, int data_le
 	//	nslog(NS_ERROR, "upEnc_get_dataEmptyBuf\n");
 	if (NULL == arg || data_len <= 0)
 	{
-		OutputDebugString("argpEmptyBufInfo=,data_len=\n");
+		OutputDebugString(_T("argpEmptyBufInfo=,data_len=\n"));
 		return NULL;
 	}
 	char *data_buf = NULL;
@@ -143,11 +162,11 @@ static void *track_get_dataEmptyBuf(void *arg, void **pEmptyBufInfo, int data_le
 	return data_buf;
 }
 
-//Êý¾Ý½ÓÊÕÄ£¿é»Øµ÷º¯Êý
+//æ•°æ®æŽ¥æ”¶æ¨¡å—å›žè°ƒå‡½æ•°
 static int  track_process_data(RH_FRAMEHEAD_t *fh, void *pEmptyBufInfo, void *arg, void *data)
 {
 	
-	OutputDebugString("hello=====================\n");
+	OutputDebugString(_T("hello=====================\n"));
 	Client_Handle_t* pClient_handle = (Client_Handle_t*)arg;
 	if (data == NULL || pClient_handle == NULL )
 	{
@@ -167,7 +186,7 @@ static int  track_process_data(RH_FRAMEHEAD_t *fh, void *pEmptyBufInfo, void *ar
 		return -1;
 	}
 
-	//½«Êý¾Ý·Å½øÁ´±íÖÐ
+	//å°†æ•°æ®æ”¾è¿›é“¾è¡¨ä¸­
 	memcpy(&(pStream_message->fh), fh, sizeof(RH_FRAMEHEAD_t));
 	pStream_message->fh.nChannel = pClient_handle->nChannel;
 	pStream_message->stream_data = data;
@@ -241,25 +260,7 @@ static int clean_alloc(RecvStream_Handle_t* pStream_handle)
 	}
 	return 0;
 }
-static int free_stream_message(Stream_Message_t *pStream_messgage)
-{
-	if (pStream_messgage == NULL)
-	{
 
-		OutputDebugString("free_stream_message is fail\n");
-		return -1;
-	}
-
-	if (pStream_messgage->stream_data)
-	{
-		free(pStream_messgage->stream_data);
-		pStream_messgage->stream_data = NULL;
-	}
-	free(pStream_messgage);
-	pStream_messgage = NULL;
-	return 0;
-
-}
 static void* stream_pop_thread(void* arg)
 {
 	
@@ -308,7 +309,7 @@ int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 	Client_Handle_t* pClient_handle = NULL;
 	if (pRecv_stream_handle == NULL)
 	{
-		MessageBox(NULL, "½ÓÊÕÁ÷Ê§°Ü", "±êÌâ", MB_OK);
+		MessageBox(NULL, _T("æŽ¥æ”¶æµå¤±è´¥"), _T("æ ‡é¢˜"), MB_OK);
 		return -1;
 	}
 	RecvStream_Handle_t* pStream_handle = (RecvStream_Handle_t*)malloc(sizeof(RecvStream_Handle_t));
@@ -323,19 +324,19 @@ int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 	pClient_handle = (Client_Handle_t*)malloc(sizeof(Client_Handle_t));
 	if (pClient_handle == NULL)
 	{
-		OutputDebugString("pClient_handle is NULL");
+		OutputDebugString(_T("pClient_handle is NULL"));
 		ret = -1;
 		goto EXIT;
 	}
 
-	//Ö¸Ïò¿Í»§¶ËÐÅÏ¢
+	//æŒ‡å‘å®¢æˆ·ç«¯ä¿¡æ¯
 	pStream_handle->outParm = pClient_handle;
 	pClient_handle->nChannel = pRecv_stream_handle->channel;
 
 	RH_tcp_stream_recv_cond_t data_prm;
 	memset(&(data_prm), 0, sizeof(RH_tcp_stream_recv_cond_t));
 	data_prm.port = pStream_handle->port;
-	strcpy((char*)data_prm.ip, pStream_handle->iP);
+	strcpy_s((char *)data_prm.ip,sizeof(data_prm.ip), pStream_handle->iP);
 	data_prm.arg = pClient_handle;
 	data_prm.getEmptyBuf = track_get_dataEmptyBuf;
 	data_prm.putStreaminfo = track_process_data;
@@ -353,7 +354,7 @@ int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 	if (ret != 0)
 	{
 		ret = -1;
-		OutputDebugString("pthread_create pop_thrrad is NULL");
+		OutputDebugString(_T("pthread_create pop_thrrad is NULL"));
 		goto EXIT;
 	}
 
