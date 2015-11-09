@@ -4,7 +4,7 @@
 
 #pragma once
 #include "afxwin.h"
-#include "CvvImage.h"
+//#include "CvvImage.h"
 #include "tch_params.h"
 #include<string>
 //#include <opencv2/core/core.hpp>
@@ -98,8 +98,8 @@ public:
 	//CButton m_btnPlay;
 	afx_msg void OnBnClickedbtnplay();
 
-	CvCapture *g_video;
-	string g_videoPath = "video/teacher.mp4";
+	//CvCapture *g_video;
+	//string g_videoPath = "video/teacher.mp4";
 	int g_flag = 0;
 	int g_drawPS = 0;
 	int g_drawTch = 0;
@@ -110,17 +110,20 @@ public:
 	AVCodec *pCodec = NULL;
 
 	CRect picRect;
-	IplImage *frame;
-	IplImage *srcImg = cvCreateImage(cvSize(Frame_Width, Frame_Height), 8, 3);
-	CvPoint p1, p2;
-	CvPoint pt;
-	CvRect tch, blk;
+	//IplImage *frame;
+	//IplImage *srcImg = cvCreateImage(cvSize(Frame_Width, Frame_Height), 8, 3);
+	//CvPoint p1, p2;
+	//CvPoint pt;
+	//CvRect tch, blk;
 	CString str;
 	CString tmp;
-	CvvImage cimg;
+	//CvvImage cimg;
 	int mouseStatus=0;
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
+
+	CPoint p1, p2, pt;
+	Tch_Rect_t tch, blk;
 
 	CDC *pDC ;
 	HDC hdc ;
@@ -145,4 +148,5 @@ public:
 	CStatic m_grpBoxThreshold;
 	CButton m_btnSaveThreshold;
 	afx_msg void OnBnClickedbtnsavethreshold();
+	CButton m_btnApply;
 };

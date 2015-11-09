@@ -97,6 +97,7 @@ void CMFCTrackToolsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_editOutSide, m_editOutSide);
 	DDX_Control(pDX, IDC_grpBoxThreshold, m_grpBoxThreshold);
 	DDX_Control(pDX, IDC_btnSaveThreshold, m_btnSaveThreshold);
+	DDX_Control(pDX, IDC_btnApply, m_btnApply);
 }
 
 //消息映射
@@ -194,7 +195,7 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	m_btnSavePos.SetWindowPos(NULL, LEFT_PIXEL + 110, UP_PIXEL + 390, 80, 20, SWP_NOZORDER);
 
 	//阈值参数控件
-	m_grpBoxThreshold.SetWindowPos(NULL, LEFT_PIXEL, UP_PIXEL + 460, 220, 180, SWP_NOZORDER);
+	m_grpBoxThreshold.SetWindowPos(NULL, LEFT_PIXEL, UP_PIXEL + 460, 220, 150, SWP_NOZORDER);
 	m_txtStand.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 490, 80, 20, SWP_NOZORDER);
 	m_editStand.SetWindowPos(NULL, LEFT_PIXEL + 80, UP_PIXEL + 490, 80, 20, SWP_NOZORDER);
 	m_editStand.SetWindowTextW(_T("以秒为单位"));
@@ -204,7 +205,8 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	m_txtOutSide.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 550, 80, 20, SWP_NOZORDER);
 	m_editOutSide.SetWindowPos(NULL, LEFT_PIXEL + 80, UP_PIXEL + 550, 80, 20, SWP_NOZORDER);
 	m_editOutSide.SetWindowTextW(_T("以像素为单位"));
-	m_btnSaveThreshold.SetWindowPos(NULL, LEFT_PIXEL + 100, UP_PIXEL + 600, 80, 20, SWP_NOZORDER);
+	m_btnSaveThreshold.SetWindowPos(NULL, LEFT_PIXEL + 100, UP_PIXEL + 580, 80, 20, SWP_NOZORDER);
+	m_btnApply.SetWindowPos(NULL, LEFT_PIXEL + 120, UP_PIXEL + 630, 80, 20, SWP_NOZORDER);
 
 	//显示控件及日志控件
 	m_picSrc.SetWindowPos(NULL, 20, PIC_TOP, Frame_Width, Frame_Height, SWP_NOZORDER);
@@ -213,16 +215,16 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	pDC = GetDlgItem(IDC_picSrc)->GetDC();
 	hdc = pDC->GetSafeHdc();
 	GetDlgItem(IDC_picSrc)->GetClientRect(&picRect);
-	g_video = cvCaptureFromFile(g_videoPath.c_str());
+	//g_video = cvCaptureFromFile(g_videoPath.c_str());
 
-	fps = cvGetCaptureProperty(g_video, CV_CAP_PROP_FPS);
+	//fps = cvGetCaptureProperty(g_video, CV_CAP_PROP_FPS);
 	//vfps = 1000 / fps;
 	SetTimer(1, fps, NULL);
 
-	p1.x = 0;
-	p1.y = 0;
-	p2.x = 0;
-	p2.y = 0;
+	//p1.x = 0;
+	//p1.y = 0;
+	//p2.x = 0;
+	//p2.y = 0;
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -343,75 +345,75 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	/*CDC *pDC = GetDlgItem(IDC_picSrc)->GetDC();
 	HDC hdc = pDC->GetSafeHdc();*/
-	if (g_video == NULL)
-	{
-		printf("No video!");
-	}
-	frame = cvQueryFrame(g_video);
-	if (frame)
-	{
-		//cvResize(frame, srcImg, 1);
-		if (g_drawPS==1)
-		{
-			for (int i = 0; i < Frame_Width; i += (Frame_Width / int_pos))
-			{
-				//cvLine(srcImg, cvPoint(i, 0), cvPoint(i, Frame_Height), cvScalar(0, 0, 255));
-				//cvRectangle(srcImg, cvPoint(camPosSlide.left*(Frame_Width / int_pos), 0), cvPoint((camPosSlide.right + 1) * (Frame_Width / int_pos), Frame_Height), cvScalar(255, 0, 0));//画预置位滑框
-			}
-		}
-		if (g_drawTch==1)
-		{
-			//cvRectangle(srcImg, cvPoint(tch.x, tch.y), cvPoint(tch.x + tch.width, tch.y + tch.height), cvScalar(0, 255, 0));
-			//cvRectangle(srcImg, cvPoint(blk.x, blk.y), cvPoint(blk.x + blk.width, blk.y + blk.height), cvScalar(0, 255, 0));
-			/*p1.x = -1; p1.y = -1;
-			p2.x = -1; p2.y = -1;
-			pt.x = -1; pt.y = -1;*/
-		}
-		if (g_drawBlk==1)
-		{
-			//cvRectangle(srcImg, cvPoint(blk.x, blk.y), cvPoint(blk.x + blk.width, blk.y + blk.height), cvScalar(0, 255, 0));
-		}
-		if (mouseStatus == Mouse_LBDOWN)
-		{
-			if (pt.x > 0 && pt.y > 0)
-			{
-				//cvRectangle(srcImg, p1, pt, cvScalar(0, 255, 255), 1, 8, 0);
-			}
-		}
-		else if (mouseStatus==Mouse_LBUP)
-		{
-			if (p2.x<p1.x||p2.y<p1.y)
-			{
-				pt = p2;
-				p2 = p1;
-				p1 = pt;
-			}
-			if (p2.x>p1.x&&p2.y<p1.y)
-			{
-				pt.y = p1.y;
-				p1.y = p2.y;
-				p2.y = pt.y;
-			}
-			if (p2.x<p1.x&&p2.y>p1.y)
-			{
-				pt.x = p1.x;
-				p1.x = p2.x;
-				p2.x = pt.x;
-			}
-			//cvRectangle(srcImg, p1, p2, cvScalar(0, 255, 255), 1, 8, 0);
-			SetDlgItemInt(IDC_editX, p1.x);
-			SetDlgItemInt(IDC_editY, p1.y);
-			SetDlgItemInt(IDC_editW, p2.x-p1.x);
-			SetDlgItemInt(IDC_editH, p2.y-p1.y);
-		}
-		else if (mouseStatus==Mouse_DRAG)
-		{
-			//cvRectangle(srcImg, p1, p2, cvScalar(0, 255, 255), 1, 8, 0);
-		}
-		//cimg.CopyOf(srcImg, srcImg->nChannels);
-		//cimg.DrawToHDC(hdc, &picRect);
-	}
-	CDialogEx::OnTimer(nIDEvent);
+	//if (g_video == NULL)
+	//{
+	//	printf("No video!");
+	//}
+	//frame = cvQueryFrame(g_video);
+	//if (frame)
+	//{
+	//	//cvResize(frame, srcImg, 1);
+	//	if (g_drawPS==1)
+	//	{
+	//		for (int i = 0; i < Frame_Width; i += (Frame_Width / int_pos))
+	//		{
+	//			//cvLine(srcImg, cvPoint(i, 0), cvPoint(i, Frame_Height), cvScalar(0, 0, 255));
+	//			//cvRectangle(srcImg, cvPoint(camPosSlide.left*(Frame_Width / int_pos), 0), cvPoint((camPosSlide.right + 1) * (Frame_Width / int_pos), Frame_Height), cvScalar(255, 0, 0));//画预置位滑框
+	//		}
+	//	}
+	//	if (g_drawTch==1)
+	//	{
+	//		//cvRectangle(srcImg, cvPoint(tch.x, tch.y), cvPoint(tch.x + tch.width, tch.y + tch.height), cvScalar(0, 255, 0));
+	//		//cvRectangle(srcImg, cvPoint(blk.x, blk.y), cvPoint(blk.x + blk.width, blk.y + blk.height), cvScalar(0, 255, 0));
+	//		/*p1.x = -1; p1.y = -1;
+	//		p2.x = -1; p2.y = -1;
+	//		pt.x = -1; pt.y = -1;*/
+	//	}
+	//	if (g_drawBlk==1)
+	//	{
+	//		//cvRectangle(srcImg, cvPoint(blk.x, blk.y), cvPoint(blk.x + blk.width, blk.y + blk.height), cvScalar(0, 255, 0));
+	//	}
+	//	if (mouseStatus == Mouse_LBDOWN)
+	//	{
+	//		if (pt.x > 0 && pt.y > 0)
+	//		{
+	//			//cvRectangle(srcImg, p1, pt, cvScalar(0, 255, 255), 1, 8, 0);
+	//		}
+	//	}
+	//	else if (mouseStatus==Mouse_LBUP)
+	//	{
+	//		if (p2.x<p1.x||p2.y<p1.y)
+	//		{
+	//			pt = p2;
+	//			p2 = p1;
+	//			p1 = pt;
+	//		}
+	//		if (p2.x>p1.x&&p2.y<p1.y)
+	//		{
+	//			pt.y = p1.y;
+	//			p1.y = p2.y;
+	//			p2.y = pt.y;
+	//		}
+	//		if (p2.x<p1.x&&p2.y>p1.y)
+	//		{
+	//			pt.x = p1.x;
+	//			p1.x = p2.x;
+	//			p2.x = pt.x;
+	//		}
+	//		//cvRectangle(srcImg, p1, p2, cvScalar(0, 255, 255), 1, 8, 0);
+	//		SetDlgItemInt(IDC_editX, p1.x);
+	//		SetDlgItemInt(IDC_editY, p1.y);
+	//		SetDlgItemInt(IDC_editW, p2.x-p1.x);
+	//		SetDlgItemInt(IDC_editH, p2.y-p1.y);
+	//	}
+	//	else if (mouseStatus==Mouse_DRAG)
+	//	{
+	//		//cvRectangle(srcImg, p1, p2, cvScalar(0, 255, 255), 1, 8, 0);
+	//	}
+	//	//cimg.CopyOf(srcImg, srcImg->nChannels);
+	//	//cimg.DrawToHDC(hdc, &picRect);
+	//}
+	//CDialogEx::OnTimer(nIDEvent);
 }
 
 
@@ -512,6 +514,7 @@ void CMFCTrackToolsDlg::OnBnClickedbtnsavetch()
 		tch.y = p1.y;
 		tch.width = p2.x - p1.x;
 		tch.height = p2.y - p1.y;
+		params.tch = tch;
 		CString a=_T(", ");
 		tmp.Format(_T("%d"), p1.x);
 		str += tmp;
@@ -548,6 +551,7 @@ void CMFCTrackToolsDlg::OnBnClickedbtnsaveblk()
 		blk.y = p1.y;
 		blk.width = p2.x - p1.x;
 		blk.height = p2.y - p1.y;
+		params.blk = blk;
 		CString a = _T(", ");
 		tmp.Format(_T("%d"), p1.x);
 		str += tmp;
@@ -592,6 +596,7 @@ void CMFCTrackToolsDlg::OnBnClickedbtnset()
 		}
 		else if (int_slide<=0)
 		{
+			AfxMessageBox(_T("数据不正确。"));
 		}
 		else
 		{
@@ -616,6 +621,8 @@ void CMFCTrackToolsDlg::OnBnClickedbtnsavepos()
 		m_editPos.EnableWindow(FALSE);
 		m_editSlide.EnableWindow(FALSE);
 		m_btnSavePos.SetWindowTextW(_T("修改"));
+		params.numOfPos = int_pos;
+		params.numOfSlide = int_slide;
 	}
 	else
 	{
