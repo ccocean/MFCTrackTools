@@ -9,6 +9,8 @@
 #include<string>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include "avcodec.h"
+
 
 using namespace cv;
 
@@ -105,7 +107,7 @@ public:
 	int int_pos, int_slide;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
-
+	AVCodec *pCodec = NULL;
 
 	CRect picRect;
 	IplImage *frame;

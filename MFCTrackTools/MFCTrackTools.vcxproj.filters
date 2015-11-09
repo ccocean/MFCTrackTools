@@ -39,6 +39,18 @@
     <ClInclude Include="tch_params.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="communtication.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="share_socket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="share_stream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="decode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCTrackTools.cpp">
@@ -51,6 +63,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CvvImage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="share_socket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="communtication_client.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="share_stream.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="decode.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

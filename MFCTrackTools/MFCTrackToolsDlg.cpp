@@ -13,6 +13,7 @@
 
 #define LEFT_PIXEL 1020
 #define UP_PIXEL 20
+#define PIC_TOP 20
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -183,14 +184,14 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	m_btnSaveTrack.SetWindowPos(NULL, LEFT_PIXEL + 120, 280, 80, 20, SWP_NOZORDER);
 
 	//预置位参数控件
-	m_grpBoxPos.SetWindowPos(NULL, LEFT_PIXEL, UP_PIXEL + 320, 220, 150, SWP_NOZORDER);
-	m_txtPos.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 350, 80, 20, SWP_NOZORDER);
-	m_editPos.SetWindowPos(NULL, LEFT_PIXEL + 90, UP_PIXEL + 350, 80, 20, SWP_NOZORDER);
-	m_txtSlide.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 380, 80, 20, SWP_NOZORDER);
-	m_editSlide.SetWindowPos(NULL, LEFT_PIXEL + 90, UP_PIXEL + 380, 80, 20, SWP_NOZORDER);
+	m_grpBoxPos.SetWindowPos(NULL, LEFT_PIXEL, UP_PIXEL + 305, 220, 150, SWP_NOZORDER);
+	m_txtPos.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 325, 80, 20, SWP_NOZORDER);
+	m_editPos.SetWindowPos(NULL, LEFT_PIXEL + 90, UP_PIXEL + 325, 80, 20, SWP_NOZORDER);
+	m_txtSlide.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 355, 80, 20, SWP_NOZORDER);
+	m_editSlide.SetWindowPos(NULL, LEFT_PIXEL + 90, UP_PIXEL + 355, 80, 20, SWP_NOZORDER);
 
-	m_btnSet.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 420, 80, 20, SWP_NOZORDER);
-	m_btnSavePos.SetWindowPos(NULL, LEFT_PIXEL + 110, UP_PIXEL + 420, 80, 20, SWP_NOZORDER);
+	m_btnSet.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 390, 80, 20, SWP_NOZORDER);
+	m_btnSavePos.SetWindowPos(NULL, LEFT_PIXEL + 110, UP_PIXEL + 390, 80, 20, SWP_NOZORDER);
 
 	//阈值参数控件
 	m_grpBoxThreshold.SetWindowPos(NULL, LEFT_PIXEL, UP_PIXEL + 460, 220, 180, SWP_NOZORDER);
@@ -203,10 +204,11 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	m_txtOutSide.SetWindowPos(NULL, LEFT_PIXEL + 20, UP_PIXEL + 550, 80, 20, SWP_NOZORDER);
 	m_editOutSide.SetWindowPos(NULL, LEFT_PIXEL + 80, UP_PIXEL + 550, 80, 20, SWP_NOZORDER);
 	m_editOutSide.SetWindowTextW(_T("以像素为单位"));
+	m_btnSaveThreshold.SetWindowPos(NULL, LEFT_PIXEL + 100, UP_PIXEL + 600, 80, 20, SWP_NOZORDER);
 
 	//显示控件及日志控件
-	m_picSrc.SetWindowPos(NULL, 20, 120, Frame_Width, Frame_Height, SWP_NOZORDER);
-	m_listErr.SetWindowPos(NULL, 720, 120, 240, 360, SWP_NOZORDER);
+	m_picSrc.SetWindowPos(NULL, 20, PIC_TOP, Frame_Width, Frame_Height, SWP_NOZORDER);
+	m_listErr.SetWindowPos(NULL, 720, PIC_TOP, 240, 360, SWP_NOZORDER);
 
 	pDC = GetDlgItem(IDC_picSrc)->GetDC();
 	hdc = pDC->GetSafeHdc();
@@ -221,9 +223,6 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	p1.y = 0;
 	p2.x = 0;
 	p2.y = 0;
-	//printf("%5.1f\t%5d\n", fps, vfps);
-	/*double frames = cvGetCaptureProperty(g_video, CV_CAP_PROP_FRAME_COUNT);
-	printf("frames is %f\n", frames);*/
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -420,9 +419,9 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	
-	if (20<=point.x&&point.x<=20+Frame_Width&&120<=point.y&&point.y<=120+Frame_Height)
+	if (20 <= point.x&&point.x <= 20 + Frame_Width&&PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
 	{
-		if (p1.x<point.x-20&&point.x-20<p2.x&&p1.y<point.y-120&&point.y-120<p2.y)
+		if (p1.x<point.x - 20 && point.x - 20<p2.x&&p1.y<point.y - PIC_TOP&&point.y - PIC_TOP<p2.y)
 		{
 			pt.x = point.x;
 			pt.y = point.y;
@@ -432,7 +431,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			pt.x = 0, pt.y = 0;
 			p1.x = point.x - 20;
-			p1.y = point.y - 120;
+			p1.y = point.y - PIC_TOP;
 			//p2.x = 0, p2.y = 0;
 			mouseStatus = Mouse_LBDOWN;
 		}
@@ -446,13 +445,13 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (20 <= point.x&&point.x <= 20 + Frame_Width && 120 <= point.y&&point.y <= 120 + Frame_Height)
+	if (20 <= point.x&&point.x <= 20 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
 	{
 		//m_txtTchArg.SetWindowTextW(_T("Rect(0,0,0,0)"));
 		if (mouseStatus!=Mouse_DRAG)
 		{
 			p2.x = point.x - 20;
-			p2.y = point.y - 120;
+			p2.y = point.y - PIC_TOP;
 			mouseStatus = Mouse_LBUP;
 			pt.x = -1;
 			pt.y = -1;
@@ -479,13 +478,13 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (20 <= point.x&&point.x <= 20 + Frame_Width && 120 <= point.y&&point.y <= 120 + Frame_Height)
+	if (20 <= point.x&&point.x <= 20 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
 	{
 		//m_txtTchArg.SetWindowTextW(_T("Rect(0,0,0,0)"));
 		if (mouseStatus==Mouse_LBDOWN)
 		{
 			pt.x = point.x - 20;
-			pt.y = point.y - 120;
+			pt.y = point.y - PIC_TOP;
 		}
 		if (mouseStatus==Mouse_DRAG)
 		{
@@ -665,7 +664,7 @@ void CMFCTrackToolsDlg::OnBnClickedbtnsavethreshold()
 		_outside = _ttoi(outside);
 		if (_stand<=0||_targetArea<=0||_outside<=0)
 		{
-			AfxMessageBox(_T("数据不能为负数！"));
+			AfxMessageBox(_T("数据错误！"));
 		}
 		else
 		{

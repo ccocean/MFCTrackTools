@@ -1,18 +1,5 @@
-﻿Build started 2015/11/5 9:57:10.
-     1>Project "E:\蔡文生工作\每日代码备份\tracktools\MFCTrackTools\MFCTrackTools.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Debug\MFCTrackTools.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
-         stdafx.cpp
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\MFCTrackTools.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt CvvImage.cpp MFCTrackTools.cpp MFCTrackToolsDlg.cpp
-         MFCTrackToolsDlg.cpp
-     1>e:\蔡文生工作\每日代码备份\tracktools\mfctracktools\cvvimage.h(5): fatal error C1083: Cannot open include file: 'cv.h': No such file or directory
-         MFCTrackTools.cpp
-     1>e:\蔡文生工作\每日代码备份\tracktools\mfctracktools\cvvimage.h(5): fatal error C1083: Cannot open include file: 'cv.h': No such file or directory
-         CvvImage.cpp
-     1>e:\蔡文生工作\每日代码备份\tracktools\mfctracktools\cvvimage.h(5): fatal error C1083: Cannot open include file: 'cv.h': No such file or directory
-         Generating Code...
-     1>Done Building Project "E:\蔡文生工作\每日代码备份\tracktools\MFCTrackTools\MFCTrackTools.vcxproj" (Build target(s)) -- FAILED.
+﻿生成启动时间为 2015/11/9 10:07:02。
 
-Build FAILED.
+生成成功。
 
-Time Elapsed 00:00:13.94
+已用时间 00:00:00.04

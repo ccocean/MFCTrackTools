@@ -1,6 +1,8 @@
 #ifndef	__RH_SOCKET_H__
 #define	__RH_SOCKET_H__
 
+#include <windows.h>
+//#include <WinBase.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -62,6 +64,9 @@ int RH_ConnetBlockFd(int Fd, int ServPort, char *ServIp);
 int32_t RH_Close(char *file, char *func, int32_t fd);
 
 int RH_SetRcvTimeoutFd(int Fd, int TimeoutSec, int TimeoutUsec);
+
+int32_t RH_Socket(char *file, char *func, int32_t domain, int32_t type, int32_t protocol);
+
 #endif
 
 

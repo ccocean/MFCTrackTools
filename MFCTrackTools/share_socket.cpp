@@ -175,7 +175,7 @@ int RH_ConnetBlockFd(int Fd, int ServPort, char *ServIp) //,int Timeout)
 	}
 
 #endif
-	struct sockaddr_in serv_addr;
+	struct sockaddr_in serv_addr = { 0 };
 	//bzero(&serv_addr, sizeof(serv_addr));
 
 	serv_addr.sin_family = AF_INET;
