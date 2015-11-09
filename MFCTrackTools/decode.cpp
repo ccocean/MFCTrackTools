@@ -1,7 +1,7 @@
 #include "decode.h"
 
 
-extern CListBox m_listErr;
+//extern CListBox m_listErr;
 
 static int cur_size;
 static int ret;
@@ -20,26 +20,26 @@ int H264_init(Tools_decoder_t* decoder)
 	/* find the h264 video decoder */
 	decoder->pCodec = avcodec_find_decoder(AV_CODEC_ID_H264);
 	if (!decoder->pCodec) {
-		m_listErr.AddString(_T("codec not found!\r\n"));
+		//m_listErr.AddString(_T("codec not found!\r\n"));
 		return -1;
 	}
 
 	decoder->pCodecCtx = avcodec_alloc_context3(decoder->pCodec);
 	if (!decoder->pCodecCtx)
 	{
-		m_listErr.AddString(_T("Could not allocate video codec context\r\n"));
+		//m_listErr.AddString(_T("Could not allocate video codec context\r\n"));
 		return -1;
 	}
 
 	decoder->pCodecParserCtx = av_parser_init(AV_CODEC_ID_H264);
 	if (!decoder->pCodecParserCtx){
-		m_listErr.AddString(_T("Could not allocate video parser context\n"));
+		//m_listErr.AddString(_T("Could not allocate video parser context\n"));
 		return -1;
 	}
 
 	if (avcodec_open2(decoder->pCodecCtx,decoder->pCodec,NULL)<0)
 	{
-		m_listErr.AddString(_T("Could not open codec\r\n"));
+		//m_listErr.AddString(_T("Could not open codec\r\n"));
 		return -1;
 	}
 
@@ -78,7 +78,7 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *outpu
 
 	if (av_result < 0)
 	{
-		m_listErr.AddString(_T("Decode err.\r\n"));
+		//m_listErr.AddString(_T("Decode err.\r\n"));
 		return -1;
 	}
 
@@ -95,7 +95,7 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *outpu
 	if (decoder->img_convert_ctx == NULL)
 	{
 
-		m_listErr.AddString(_T("can't init convert context!\n"));
+		//m_listErr.AddString(_T("can't init convert context!\n"));
 		return -1;
 	}
 
