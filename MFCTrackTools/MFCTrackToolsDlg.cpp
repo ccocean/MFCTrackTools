@@ -350,18 +350,18 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 	frame = cvQueryFrame(g_video);
 	if (frame)
 	{
-		cvResize(frame, srcImg, 1);
+		//cvResize(frame, srcImg, 1);
 		if (g_drawPS==1)
 		{
 			for (int i = 0; i < Frame_Width; i += (Frame_Width / int_pos))
 			{
-				cvLine(srcImg, cvPoint(i, 0), cvPoint(i, Frame_Height), cvScalar(0, 0, 255));
-				cvRectangle(srcImg, cvPoint(camPosSlide.left*(Frame_Width / int_pos), 0), cvPoint((camPosSlide.right + 1) * (Frame_Width / int_pos), Frame_Height), cvScalar(255, 0, 0));//»­Ô¤ÖÃÎ»»¬¿ò
+				//cvLine(srcImg, cvPoint(i, 0), cvPoint(i, Frame_Height), cvScalar(0, 0, 255));
+				//cvRectangle(srcImg, cvPoint(camPosSlide.left*(Frame_Width / int_pos), 0), cvPoint((camPosSlide.right + 1) * (Frame_Width / int_pos), Frame_Height), cvScalar(255, 0, 0));//»­Ô¤ÖÃÎ»»¬¿ò
 			}
 		}
 		if (g_drawTch==1)
 		{
-			cvRectangle(srcImg, cvPoint(tch.x, tch.y), cvPoint(tch.x + tch.width, tch.y + tch.height), cvScalar(0, 255, 0));
+			//cvRectangle(srcImg, cvPoint(tch.x, tch.y), cvPoint(tch.x + tch.width, tch.y + tch.height), cvScalar(0, 255, 0));
 			//cvRectangle(srcImg, cvPoint(blk.x, blk.y), cvPoint(blk.x + blk.width, blk.y + blk.height), cvScalar(0, 255, 0));
 			/*p1.x = -1; p1.y = -1;
 			p2.x = -1; p2.y = -1;
@@ -369,13 +369,13 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 		if (g_drawBlk==1)
 		{
-			cvRectangle(srcImg, cvPoint(blk.x, blk.y), cvPoint(blk.x + blk.width, blk.y + blk.height), cvScalar(0, 255, 0));
+			//cvRectangle(srcImg, cvPoint(blk.x, blk.y), cvPoint(blk.x + blk.width, blk.y + blk.height), cvScalar(0, 255, 0));
 		}
 		if (mouseStatus == Mouse_LBDOWN)
 		{
 			if (pt.x > 0 && pt.y > 0)
 			{
-				cvRectangle(srcImg, p1, pt, cvScalar(0, 255, 255), 1, 8, 0);
+				//cvRectangle(srcImg, p1, pt, cvScalar(0, 255, 255), 1, 8, 0);
 			}
 		}
 		else if (mouseStatus==Mouse_LBUP)
@@ -398,7 +398,7 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 				p1.x = p2.x;
 				p2.x = pt.x;
 			}
-			cvRectangle(srcImg, p1, p2, cvScalar(0, 255, 255), 1, 8, 0);
+			//cvRectangle(srcImg, p1, p2, cvScalar(0, 255, 255), 1, 8, 0);
 			SetDlgItemInt(IDC_editX, p1.x);
 			SetDlgItemInt(IDC_editY, p1.y);
 			SetDlgItemInt(IDC_editW, p2.x-p1.x);
@@ -406,10 +406,10 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 		else if (mouseStatus==Mouse_DRAG)
 		{
-			cvRectangle(srcImg, p1, p2, cvScalar(0, 255, 255), 1, 8, 0);
+			//cvRectangle(srcImg, p1, p2, cvScalar(0, 255, 255), 1, 8, 0);
 		}
-		cimg.CopyOf(srcImg, srcImg->nChannels);
-		cimg.DrawToHDC(hdc, &picRect);
+		//cimg.CopyOf(srcImg, srcImg->nChannels);
+		//cimg.DrawToHDC(hdc, &picRect);
 	}
 	CDialogEx::OnTimer(nIDEvent);
 }

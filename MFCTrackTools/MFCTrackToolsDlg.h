@@ -7,12 +7,12 @@
 #include "CvvImage.h"
 #include "tch_params.h"
 #include<string>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+//#include <opencv2/core/core.hpp>
+//#include <opencv2/highgui/highgui.hpp>
 #include "avcodec.h"
 
 
-using namespace cv;
+//using namespace cv;
 
 //‘§÷√Œªª¨øÈ
 typedef struct CamPositionSlide

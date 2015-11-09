@@ -10,6 +10,10 @@ static int y_size;
 
 int H264_init(Tools_decoder_t* decoder)
 {
+	if (!decoder)
+	{
+		return -1;
+	}
 	//avcodec_init();
 	avcodec_register_all();
 
@@ -57,6 +61,10 @@ int H264_init(Tools_decoder_t* decoder)
 
 int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *outputbuffer, int *outsize, Tools_decoder_t *decoder)
 {
+	if (!inputbuffer||!outputbuffer||!decoder)
+	{
+		return -1;
+	}
 	int             decode_size;
 	int             numBytes;
 	int             av_result;
