@@ -15,6 +15,8 @@
 #define UP_PIXEL 20
 #define PIC_TOP 20
 
+CMFCTrackToolsDlg *g_pDlg;
+
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialogEx
@@ -98,6 +100,8 @@ void CMFCTrackToolsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_grpBoxThreshold, m_grpBoxThreshold);
 	DDX_Control(pDX, IDC_btnSaveThreshold, m_btnSaveThreshold);
 	DDX_Control(pDX, IDC_btnApply, m_btnApply);
+	DDX_Control(pDX, IDC_btnDefault, m_btnDefault);
+	DDX_Control(pDX, IDC_picCam, m_picCam);
 }
 
 //消息映射
@@ -106,7 +110,7 @@ BEGIN_MESSAGE_MAP(CMFCTrackToolsDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_CLOSE()
-	ON_BN_CLICKED(IDC_btnPlay, &CMFCTrackToolsDlg::OnBnClickedbtnplay)
+	//ON_BN_CLICKED(IDC_btnPlay, &CMFCTrackToolsDlg::OnBnClickedbtnplay)
 	ON_WM_TIMER()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
@@ -117,6 +121,8 @@ BEGIN_MESSAGE_MAP(CMFCTrackToolsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_btnSavePos, &CMFCTrackToolsDlg::OnBnClickedbtnsavepos)
 	ON_BN_CLICKED(IDC_btnSaveTrack, &CMFCTrackToolsDlg::OnBnClickedbtnsavetrack)
 	ON_BN_CLICKED(IDC_btnSaveThreshold, &CMFCTrackToolsDlg::OnBnClickedbtnsavethreshold)
+	ON_BN_CLICKED(IDC_btnApply, &CMFCTrackToolsDlg::OnBnClickedbtnapply)
+	ON_BN_CLICKED(IDC_btnDefault, &CMFCTrackToolsDlg::OnBnClickedbtndefault)
 END_MESSAGE_MAP()
 
 
@@ -207,10 +213,12 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	m_editOutSide.SetWindowTextW(_T("以像素为单位"));
 	m_btnSaveThreshold.SetWindowPos(NULL, LEFT_PIXEL + 100, UP_PIXEL + 580, 80, 20, SWP_NOZORDER);
 	m_btnApply.SetWindowPos(NULL, LEFT_PIXEL + 120, UP_PIXEL + 630, 80, 20, SWP_NOZORDER);
+	m_btnDefault.SetWindowPos(NULL, LEFT_PIXEL + 10, UP_PIXEL + 630, 100, 20, SWP_NOZORDER);
 
 	//显示控件及日志控件
-	m_picSrc.SetWindowPos(NULL, 20, PIC_TOP, Frame_Width, Frame_Height, SWP_NOZORDER);
-	m_listErr.SetWindowPos(NULL, 720, PIC_TOP, 240, 360, SWP_NOZORDER);
+	m_picSrc.SetWindowPos(NULL, 40, PIC_TOP+40, Frame_Width, Frame_Height, SWP_NOZORDER);
+	m_picCam.SetWindowPos(NULL, 40, PIC_TOP + 350, Frame_Width, Frame_Height, SWP_NOZORDER);
+	m_listErr.SetWindowPos(NULL, 600, PIC_TOP+50, 360, 240, SWP_NOZORDER);
 
 	pDC = GetDlgItem(IDC_picSrc)->GetDC();
 	hdc = pDC->GetSafeHdc();
@@ -221,11 +229,13 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	//vfps = 1000 / fps;
 	SetTimer(1, fps, NULL);
 
-	//p1.x = 0;
-	//p1.y = 0;
-	//p2.x = 0;
-	//p2.y = 0;
+	p1.x = 0;
+	p1.y = 0;
+	p2.x = 0;
+	p2.y = 0;
 
+
+	g_pDlg = this;
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -288,55 +298,6 @@ void CMFCTrackToolsDlg::OnClose()
 		== IDNO)
 		return;
 	CDialogEx::OnClose();
-}
-
-
-//void CMFCTrackToolsDlg::OnBnClickedExit()
-//{
-//	// TODO:  在此添加控件通知处理程序代码
-//	SendMessage(WM_CLOSE, 0, 0);
-//}
-
-
-void CMFCTrackToolsDlg::OnBnClickedbtnplay()
-{
-	// TODO:  在此添加控件通知处理程序代码
-	/*CDC *pDC = GetDlgItem(IDC_picSrc)->GetDC();
-	HDC hdc = pDC->GetSafeHdc();*/
-
-	//CRect rect;
-	
-
-	
-
-	
-	
-
-	/*IplImage *frame;
-	CvvImage cimg;*/
-	
-	/*while (1)
-	{
-	frame = cvQueryFrame(g_video);
-	if (!frame)break;
-	cimg.CopyOf(frame, frame->nChannels);
-	cimg.DrawToHDC(hdc, &picRect);
-
-
-	
-	char c = cvWaitKey(vfps);
-	if (c == 27)break;
-	if (g_flag==1)break;
-	}*/
-	//if (frame)
-	//{
-	//	//cimg.CopyOf(frame, frame->nChannels);
-	//	SetTimer(1, 1000, NULL);
-	//	char c = cvWaitKey(vfps);
-	//}
-
-	/*ReleaseDC(pDC);
-	cvReleaseCapture(&g_video);*/
 }
 
 
@@ -681,4 +642,77 @@ void CMFCTrackToolsDlg::OnBnClickedbtnsavethreshold()
 		}
 	}
 	
+}
+
+
+void CMFCTrackToolsDlg::OnBnClickedbtnapply()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CString text;
+	m_btnDefault.GetWindowTextW(text);
+	params.frame.width = 480;
+	params.frame.height = 264;
+	if (text=="使用默认参数")
+	{
+		params.isSetParams = 0;
+	}
+	else
+	{
+		params.isSetParams = 1;
+		if (params.tch.x <= 0 || params.tch.y <= 0 || params.tch.width <= 0 || params.tch.height <= 0)
+		{
+			AfxMessageBox(_T("教师跟踪框数据错误！"));
+		}
+		if (params.blk.x <= 0 || params.blk.y <= 0 || params.blk.width <= 0 || params.blk.height <= 0)
+		{
+			AfxMessageBox(_T("黑板跟踪框数据错误！"));
+		}
+		if (params.numOfPos <= 0 || params.numOfSlide <= 0 || params.numOfPos < params.numOfSlide)
+		{
+			AfxMessageBox(_T("教师跟踪框数据错误！"));
+		}
+		if (params.threshold.outside <= 0 || params.threshold.stand <= 0 || params.threshold.targetArea <= 0)
+		{
+			AfxMessageBox(_T("教师跟踪框数据错误！"));
+		}
+	}
+	
+}
+
+
+void CMFCTrackToolsDlg::OnBnClickedbtndefault()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CString text;
+	m_btnDefault.GetWindowTextW(text);
+	if (text=="使用默认参数")
+	{
+		m_btnDefault.SetWindowTextW(_T("自定义参数"));
+		m_btnSaveTch.EnableWindow(FALSE);
+		m_btnSaveBlk.EnableWindow(FALSE);
+		m_btnSavePos.EnableWindow(FALSE);
+		m_btnSaveTrack.EnableWindow(FALSE);
+		m_btnSet.EnableWindow(FALSE);
+		m_btnSaveThreshold.EnableWindow(FALSE);
+		m_editOutSide.EnableWindow(FALSE);
+		m_editPos.EnableWindow(FALSE);
+		m_editSlide.EnableWindow(FALSE);
+		m_editStand.EnableWindow(FALSE);
+		m_editTargetArea.EnableWindow(FALSE);
+	}
+	else
+	{
+		m_btnDefault.SetWindowTextW(_T("使用默认参数"));
+		m_btnSaveTch.EnableWindow(TRUE);
+		m_btnSaveBlk.EnableWindow(TRUE);
+		m_btnSavePos.EnableWindow(TRUE);
+		m_btnSaveTrack.EnableWindow(TRUE);
+		m_btnSet.EnableWindow(TRUE);
+		m_btnSaveThreshold.EnableWindow(TRUE);
+		m_editOutSide.EnableWindow(TRUE);
+		m_editPos.EnableWindow(TRUE);
+		m_editSlide.EnableWindow(TRUE);
+		m_editStand.EnableWindow(TRUE);
+		m_editTargetArea.EnableWindow(TRUE);
+	}
 }

@@ -28,8 +28,8 @@ typedef struct CamPositionSlide
 #define Mouse_LBUP 0
 #define Mouse_DRAG 3
 
-#define Frame_Width 640	    //960
-#define Frame_Height 360	//540
+#define Frame_Width 480	    //960
+#define Frame_Height 264	//540
 
 // CMFCTrackToolsDlg 对话框
 class CMFCTrackToolsDlg : public CDialogEx
@@ -96,7 +96,7 @@ public:
 	// 用来播放视频的控件
 	CStatic m_picSrc;
 	//CButton m_btnPlay;
-	afx_msg void OnBnClickedbtnplay();
+	//afx_msg void OnBnClickedbtnplay();
 
 	//CvCapture *g_video;
 	//string g_videoPath = "video/teacher.mp4";
@@ -149,4 +149,8 @@ public:
 	CButton m_btnSaveThreshold;
 	afx_msg void OnBnClickedbtnsavethreshold();
 	CButton m_btnApply;
+	afx_msg void OnBnClickedbtnapply();
+	CButton m_btnDefault;
+	afx_msg void OnBnClickedbtndefault();
+	CStatic m_picCam;
 };

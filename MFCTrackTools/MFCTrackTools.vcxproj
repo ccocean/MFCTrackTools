@@ -108,7 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="communtication.h" />
-    <ClInclude Include="CvvImage.h" />
     <ClInclude Include="decode.h" />
     <ClInclude Include="MFCTrackTools.h" />
     <ClInclude Include="MFCTrackToolsDlg.h" />
@@ -121,7 +120,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="communtication_client.cpp" />
-    <ClCompile Include="CvvImage.cpp" />
     <ClCompile Include="decode.cpp" />
     <ClCompile Include="MFCTrackTools.cpp" />
     <ClCompile Include="MFCTrackToolsDlg.cpp" />

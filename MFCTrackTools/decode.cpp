@@ -2,6 +2,7 @@
 
 
 //extern CListBox m_listErr;
+//extern CMFCTrackToolsDlg *g_pDlg;
 
 static int cur_size;
 static int ret;
@@ -20,6 +21,7 @@ int H264_init(Tools_decoder_t* decoder)
 	/* find the h264 video decoder */
 	decoder->pCodec = avcodec_find_decoder(AV_CODEC_ID_H264);
 	if (!decoder->pCodec) {
+		//g_pDlg->m_listErr.AddString(_T("codec not found!\r\n"));
 		//m_listErr.AddString(_T("codec not found!\r\n"));
 		return -1;
 	}
