@@ -74,8 +74,8 @@ typedef struct _COMMUTICATION_HANDLE{
 
 Commutication_Handle_t communtication_create_clientHandle(char *dst_ip, unsigned short dst_port, 
 	DealCmdFunc func1,DealheartbitFunc func2,ConnectServerInitFunc func3);
-
-
+int communtication_send_clientMsg(Communtication_Head_t *head, char *date, int buflen, Communtication_Handle_t *handle);
+int communtication_set_handleStatus(Commutication_Handle_t handle, int status);
 
 
 
