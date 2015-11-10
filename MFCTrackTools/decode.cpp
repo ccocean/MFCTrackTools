@@ -61,19 +61,21 @@ int H264_init(Tools_decoder_t* decoder)
 		return -1;
 	}
 	av_init_packet(&decoder->packet);
+	decoder->firstTime = 1;
 
 	return 0;
 }
 
-int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *outputbuffer, int *outsize, Tools_decoder_t *decoder)
+int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outputbuffer, Tools_decoder_t *decoder)
 {
-	if (!inputbuffer||!outputbuffer||!decoder)
+	if (!inputbuffer||!decoder)
 	{
 		return -1;
 	}
-	int             decode_size;
-	int             numBytes;
-	int             av_result;
+	int             decode_size=0;
+	int             numBytes=0;
+	int             av_result=0;
+	int				outsize = 0;
 	uint8_t         *buffer = NULL;
 	decoder->packet.data = inputbuffer;
 	decoder->packet.size = frame_size;
@@ -89,39 +91,36 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *outpu
 		return -1;
 	}
 
-	
-	numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGR24, decoder->pCodecCtx->width, decoder->pCodecCtx->height, 1);
-	buffer = (uint8_t *)malloc(numBytes*sizeof(uint8_t));
-
-	//avpicture_fill((AVPicture*)decoder->pFrameRGB, buffer, AV_PIX_FMT_BGR24, decoder->pCodecCtx->width, decoder->pCodecCtx->height);
-	av_image_fill_arrays(decoder->pFrameRGB->data, decoder->pFrameRGB->linesize, buffer, AV_PIX_FMT_BGR24, decoder->pCodecCtx->width, decoder->pCodecCtx->height, 1);
-
-	decoder->img_convert_ctx = sws_getCachedContext(decoder->img_convert_ctx, decoder->pCodecCtx->width, decoder->pCodecCtx->height,
-		decoder->pCodecCtx->pix_fmt, decoder->pCodecCtx->width, decoder->pCodecCtx->height, AV_PIX_FMT_BGR24,SWS_X,NULL,NULL,NULL);
-
-	if (decoder->img_convert_ctx == NULL)
-	{
-
-		//m_listErr.AddString(_T("can't init convert context!\n"));
-		return -1;
-	}
-
-	decoder->pFrame->data[0] += decoder->pFrame->linesize[0] * (decoder->pCodecCtx->height - 1);
-	decoder->pFrame->linesize[0] *= -1;
-	decoder->pFrame->data[1] += decoder->pFrame->linesize[1] * (decoder->pCodecCtx->height / 2 - 1);;
-	decoder->pFrame->linesize[1] *= -1;
-	decoder->pFrame->data[2] += decoder->pFrame->linesize[2] * (decoder->pCodecCtx->height / 2 - 1);;
-	decoder->pFrame->linesize[2] *= -1;
-
-	sws_scale(decoder->img_convert_ctx, decoder->pFrame->data, decoder->pFrame->linesize,
-		0, 0 - decoder->pCodecCtx->width, decoder->pFrameRGB->data, decoder->pFrameRGB->linesize);
-	
 	if (decode_size)
 	{
-		*outsize = decoder->pCodecCtx->width * decoder->pCodecCtx->height * 3;
-		memcpy(outputbuffer, decoder->pFrameRGB->data[0], *outsize);
+		if (decoder->firstTime)
+		{
+			decoder->img_convert_ctx = sws_getContext(decoder->pCodecCtx->width, decoder->pCodecCtx->height, decoder->pCodecCtx->pix_fmt,
+				decoder->pCodecCtx->width, decoder->pCodecCtx->height, AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+
+			buffer = (uint8_t *)malloc(av_image_get_buffer_size(AV_PIX_FMT_RGB32, decoder->pCodecCtx->width, decoder->pCodecCtx->height, 16)*sizeof(uint8_t));
+			av_image_fill_arrays(decoder->pFrameRGB->data, decoder->pFrameRGB->linesize, buffer, AV_PIX_FMT_RGB32, decoder->pCodecCtx->width, decoder->pCodecCtx->height, 16);
+
+			decoder->firstTime = 0;
+		}
+
+		sws_scale(decoder->img_convert_ctx, (const uint8_t* const*)decoder->pFrame->data, decoder->pFrame->linesize, 0, decoder->pCodecCtx->height,
+			decoder->pFrameRGB->data, decoder->pFrameRGB->linesize);
+
+		//int y_size = decoder->pCodecCtx->width*decoder->pCodecCtx->height;
+		outsize = (decoder->pCodecCtx->width * decoder->pCodecCtx->height * 3);
+		outputbuffer = (unsigned char *)malloc(outsize*sizeof(char));
+		memset(outputbuffer, 0, outsize*sizeof(char));
+		memcpy(outputbuffer, decoder->pFrameRGB->data[0], outsize);
 	}
+	else
+	{
+		MessageBox(NULL, TEXT("½âÂëÊ§°Ü¡£"), TEXT("±êÌâ"), MB_OK);
+		return -1;
+	}
+	
 
 	free(buffer);
+	buffer = NULL;
 	return 0;
 }

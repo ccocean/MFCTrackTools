@@ -24,9 +24,10 @@ typedef struct _decoder
 	AVFrame         *pFrame = NULL;
 	AVFrame         *pFrameRGB = NULL;
 	AVPacket        packet;
+	int				firstTime;
 }Tools_decoder_t;
 
 int H264_init(Tools_decoder_t* decoder);
-int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *outputbuffer, int *outsize, Tools_decoder_t *decoder);
+int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outputbuffer, Tools_decoder_t *decoder);
 
 #endif
