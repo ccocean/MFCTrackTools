@@ -1,9 +1,10 @@
 ﻿#include <stdio.h>
 #include<string.h>
 #include<tchar.h>
+#include<stdlib.h>
 #include "track_client_commintication.h"
 
-#define C_CONTROL_TRACK 10000
+#define C_CONTROL_TRACK 15200
 Commutication_Handle_t g_track_clientHandle = NULL;
 
 
@@ -166,7 +167,7 @@ static void *track_get_dataEmptyBuf(void *arg, void **pEmptyBufInfo, int data_le
 static int  track_process_data(RH_FRAMEHEAD_t *fh, void *pEmptyBufInfo, void *arg, void *data)
 {
 	
-	OutputDebugString(_T("hello=====================\n"));
+	
 	Client_Handle_t* pClient_handle = (Client_Handle_t*)arg;
 	if (data == NULL || pClient_handle == NULL )
 	{
@@ -192,15 +193,15 @@ static int  track_process_data(RH_FRAMEHEAD_t *fh, void *pEmptyBufInfo, void *ar
 	pStream_message->stream_data = data;
 
 
-	if (fh->nIframe == 1 && pClient_handle->first_frame == 0)
+//	if (fh->nIframe == 1 && pClient_handle->first_frame == 0)
 	{
 		pClient_handle->first_frame = 1;
 		//upEnc_firstData_set(pClient_handle);
 	}
 	pthread_mutex_lock(&(pClient_handle->lock));
-	if ((pClient_handle->first_frame == 1) && pClient_handle->list_Handle.size() < 15)
+	if ((pClient_handle->first_frame == 1) && (pClient_handle->list_Handle).size() < 15)
 	{
-		pClient_handle->list_Handle.push_back(pStream_message);
+		(pClient_handle->list_Handle).push_back(pStream_message);
 	}
 	else
 	{
@@ -255,7 +256,7 @@ static int clean_alloc(RecvStream_Handle_t* pStream_handle)
 	}
 	if (pClient_handle)
 	{
-		free(pClient_handle);
+		delete pClient_handle;
 		pClient_handle = NULL;
 	}
 	return 0;
@@ -263,7 +264,7 @@ static int clean_alloc(RecvStream_Handle_t* pStream_handle)
 
 static void* stream_pop_thread(void* arg)
 {
-	
+
 	RecvStream_Handle_t* pStream_recv_handle = (RecvStream_Handle_t*)arg;
 	Stream_Message_t *pStream_messgage = NULL;
 	//Stream_Call_Back call_back_fun = NULL;
@@ -282,8 +283,10 @@ static void* stream_pop_thread(void* arg)
 		{
 			pStream_messgage = pClient_handle->list_Handle.front();
 			pClient_handle->list_Handle.pop_front();
+			OutputDebugString(_T("helloff=====================\n"));
 			//			nslog(NS_INFO, "========= list_size:%d pStream_messgage->fh.nFrameLength:%d pStream_recv_handle->channel:%d %p\n",
 			//					list_size, pStream_messgage->fh.nFrameLength, pStream_recv_handle->channel, pClient_handle);
+			//addxcc===============================================
 			//call_back_fun(pStream_recv_handle, pStream_messgage);
 
 			free_stream_message(pStream_messgage);
@@ -321,14 +324,14 @@ int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 	memcpy(pStream_handle, pRecv_stream_handle, sizeof(RecvStream_Handle_t));
 
 
-	pClient_handle = (Client_Handle_t*)malloc(sizeof(Client_Handle_t));
+	pClient_handle = new Client_Handle_t;
 	if (pClient_handle == NULL)
 	{
 		OutputDebugString(_T("pClient_handle is NULL"));
 		ret = -1;
 		goto EXIT;
 	}
-
+	pClient_handle->list_Handle.clear();
 	//指向客户端信息
 	pStream_handle->outParm = pClient_handle;
 	pClient_handle->nChannel = pRecv_stream_handle->channel;

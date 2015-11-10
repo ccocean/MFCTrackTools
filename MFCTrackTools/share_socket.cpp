@@ -11,12 +11,14 @@
 #include "winsock.h"
 static int RH_GetPrivateError()
 {
-	int RetError = errno;
+	int RetError = WSAGetLastError();
 
-	if (errno != 0) {
+	if (RetError != 0) 
+	{
 		RetError = (RetError ^ -1) + 1;
 	}
-	else {
+	else 
+	{
 		RetError = -11;
 	}
 	return RetError;

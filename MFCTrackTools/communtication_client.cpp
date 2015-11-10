@@ -116,6 +116,11 @@ static int communtication_clientHeartThread(void *argv)
 	Communtication_Head_t *head = NULL;
 	//char headbuf[256] = {0};
 	Sleep(2000);
+	WORD wVersionRequested;
+	WSADATA wsaData;
+	int err;
+	wVersionRequested = MAKEWORD(1, 1);
+	err = WSAStartup(wVersionRequested, &wsaData);
 REPEAT_CONNECT:
 	//nslog(NS_WARN, "client will connet to server [%s:%d]\n", ip, port);
 
@@ -151,7 +156,7 @@ REPEAT_CONNECT:
 
 	//重连的话，需要触发一些初始化逻辑，
 	//比如room重启或者HD重启后，需要重新下发 control的参数给其他模块，考虑在此加入一个回调来处理
-
+	
 	while (communtication_get_handleStatus(handle) == START_STATUS) {
 		needlen = sizeof(Communtication_Head_t);
 		memset(&headbuf, 0, sizeof(headbuf));
@@ -200,7 +205,7 @@ REPEAT_CONNECT:
 		RH_Close(__FILE__, (char *)__FUNCTION__, client_socket);
 		client_socket = -1;
 	}
-
+	WSACleanup();
 	//printf_pthread_delete(__FILE__, (char *)__FUNCTION__);
 	pthread_detach(pthread_self());
 	pthread_exit(0);

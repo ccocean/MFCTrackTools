@@ -10,8 +10,8 @@ using namespace std;
 #define TEA_GETTRACK_CMD  0x103
 #define TIMEOUT 500
 
-#define TEACH_STREAM_PORT 10086
-#define STUDENT_STREAM_PORT  10087
+#define TEACH_STREAM_PORT 21303
+#define STUDENT_STREAM_PORT  21302
 typedef enum
 {
 	STREAMCLINT_START = 0,
@@ -22,7 +22,7 @@ typedef enum
 typedef struct Stream_Message
 {
 	RH_FRAMEHEAD_t fh;
-	void *stream_data;
+	void *stream_data;//数据
 }Stream_Message_t;
 typedef list<Stream_Message_t *> LISTSTREAM;
 
@@ -48,3 +48,5 @@ typedef struct Stream_Handle
 	void *outParm;//扩展(可由内部自己填充)
 	void* param1;//扩展参数
 }RecvStream_Handle_t;
+int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle);
+int ctrlClient_init_trackCommuntication();

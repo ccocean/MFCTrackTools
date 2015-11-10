@@ -6,7 +6,7 @@
 #include "MFCTrackTools.h"
 #include "MFCTrackToolsDlg.h"
 #include "afxdialogex.h"
-
+#include "track_client_commintication.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -236,6 +236,14 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 
 
 	g_pDlg = this;
+
+	ctrlClient_init_trackCommuntication();
+	RecvStream_Handle_t recv_stream_handle;
+	recv_stream_handle.channel = 0;
+	strcpy_s(recv_stream_handle.iP, sizeof(recv_stream_handle.iP) ,_T("192.168.11.140"));
+	recv_stream_handle.port = TEACH_STREAM_PORT;
+	recv_stream_handle.channel = 1;
+	init_stream_recv(&recv_stream_handle);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
