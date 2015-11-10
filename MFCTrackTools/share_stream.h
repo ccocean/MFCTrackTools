@@ -4,6 +4,7 @@
 #include "pthread.h"
 #define IP_LEN 16
 #define	RH_FH_LEN	sizeof(RH_FRAMEHEAD_t)
+#define STREAM_CONNECT_TIMEOUT 2
 typedef unsigned short int	uint16_t;
 typedef signed char		int8_t;
 typedef struct RH_FRAMEHEAD_ {

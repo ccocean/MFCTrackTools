@@ -10,7 +10,7 @@
 int communtication_get_handleStatus(Commutication_Handle_t handle)
 {
 	if (handle == NULL) {
-		//nslog(NS_ERROR, "handle is NULL\n");
+		share_outputlog(NS_ERROR, "handle is NULL\n");
 		return NO_INIT_STATUS;
 	}
 
@@ -26,9 +26,9 @@ int communtication_check_head(Communtication_Head_t *head)
 		|| (head->check_end[1] != DEFAULT_CHECK_END_CODE)
 		|| (head->check_end[2] != DEFAULT_CHECK_END_CODE)
 		|| (head->check_end[3] != DEFAULT_CHECK_END_CODE)) {
-		////nslog(NS_ERROR, "the head is not head\n");
-		////nslog(NS_DEBUG, "[%c][%c][%c][%c][%c][%c][%c][%c]\n", head->check_start[0], head->check_start[1], head->check_start[2], head->check_start[3],
-		//	head->check_end[0], head->check_end[1], head->check_end[2], head->check_end[3]);
+		share_outputlog(NS_ERROR, "the head is not head\n");
+		share_outputlog(NS_DEBUG, "[%c][%c][%c][%c][%c][%c][%c][%c]\n", head->check_start[0], head->check_start[1], head->check_start[2], head->check_start[3],
+			head->check_end[0], head->check_end[1], head->check_end[2], head->check_end[3]);
 		return -1;
 	}
 
@@ -49,7 +49,7 @@ void communtication_free_head(Commutication_Handle_t *handle)
 int communtication_set_handleStatus(Commutication_Handle_t handle, int status)
 {
 	if (handle == NULL) {
-		////nslog(NS_ERROR, "handle is NULL\n");
+		share_outputlog(NS_ERROR, "handle is NULL\n");
 		return -1;
 	}
 
@@ -81,7 +81,7 @@ static int communtication_process_clientHeartMsg(Communtication_Head_t *head, ch
 	pthread_mutex_unlock(&(handle->lock));
 
 	if (handle->DealHeartbitFuncPtr != NULL) {
-		handle->DealHeartbitFuncPtr(buf);
+		handle->DealHeartbitFuncPtr(buf, handle->param);
 	}
 
 	////nslog(NS_DEBUG,"communtication_process_clientHeartMsg2\n");
@@ -103,7 +103,7 @@ static int communtication_clientHeartThread(void *argv)
 	Communtication_Head_t headbuf;
 
 	if (handle == NULL) {
-		////nslog(NS_ERROR, "handle is NULL\n");
+		share_outputlog(NS_ERROR, "handle is NULL\n");
 		//printf_pthread_delete(__FILE__, (char *)__FUNCTION__);
 		pthread_detach(pthread_self());
 		pthread_exit(0);
@@ -122,8 +122,7 @@ static int communtication_clientHeartThread(void *argv)
 	wVersionRequested = MAKEWORD(1, 1);
 	err = WSAStartup(wVersionRequested, &wsaData);
 REPEAT_CONNECT:
-	//nslog(NS_WARN, "client will connet to server [%s:%d]\n", ip, port);
-
+	share_outputlog(NS_WARN, "client will connet to server [%s:%d]\n", ip, port);
 	handle->client_socket = -1;
 
 	if (client_socket > 0) {
@@ -134,26 +133,26 @@ REPEAT_CONNECT:
 	client_socket = RH_CreateTcpNoBindFd();
 	//	RH_SetNonBlockFd(client_socket);
 
-
-	ret = RH_ConnetBlockFd(client_socket, port, ip);
+	ret = RH_ConnetBlockFd(client_socket, port, ip, COMMUN_CONNECT_TIMEOUT);
 
 	if (ret != RHRETSUCCESS) {
-		//nslog(NS_ERROR, "connet server fd is failed,the pot is [%d]\n", port);
+		share_outputlog(NS_ERROR, "connet server fd is failed,the pot is [%d] ip:%s\n", port, ip);
 		Sleep(1000);
 		goto REPEAT_CONNECT;
 	}
 
-	//nslog(NS_INFO, "connet [%s:%d] is ok\n", ip, port);
+	share_outputlog(NS_INFO, "connet [%s:%d] is ok\n", ip, port);
 	handle->client_socket = client_socket;
 	communtication_set_handleStatus(handle, START_STATUS);
 
 	//init ;
 	if (handle->ConnectServerInitPtr != NULL) {
-		handle->ConnectServerInitPtr();
+		handle->ConnectServerInitPtr(handle->param);
 	}
 
 	RH_SetRcvTimeoutFd(client_socket, 3, 0);
-
+	//设置发送连接超时
+	RH_SetSndTimeoutFd(client_socket, 1, 0);
 	//重连的话，需要触发一些初始化逻辑，
 	//比如room重启或者HD重启后，需要重新下发 control的参数给其他模块，考虑在此加入一个回调来处理
 	
@@ -163,14 +162,15 @@ REPEAT_CONNECT:
 		ret = RH_TcpRcvBlockFd(client_socket, (char *)(&headbuf), needlen, &RecvLen);
 
 		if (ret != RHRETSUCCESS || RecvLen != needlen) {
-			//nslog(NS_ERROR, "tcp recv failed,the port is [%u].\n", port);
+			OutputDebugString(_T("tcp recv failed\n"));
+			share_outputlog(NS_ERROR, "tcp recv failed,the port is [%u].\n", port);
 			Sleep(500);
 			goto REPEAT_CONNECT;
 		}
 
 		//check head
 		if (communtication_check_head(&headbuf) != 0) {
-			//nslog(NS_ERROR, "%s,communtication_check_head is failed,the port = [%u].\n", __FUNCTION__, port);
+			share_outputlog(NS_ERROR, "%s,communtication_check_head is failed,the port = [%u].\n", __FUNCTION__, port);
 			Sleep(500);
 			goto REPEAT_CONNECT;
 		}
@@ -182,7 +182,7 @@ REPEAT_CONNECT:
 
 
 		if (ret != RHRETSUCCESS || RecvLen != needlen) {
-			//nslog(NS_ERROR, "Commutication tcp recv is failed,the cmd is [%u],the port = [%u]\n", head->cmd, port);
+			share_outputlog(NS_ERROR, "Commutication tcp recv is failed,the cmd is [%u],the port = [%u]\n", head->cmd, port);
 			Sleep(500);
 			goto REPEAT_CONNECT;
 		}
@@ -193,7 +193,7 @@ REPEAT_CONNECT:
 		}
 		else {
 			if (handle->DealCmdFuncPtr != NULL) {
-				handle->DealCmdFuncPtr(head, RecvBuf, handle);
+				handle->DealCmdFuncPtr(head, RecvBuf, handle, handle->param);
 			}
 		}
 	}
@@ -246,14 +246,15 @@ int communtication_send_clientMsg(Communtication_Head_t *head, char *date, int b
 
 
 /*创建handle，同时产生后台的线程*/
-Commutication_Handle_t communtication_create_clientHandle(char *dst_ip, unsigned short dst_port, DealCmdFunc func1, DealheartbitFunc func2, ConnectServerInitFunc func3)
+Commutication_Handle_t communtication_create_clientHandle(char *dst_ip, unsigned short dst_port, DealCmdFunc func1, 
+	DealheartbitFunc func2, ConnectServerInitFunc func3, void * param)
 {
 	if (dst_ip == NULL || dst_port == 0) {
-		//nslog(NS_ERROR, "local_ip or local_port is error\n");
+		 share_outputlog(NS_ERROR, "local_ip or local_port is error\n");
 		return NULL;
 	}
 
-	//nslog(NS_DEBUG, "-------------dst_ip[%s]dst_port[%d]\n", dst_ip, dst_port);
+	share_outputlog(NS_DEBUG, "-------------dst_ip[%s]dst_port[%d]\n", dst_ip, dst_port);
 
 	Commutication_Handle_t handle = NULL;
 	char task_name[128] = { 0 };
@@ -261,7 +262,7 @@ Commutication_Handle_t communtication_create_clientHandle(char *dst_ip, unsigned
 	handle = (Commutication_Handle_t)malloc(sizeof(Communtication_Handle_t));
 
 	if (handle == NULL) {
-		//nslog(NS_ERROR, "Malloc handle is failed\n");
+		share_outputlog(NS_ERROR, "Malloc handle is failed\n");
 		return NULL;
 	}
 
@@ -280,14 +281,14 @@ Commutication_Handle_t communtication_create_clientHandle(char *dst_ip, unsigned
 	handle->DealCmdFuncPtr = func1;
 	handle->DealHeartbitFuncPtr = func2;
 	handle->ConnectServerInitPtr = func3;
-
+	handle->param = param;
 	sprintf_s(task_name, sizeof(task_name), "clientcommutication_%d", dst_port);
 	//printf_pthread_create(__FILE__, ("communtication_clientHeartThread"));
 
 	//mid_task重新用8168平台封装
 	ret = pthread_create(&tid, NULL, communtication_conv_clientHeartThread, (void *)(handle));
 	if (ret != 0) {
-		////nslog(NS_ERROR, "crate communtication client thread failed\n");
+		share_outputlog(NS_ERROR, "crate communtication client thread failed\n");
 
 		communtication_free_head(&handle);
 		return NULL;

@@ -18,7 +18,7 @@ typedef int			int32_t;
 
 #define RHRETSUCCESS			0
 #define RHRETFAIL				-1
-
+#define COMMUN_CONNECT_TIMEOUT 2
 // *****************************************************
 // function	: 以阻塞模式TCP SOCKET 发送数据
 // author 	: zhengyb		2014.9.1
@@ -59,7 +59,7 @@ int RH_CreateTcpNoBindFd(void); //推荐
 // parameter: Fd > 0 / ServPort 大于等于 0 /ServIp 不为空 /Timeout 大于等于 0
 // note		: 阻塞SOCKET
 //******************************************************
-int RH_ConnetBlockFd(int Fd, int ServPort, char *ServIp);
+int RH_ConnetBlockFd(int Fd, int ServPort, char *ServIp, int Timeout);
 
 int32_t RH_Close(char *file, char *func, int32_t fd);
 
@@ -67,6 +67,16 @@ int RH_SetRcvTimeoutFd(int Fd, int TimeoutSec, int TimeoutUsec);
 
 int32_t RH_Socket(char *file, char *func, int32_t domain, int32_t type, int32_t protocol);
 
+int RH_SetSndTimeoutFd(int Fd, int TimeoutSec, int TimeoutUsec);
+typedef enum {
+	NS_DEBUG = 20,
+	NS_INFO = 40,
+	NS_NOTICE = 60,
+	NS_WARN = 80,
+	NS_ERROR = 100,
+	NS_FATAL = 120
+} share_log_level;
+int share_outputlog(share_log_level levelog, const char *szFormat, ...);
 #endif
 
 

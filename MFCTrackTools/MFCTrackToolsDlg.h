@@ -153,4 +153,9 @@ public:
 	CButton m_btnDefault;
 	afx_msg void OnBnClickedbtndefault();
 	CStatic m_picCam;
+private:
+	BOOL initProgramControl();
+	BOOL initNetCommuntication();
+public:
+	int video_display(char *pBuf);
 };

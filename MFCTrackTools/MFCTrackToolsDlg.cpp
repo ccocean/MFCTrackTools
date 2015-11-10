@@ -15,7 +15,6 @@
 #define UP_PIXEL 20
 #define PIC_TOP 20
 
-CMFCTrackToolsDlg *g_pDlg;
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -158,6 +157,40 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
+	return initProgramControl();
+}
+static int video_call_back(char *pBuf, void*param)
+{
+	CMFCTrackToolsDlg* pSelf = (CMFCTrackToolsDlg*)param;
+	if (pSelf == NULL || pBuf == NULL)
+	{
+		OutputDebugString("video_call_back is NULL\n");
+	}
+	pSelf->video_display(pBuf);
+	return 0;
+}
+int CMFCTrackToolsDlg::video_display(char *pBuf)
+{
+	//OutputDebugString("stream=============\n");
+	return 0;
+}
+BOOL CMFCTrackToolsDlg::initNetCommuntication()
+{
+
+	ctrlClient_init_trackCommuntication();
+	RecvStream_Handle_t recv_stream_handle;
+	recv_stream_handle.channel = 0;
+	strcpy_s(recv_stream_handle.iP, sizeof(recv_stream_handle.iP), _T("192.168.11.140"));
+	recv_stream_handle.port = TEACH_STREAM_PORT;
+	recv_stream_handle.channel = 1;
+	recv_stream_handle.param1 = this;
+	recv_stream_handle.call_back_fun = video_call_back;
+	init_stream_recv(&recv_stream_handle);
+	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+
+}
+BOOL CMFCTrackToolsDlg::initProgramControl()
+{
 
 	//初始化窗口
 	CWnd::SetWindowPos(NULL, 0, 0, 1280, 720, SWP_NOZORDER);//初始化窗口大小
@@ -167,7 +200,7 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 
 	//跟踪参数控件
 	m_grpBoxTrack.SetWindowPos(NULL, LEFT_PIXEL, UP_PIXEL, 220, 300, SWP_NOZORDER);
-	m_txtTch.SetWindowPos(NULL, LEFT_PIXEL+20, 50, 50, 20, SWP_NOZORDER);
+	m_txtTch.SetWindowPos(NULL, LEFT_PIXEL + 20, 50, 50, 20, SWP_NOZORDER);
 	m_txtX.SetWindowPos(NULL, LEFT_PIXEL + 20, 70, 20, 20, SWP_NOZORDER);
 	m_editX.SetWindowPos(NULL, LEFT_PIXEL + 40, 70, 60, 20, SWP_NOZORDER);
 	m_txtY.SetWindowPos(NULL, LEFT_PIXEL + 120, 70, 20, 20, SWP_NOZORDER);
@@ -216,9 +249,9 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	m_btnDefault.SetWindowPos(NULL, LEFT_PIXEL + 10, UP_PIXEL + 630, 100, 20, SWP_NOZORDER);
 
 	//显示控件及日志控件
-	m_picSrc.SetWindowPos(NULL, 40, PIC_TOP+40, Frame_Width, Frame_Height, SWP_NOZORDER);
+	m_picSrc.SetWindowPos(NULL, 40, PIC_TOP + 40, Frame_Width, Frame_Height, SWP_NOZORDER);
 	m_picCam.SetWindowPos(NULL, 40, PIC_TOP + 350, Frame_Width, Frame_Height, SWP_NOZORDER);
-	m_listErr.SetWindowPos(NULL, 600, PIC_TOP+50, 360, 240, SWP_NOZORDER);
+	m_listErr.SetWindowPos(NULL, 600, PIC_TOP + 50, 360, 240, SWP_NOZORDER);
 
 	pDC = GetDlgItem(IDC_picSrc)->GetDC();
 	hdc = pDC->GetSafeHdc();
@@ -234,19 +267,9 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	p2.x = 0;
 	p2.y = 0;
 
+	return initNetCommuntication();
 
-	g_pDlg = this;
-
-	ctrlClient_init_trackCommuntication();
-	RecvStream_Handle_t recv_stream_handle;
-	recv_stream_handle.channel = 0;
-	strcpy_s(recv_stream_handle.iP, sizeof(recv_stream_handle.iP) ,_T("192.168.11.140"));
-	recv_stream_handle.port = TEACH_STREAM_PORT;
-	recv_stream_handle.channel = 1;
-	init_stream_recv(&recv_stream_handle);
-	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
-
 void CMFCTrackToolsDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)

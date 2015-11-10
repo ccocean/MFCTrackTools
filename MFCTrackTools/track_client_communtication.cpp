@@ -27,18 +27,18 @@ static  inline char *get_track_cmd_name(int cmd)
 	}
 	return "unknown name";
 }
-static int ctrlClient_process_trackHeart(char *buff)
+static int ctrlClient_process_trackHeart(char *buff, void * param)
 {
 	OutputDebugString(_T("ctrlClient_process_trackHeart=====================\n"));
 	return 0;
 }
 
-static int ctrl_init_track()
+static int ctrl_init_track(void * param)
 {
 	return  0;
 }
 //回调函数处理
-static int ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle)
+static int ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle, void * param)
 {
 	char errMsg[128] = { 0 };
 	if (NULL == head || NULL == msg || NULL == handle) {
@@ -86,7 +86,8 @@ int ctrlClient_init_trackCommuntication()
 		return -1;
 	}
 
-	g_track_clientHandle = communtication_create_clientHandle("192.168.11.140", C_CONTROL_TRACK, ctrlClient_process_trackMsg, ctrlClient_process_trackHeart, ctrl_init_track);
+	g_track_clientHandle = communtication_create_clientHandle("192.168.11.140", C_CONTROL_TRACK, 
+		ctrlClient_process_trackMsg, ctrlClient_process_trackHeart, ctrl_init_track, NULL);
 	if (g_track_clientHandle == NULL) {
 		MessageBox(NULL, TEXT("创建客户端失败"), TEXT("标题"), MB_OK);
 		return -1;
@@ -113,7 +114,7 @@ static int free_stream_message(Stream_Message_t *pStream_messgage)
 	if (pStream_messgage == NULL)
 	{
 
-		//nslog(NS_ERROR, "free_stream_message is fail\n");
+		share_outputlog(NS_ERROR, "free_stream_message is fail\n");
 		return -1;
 	}
 
@@ -243,7 +244,7 @@ static int clean_alloc(RecvStream_Handle_t* pStream_handle)
 {
 	if (pStream_handle == NULL)
 	{
-		//nslog(NS_ERROR, "clean_alloc is fail\n");
+		share_outputlog(NS_ERROR, "clean_alloc is fail\n");
 		return -1;
 	}
 
@@ -267,13 +268,13 @@ static void* stream_pop_thread(void* arg)
 
 	RecvStream_Handle_t* pStream_recv_handle = (RecvStream_Handle_t*)arg;
 	Stream_Message_t *pStream_messgage = NULL;
-	//Stream_Call_Back call_back_fun = NULL;
+	Stream_Call_Back call_back_fun = NULL;
 	int list_size = 0;
 	if (pStream_recv_handle == NULL || pStream_recv_handle->outParm == NULL)
 	{
 		goto EXIT;
 	}
-	//call_back_fun = (Stream_Call_Back)pStream_recv_handle->call_back_fun;
+	call_back_fun = (Stream_Call_Back)pStream_recv_handle->call_back_fun;
 
 	Client_Handle_t* pClient_handle = (Client_Handle_t*)pStream_recv_handle->outParm;
 	while (get_streamClient_status(pClient_handle) == STREAMCLINT_START)
@@ -283,11 +284,11 @@ static void* stream_pop_thread(void* arg)
 		{
 			pStream_messgage = pClient_handle->list_Handle.front();
 			pClient_handle->list_Handle.pop_front();
-			OutputDebugString(_T("helloff=====================\n"));
-			//			nslog(NS_INFO, "========= list_size:%d pStream_messgage->fh.nFrameLength:%d pStream_recv_handle->channel:%d %p\n",
+			//OutputDebugString(_T("helloff=====================\n"));
+			//			share_outputlog(NS_INFO, "========= list_size:%d pStream_messgage->fh.nFrameLength:%d pStream_recv_handle->channel:%d %p\n",
 			//					list_size, pStream_messgage->fh.nFrameLength, pStream_recv_handle->channel, pClient_handle);
 			//addxcc===============================================
-			//call_back_fun(pStream_recv_handle, pStream_messgage);
+			call_back_fun((char*)(pStream_messgage->stream_data), pStream_recv_handle->param1);
 
 			free_stream_message(pStream_messgage);
 
@@ -297,7 +298,7 @@ static void* stream_pop_thread(void* arg)
 		Sleep(10);
 	}
 EXIT:
-	//nslog(NS_ERROR, "%s : stream_pop_thread is finsh\n", __FILE__);
+	share_outputlog(NS_ERROR, "%s : stream_pop_thread is finsh\n", __FILE__);
 	clean_alloc(pStream_recv_handle);
 
 	pthread_detach(pthread_self());

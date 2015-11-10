@@ -9,7 +9,7 @@ using namespace std;
 #define STU_GETTRACK_CMD  0x102
 #define TEA_GETTRACK_CMD  0x103
 #define TIMEOUT 500
-
+typedef int(*Stream_Call_Back)(char *pBuf, void*param);
 #define TEACH_STREAM_PORT 21303
 #define STUDENT_STREAM_PORT  21302
 typedef enum
@@ -44,9 +44,10 @@ typedef struct Stream_Handle
 	int channel;
 	int port;
 	char iP[16];
-	void* call_back_fun;//将数据回调由video处理
+	Stream_Call_Back call_back_fun;//将数据回调由video处理
 	void *outParm;//扩展(可由内部自己填充)
-	void* param1;//扩展参数
+	void* param1;//扩展参数,由使用者带进去，通过回调函数call_back带出来
 }RecvStream_Handle_t;
 int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle);
 int ctrlClient_init_trackCommuntication();
+int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param);

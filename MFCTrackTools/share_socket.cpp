@@ -9,10 +9,20 @@
 #include"stdafx.h"
 #include "share_socket.h"
 #include "winsock.h"
+int share_outputlog(share_log_level levelog, const char *szFormat, ...)
+{
+	char buffer[512] = { 0 };
+	va_list args;
+	va_start(args, szFormat);
+	vsprintf_s(buffer, szFormat, args);
+	va_end(args);
+	OutputDebugString(buffer);
+	return 0;
+}
+
 static int RH_GetPrivateError()
 {
 	int RetError = WSAGetLastError();
-
 	if (RetError != 0) 
 	{
 		RetError = (RetError ^ -1) + 1;
@@ -26,14 +36,14 @@ static int RH_GetPrivateError()
 int RH_TcpSndBlockFd(int Fd, char *SndBuf, int *SndLen)
 {
 	if (Fd < 0 || NULL == SndBuf || SndLen == NULL) {
-		//nslog(NS_ERROR, "<RH_TcpSndBlockFd IS ERROR> <FD : %d> <SndBuf :%p> <SndLen :%p>\n",
-			//Fd, SndBuf, SndLen);
+		share_outputlog(NS_ERROR, "<RH_TcpSndBlockFd IS ERROR> <FD : %d> <SndBuf :%p> <SndLen :%p>\n",
+			Fd, SndBuf, SndLen);
 		return RHRETFAIL;
 	}
 
 	if (*SndLen < 0 || *SndLen == 0) {
-		//nslog(NS_ERROR, "<RH_TcpSndBlockFd IS ERROR> <FD : %d> <SndBuf :%p> <SndLen :%d>\n",
-		//	Fd, SndBuf, *SndLen);
+		share_outputlog(NS_ERROR, "<RH_TcpSndBlockFd IS ERROR> <FD : %d> <SndBuf :%p> <SndLen :%d>\n",
+			Fd, SndBuf, *SndLen);
 	}
 
 	int SndTotalLen = 0;
@@ -46,8 +56,8 @@ int RH_TcpSndBlockFd(int Fd, char *SndBuf, int *SndLen)
 		SndBytes = send(Fd , SndBuf + SndTotalLen, SndTempLen - SndTotalLen, 0);
 
 		if(SndBytes < 0) {
-			//nslog(NS_ERROR, "<RH_TcpSndBlockFd IS ERROR> <Snd> <ERROR_S :%s> <ERROR_D :%d> <FD : %d>\n",
-			//	strerror(errno), errno, Fd);
+			share_outputlog(NS_ERROR, "<RH_TcpSndBlockFd IS ERROR> <Snd>  <ERROR_D :%d> <FD : %d>\n",
+				 WSAGetLastError(), Fd);
 			return RH_GetPrivateError();
 		} else {
 			SndTotalLen += SndBytes;
@@ -61,12 +71,12 @@ int RH_TcpSndBlockFd(int Fd, char *SndBuf, int *SndLen)
 int RH_TcpRcvBlockFd(int Fd, char *RcvBuf, int RcvLen, int *readlen)
 {
 	if (Fd < 0 || NULL == RcvBuf || readlen == NULL) {
-		//nslog(NS_ERROR, "<RH_TcpRcvBlockFd IS ERROR> <FD : %d> <RcvBuf :%p> <RcvLen :%p>\n", Fd, RcvBuf, readlen);
+		share_outputlog(NS_ERROR, "<RH_TcpRcvBlockFd IS ERROR> <FD : %d> <RcvBuf :%p> <RcvLen :%p>\n", Fd, RcvBuf, readlen);
 		return RHRETFAIL;
 	}
 
 	if (RcvLen < 0 || RcvLen == 0) {
-		//nslog(NS_ERROR, "<RH_TcpRcvBlockFd IS ERROR> <FD : %d> <RcvBuf :%p> <RcvLen :%d>\n", Fd, RcvBuf, RcvLen);
+		share_outputlog(NS_ERROR, "<RH_TcpRcvBlockFd IS ERROR> <FD : %d> <RcvBuf :%p> <RcvLen :%d>\n", Fd, RcvBuf, RcvLen);
 		return RHRETFAIL;
 	}
 
@@ -87,20 +97,20 @@ int RH_TcpRcvBlockFd(int Fd, char *RcvBuf, int RcvLen, int *readlen)
 		//	 TempBuf,RcvTempLen, RcvLen, *readlen, Fd);
 
 		if (RcvBytes < 0) {
-			if (11 == errno) {
+			if (10060 == WSAGetLastError()) {
 				timeout_cnt++;
 
 				if (timeout_cnt < 5) {
-					//nslog(NS_ERROR, "recv failed timeout_cnt=%d errno=%d-<%s>\n", timeout_cnt, errno, strerror(errno));
+					share_outputlog(NS_ERROR, "recv failed timeout_cnt=%d errno=%d-<%s>\n", timeout_cnt, WSAGetLastError(), strerror(WSAGetLastError()));
 					continue;
 				}
 			}
-			//nslog(NS_ERROR, "<RH_TcpRcvBlockFd IS ERROR> <RcvAdress : %p> <RcvTempLen :%d> <RcvLen :%d><readlen :%d><Rcv> <ERROR_S :%s> <ERROR_D :%d> <FD : %d>\n",
-				//TempBuf, RcvTempLen, RcvLen, *readlen, strerror(errno), errno, Fd);
+			share_outputlog(NS_ERROR, "<RH_TcpRcvBlockFd IS ERROR> <RcvAdress : %p> <RcvTempLen :%d> <RcvLen :%d><readlen :%d><Rcv> <ERROR_S :%s> <ERROR_D :%d> <FD : %d>\n",
+				TempBuf, RcvTempLen, RcvLen, *readlen, strerror(WSAGetLastError()), WSAGetLastError(), Fd);
 			return RH_GetPrivateError();
 		}
 		else if (RcvBytes == 0) {
-			//nslog(NS_ERROR, "ret =%d ---\n", RcvBytes);
+			share_outputlog(NS_ERROR, "ret =%d ---\n", RcvBytes);
 			return -1;
 		}
 		else {
@@ -112,6 +122,7 @@ int RH_TcpRcvBlockFd(int Fd, char *RcvBuf, int RcvLen, int *readlen)
 	return RHRETSUCCESS;
 }
 static int  i = 0;
+static int m = 0;
 int32_t RH_Socket(char *file, char *func, int32_t domain, int32_t type, int32_t protocol)
 {
 	int fd = -1;
@@ -123,16 +134,16 @@ int32_t RH_Socket(char *file, char *func, int32_t domain, int32_t type, int32_t 
 		}
 
 		i++;
-		//nslog(NS_DEBUG, "[%s:%s] create socke[%d],close num=[%d]open num=[%d]\n", file, func, fd, m, i);
+		share_outputlog(NS_DEBUG, "[%s:%s] create socke[%d],close num=[%d]open num=[%d]\n", file, func, fd, m, i);
 	}
 
 	return fd;
 }
-static int m = 0;
+
 int32_t RH_Close(char *file, char *func, int32_t fd)
 {
 	if (fd < 0) {
-		//nslog(NS_ERROR, "[%s:%s] ,fd [%d] is invaild\n", file, func, fd);
+		share_outputlog(NS_ERROR, "[%s:%s] ,fd [%d] is invaild\n", file, func, fd);
 		return 0;
 	}
 
@@ -142,12 +153,12 @@ int32_t RH_Close(char *file, char *func, int32_t fd)
 		}
 
 		m++;
-		//nslog(NS_DEBUG, "[%s:%s] close socke[%d],close num=[%d]open num=[%d]\n", file, func, fd, m, i);
+		share_outputlog(NS_DEBUG, "[%s:%s] close socke[%d],close num=[%d]open num=[%d]\n", file, func, fd, m, i);
 	}
 
 	closesocket(fd);
 	fd = -1;
-	return errno;
+	return WSAGetLastError();
 }
 int RH_CreateTcpNoBindFd(void)
 {
@@ -155,16 +166,16 @@ int RH_CreateTcpNoBindFd(void)
 	Fd = RH_Socket(__FILE__, (char *)__FUNCTIONW__, AF_INET, SOCK_STREAM, 0);
 
 	if (Fd < 0) {
-		//nslog(NS_ERROR, "<RH_CreateTcpNoBindFd IS ERROR> <FD : %d> <ERROR_S :%s> <ERROR_D: %d>\n", Fd, strerror(errno), errno);
+		share_outputlog(NS_ERROR, "<RH_CreateTcpNoBindFd IS ERROR> <FD : %d> <ERROR_S :%s> <ERROR_D: %d>\n", Fd, strerror(WSAGetLastError()), WSAGetLastError());
 		return RH_GetPrivateError();
 	}
 
 	return Fd;
 }
-int RH_ConnetBlockFd(int Fd, int ServPort, char *ServIp) //,int Timeout)
+int RH_ConnetBlockFd(int Fd, int ServPort, char *ServIp, int Timeout)
 {
 	if (Fd < 0 || ServPort < 1 || ServIp == NULL) {
-		//nslog(NS_ERROR, "<RH_ConnetNonblock IS ERROR>  <FD : %d> <ServPort: %d> <ServIp :%s>\n", Fd, ServPort, ServIp);
+		share_outputlog(NS_ERROR, "<RH_ConnetNonblock IS ERROR>  <FD : %d> <ServPort: %d> <ServIp :%s>\n", Fd, ServPort, ServIp);
 		return RHRETFAIL;
 	}
 
@@ -175,39 +186,70 @@ int RH_ConnetBlockFd(int Fd, int ServPort, char *ServIp) //,int Timeout)
 			Fd, ServPort, ServIp, Timeout);
 		return RHRETFAIL;
 	}
-
+	 
 #endif
+	unsigned long ul = 1;
+	ioctlsocket(Fd, FIONBIO, &ul);
 	struct sockaddr_in serv_addr = { 0 };
 	//bzero(&serv_addr, sizeof(serv_addr));
-
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(ServPort);
 	//inet_aton((const char *)ServIp, (struct in_addr *)&serv_addr.sin_addr);
 	serv_addr.sin_addr.s_addr = inet_addr(ServIp);
 	if (connect(Fd, (struct sockaddr *)&serv_addr, sizeof(struct sockaddr)) < 0) {
-		//nslog(NS_ERROR, "<RH_ConnetNonblock IS ERROR> <connect>  <ERROR_S :%s> <ERROR_D :%d> <FD : %d> <ServPort: %d> <ServIp :%s>\n",
-		//	strerror(errno), errno, Fd, ServPort, ServIp);
+		struct timeval Time;
+		fd_set set;
+		int RetSelect = 0;
+		FD_ZERO(&set);
+		FD_SET(Fd, &set);
+		Time.tv_sec = Timeout;
+		Time.tv_usec = 0;
+		RetSelect = select(Fd + 1, NULL, &set, NULL, &Time);
+		if (RetSelect > 0)
+		{
+			ul = 0;
+			ioctlsocket(Fd, FIONBIO, &ul); //设置为阻塞模式
+			share_outputlog(NS_ERROR, "RH_ConnetBlockFd is successful\n");
+			FD_CLR(Fd, &set);
+			return RHRETSUCCESS;
+		}
+		share_outputlog(NS_ERROR, "<RH_ConnetNonblock IS ERROR> <connect>  <ERROR_S :%s> <ERROR_D :%d> <FD : %d> <ServPort: %d> <ServIp :%s>\n",
+			strerror(WSAGetLastError()), WSAGetLastError(), Fd, ServPort, ServIp);
 		return RH_GetPrivateError();
 	}
-
 	return RHRETSUCCESS;
 }
 int RH_SetRcvTimeoutFd(int Fd, int TimeoutSec, int TimeoutUsec)
 {
 	if (Fd < 0 || TimeoutSec < 0 || TimeoutUsec < 0) {
-		//nslog(NS_ERROR, "<RH_SetRcvTimeoutFd IS ERROR>  <FD : %d>   <TimeoutSec :%d> <TimeoutUsec :%d>\n", Fd, TimeoutSec, TimeoutUsec);
+		share_outputlog(NS_ERROR, "<RH_SetRcvTimeoutFd IS ERROR>  <FD : %d>   <TimeoutSec :%d> <TimeoutUsec :%d>\n", Fd, TimeoutSec, TimeoutUsec);
 		return RHRETFAIL;
 	}
 
-	struct timeval Time;
+	int Time = 1000 * TimeoutSec ;
 
-	Time.tv_sec = TimeoutSec;
+	if (setsockopt(Fd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&Time, sizeof(int)) < 0) {
+		OutputDebugString(_T("RH_SetRcvTimeoutFd IS ERROR> <SO_RCVTIMEO"));
+		share_outputlog(NS_ERROR, "<RH_SetRcvTimeoutFd IS ERROR> <SO_RCVTIMEO> <FD : %d> <ERROR_S :%s> <ERROR_D :%d> <TimeoutSec :%d> <TimeoutUsec :%d>\n",
+			Fd, strerror(WSAGetLastError()), WSAGetLastError(), TimeoutSec, TimeoutUsec);
+		return RH_GetPrivateError();
+	}
 
-	Time.tv_usec = TimeoutUsec;
+	return RHRETSUCCESS;
+}
+int RH_SetSndTimeoutFd(int Fd, int TimeoutSec, int TimeoutUsec)
+{
+	if (Fd < 0 || TimeoutSec < 0 || TimeoutUsec < 0) {
+		share_outputlog(NS_ERROR, "<RH_SetSndTimeoutFd IS ERROR>  <FD : %d>   <TimeoutSec :%d> <TimeoutUsec :%d>\n", Fd, TimeoutSec, TimeoutUsec);
+		return RHRETFAIL;
+	}
 
-	if (setsockopt(Fd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&Time, sizeof(struct timeval)) < 0) {
-		//nslog(NS_ERROR, "<RH_SetRcvTimeoutFd IS ERROR> <SO_RCVTIMEO> <FD : %d> <ERROR_S :%s> <ERROR_D :%d> <TimeoutSec :%d> <TimeoutUsec :%d>\n",
-		//	Fd, strerror(errno), errno, TimeoutSec, TimeoutUsec);
+	int Time = 1000 * TimeoutSec;
+
+	if (setsockopt(Fd, SOL_SOCKET, SO_SNDTIMEO, (const char *)&Time, sizeof(int)) < 0) {
+		OutputDebugString(_T("RH_SetRcvTimeoutFd IS ERROR> <SO_SNDTIMEO"));
+		share_outputlog(NS_ERROR, "<RH_SetSndTimeoutFd IS ERROR> <SO_SNDTIMEO> <FD : %d> <ERROR_S :%s> <ERROR_D :%d> <TimeoutSec :%d> <TimeoutUsec :%d>\n",
+			Fd, strerror(WSAGetLastError()), WSAGetLastError(), TimeoutSec, TimeoutUsec);
 		return RH_GetPrivateError();
 	}
 

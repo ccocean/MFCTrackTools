@@ -16,9 +16,9 @@ static int priv_check_head(RH_FRAMEHEAD_t *head)
 		|| (head->check_end[1] != DEFAULT_CHECK_END_CODE)
 		|| (head->check_end[2] != DEFAULT_CHECK_END_CODE)
 		|| (head->check_end[3] != DEFAULT_CHECK_END_CODE)) {
-		//nslog(NS_ERROR, "the head is not head\n");
-		//nslog(NS_DEBUG, "[%c][%c][%c][%c][%c][%c][%c][%c]\n", head->check_start[0], head->check_start[1], head->check_start[2], head->check_start[3],
-		//	head->check_end[0], head->check_end[1], head->check_end[2], head->check_end[3]);
+		share_outputlog(NS_ERROR, "the head is not head\n");
+		share_outputlog(NS_DEBUG, "[%c][%c][%c][%c][%c][%c][%c][%c]\n", head->check_start[0], head->check_start[1], head->check_start[2], head->check_start[3],
+			head->check_end[0], head->check_end[1], head->check_end[2], head->check_end[3]);
 		return -1;
 	}
 
@@ -29,7 +29,7 @@ static int privClient_connect_Srv(char * ip, int port) {
 
 	sockfd = RH_Socket(__FILE__, (char *)__FUNCTIONW__, AF_INET, SOCK_STREAM, 0);
 
-	if (RH_ConnetBlockFd(sockfd, port, ip) < 0) {
+	if (RH_ConnetBlockFd(sockfd, port, ip, STREAM_CONNECT_TIMEOUT) < 0) {
 		RH_Close(__FILE__, (char *)__FUNCTIONW__, sockfd);
 		sockfd = INVALID_SOCKET;
 	};
@@ -66,7 +66,7 @@ static void *privCient_process_thread(void * arg) {
 		//nslog(NS_INFO, "connect server, ip = %s-port=%d,timeout=[%d]\n", src->ip, src->port, timeout);
 		sockfd = privClient_connect_Srv((char *)(src->ip), src->port);
 		if (sockfd < 0) {
-			//(NS_ERROR, "sock privClient_connect_Srv failed!port =%d-<%s>-errno=%d-<%s>\n", src->port, src->ip, errno, strerror(errno));
+			share_outputlog(NS_ERROR, "sock privClient_connect_Srv failed!port =%d-<%s>-WSAGetLastError()=%d-<%s>\n", src->port, src->ip, WSAGetLastError(), strerror(WSAGetLastError()));
 
 			if (src->exception_msg) {
 				src->exception_msg(-1, src->arg);
@@ -76,10 +76,10 @@ static void *privCient_process_thread(void * arg) {
 			continue;
 		}
 
-		//nslog(NS_INFO, "connect success, sockfd = %d-port=[%s:%d]\n", sockfd, src->ip, src->port);
+		share_outputlog(NS_INFO, "connect success, sockfd = %d-port=[%s:%d]\n", sockfd, src->ip, src->port);
 
 		if (timeout > 200) {
-			//nslog(NS_DEBUG, "tiemoutsec.[%d.%d]\n", timeoutsec, timeoutusec);
+			share_outputlog(NS_DEBUG, "tiemoutsec.[%d.%d]\n", timeoutsec, timeoutusec);
 			RH_SetRcvTimeoutFd(sockfd, timeoutsec, timeoutusec);
 		}
 
@@ -90,7 +90,7 @@ static void *privCient_process_thread(void * arg) {
 			ret = RH_TcpRcvBlockFd(sockfd, (char *)&fh, fh_len, &readlen);
 
 			if (ret < 0 || fh_len != readlen || (priv_check_head(&fh) != 0)) {
-				//nslog(NS_ERROR, "port=%d -sockfd = %d,fh_len=%d,recv len=%d\n", src->port, sockfd, fh_len, readlen);
+				share_outputlog(NS_ERROR, "port=%d -sockfd = %d,fh_len=%d,recv len=%d\n", src->port, sockfd, fh_len, readlen);
 				msg_num = -1;
 				Sleep(3000);
 				break;
@@ -99,7 +99,7 @@ static void *privCient_process_thread(void * arg) {
 			readlen = fh.nFrameLength;
 			data = (char*)src->getEmptyBuf(src->arg, &pEmptyBufInfo, fh.nFrameLength);
 			if (data == NULL) {
-				//nslog(NS_ERROR, "get [%s:%d]empty buf is NULL,len =%d\n", src->ip, src->port, fh.nFrameLength);
+				share_outputlog(NS_ERROR, "get [%s:%d]empty buf is NULL,len =%d\n", src->ip, src->port, fh.nFrameLength);
 				msg_num = -2;
 				Sleep(3000);
 				break;
@@ -111,7 +111,7 @@ static void *privCient_process_thread(void * arg) {
 			temp = timeGetTime() - time;
 
 			if (temp > 1000) {
-				//nslog(NS_WARN, "Error curr_time - send_before time =%d,fh_len=%d \n", temp, fh_len);
+				share_outputlog(NS_WARN, "Error curr_time - send_before time =%d,fh_len=%d \n", temp, fh_len);
 
 			}
 
@@ -119,7 +119,7 @@ static void *privCient_process_thread(void * arg) {
 				ret = src->putStreaminfo(&fh, pEmptyBufInfo, src->arg, data);
 
 				if (ret < 0) {
-					//nslog(NS_ERROR, "putStreaminfo failed ...\n");
+					share_outputlog(NS_ERROR, "putStreaminfo failed ...\n");
 					msg_num = -3;
 					Sleep(2000);
 					break;
@@ -127,7 +127,7 @@ static void *privCient_process_thread(void * arg) {
 			}
 			else {
 				msg_num = -1;
-				//nslog(NS_ERROR, "recv_ error:[%s] len:<%d>recv len<%d>\n", strerror(errno), readlen, data_len);
+				share_outputlog(NS_ERROR, "recv_ error:[%s] len:<%d>recv len<%d>\n", strerror(WSAGetLastError()), readlen, data_len);
 				Sleep(2000);
 				break;
 			}
@@ -176,7 +176,7 @@ void *Stream_init_client(RH_tcp_stream_recv_cond_t * InParm) {
 	printf("pthread_create-------fuck80-----------[%s:%s:%d] \n", __FILE__, __FUNCTION__, __LINE__);
 	//printf_pthread_create(__FILE__, ("privCient_process_thread"));
 	if (pthread_create(&p, &attr, privCient_process_thread, (void *)src)) {
-		//nslog(NS_ERROR, "pthread_create error");
+		share_outputlog(NS_ERROR, "pthread_create error");
 		pthread_attr_destroy(&attr);
 		return NULL;
 	}

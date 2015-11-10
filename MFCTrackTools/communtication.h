@@ -40,10 +40,10 @@ typedef enum {
 
 typedef  struct _COMMUTICATION_HANDLE * Commutication_Handle_t;
 
-typedef int (*DealCmdFunc)(Communtication_Head_t *,void * ,Commutication_Handle_t );
-typedef int (*getheartbitvalue)(char *,int *);
-typedef int (*DealheartbitFunc)(char *);
-typedef int (*ConnectServerInitFunc)();
+typedef int (*DealCmdFunc)(Communtication_Head_t *,void * ,Commutication_Handle_t , void*);
+typedef int (*getheartbitvalue)(char *,int *, void*);
+typedef int (*DealheartbitFunc)(char *, void*);
+typedef int (*ConnectServerInitFunc)(void*);
 
 
 typedef struct _COMMUTICATION_HANDLE{
@@ -61,6 +61,7 @@ typedef struct _COMMUTICATION_HANDLE{
 	getheartbitvalue GetHeartbitvaluePtr;
 	DealheartbitFunc DealHeartbitFuncPtr;
 	ConnectServerInitFunc ConnectServerInitPtr;
+	void* param;//由用户自己来管理 通过回调抛上来
 }Communtication_Handle_t;
 
 
@@ -73,7 +74,7 @@ typedef struct _COMMUTICATION_HANDLE{
 #define DEFATULT_COMMUTICATION_TOTAL_LEN      1024
 
 Commutication_Handle_t communtication_create_clientHandle(char *dst_ip, unsigned short dst_port, 
-	DealCmdFunc func1,DealheartbitFunc func2,ConnectServerInitFunc func3);
+	DealCmdFunc func1,DealheartbitFunc func2,ConnectServerInitFunc func3, void* param);
 int communtication_send_clientMsg(Communtication_Head_t *head, char *date, int buflen, Communtication_Handle_t *handle);
 int communtication_set_handleStatus(Commutication_Handle_t handle, int status);
 
