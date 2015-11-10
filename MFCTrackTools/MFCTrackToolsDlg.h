@@ -153,9 +153,24 @@ public:
 	CButton m_btnDefault;
 	afx_msg void OnBnClickedbtndefault();
 	CStatic m_picCam;
+	CButton m_btnUp;
+	CButton m_btnLeft;
+	CButton m_btnDown;
+	CButton m_btnRight;
+	CStatic m_grpBoxCam;
+	CStatic m_txtTune;
+	CStatic m_txtFocus;
+	CButton m_btnOrigin;
+	CButton m_btnTuneAsd;
+	CButton m_btnTuneDsd;
+	CButton m_btnTuneStop;
+	CButton m_btnFocusAsd;
+	CButton m_btnFocusStop;
+	CButton m_btnFocusDsd;
 private:
 	BOOL initProgramControl();
 	BOOL initNetCommuntication();
 public:
 	int video_display(char *pBuf);
+	afx_msg void OnBnClickedbtnup();
 };

@@ -23,6 +23,7 @@ int H264_init(Tools_decoder_t* decoder)
 	if (!decoder->pCodec) {
 		//g_pDlg->m_listErr.AddString(_T("codec not found!\r\n"));
 		//m_listErr.AddString(_T("codec not found!\r\n"));
+		MessageBox(NULL, TEXT("解码器未找到。"), TEXT("标题"), MB_OK);
 		return -1;
 	}
 
@@ -30,18 +31,21 @@ int H264_init(Tools_decoder_t* decoder)
 	if (!decoder->pCodecCtx)
 	{
 		//m_listErr.AddString(_T("Could not allocate video codec context\r\n"));
+		MessageBox(NULL, TEXT("无法分配视频解码器上下文。"), TEXT("标题"), MB_OK);
 		return -1;
 	}
 
 	decoder->pCodecParserCtx = av_parser_init(AV_CODEC_ID_H264);
 	if (!decoder->pCodecParserCtx){
 		//m_listErr.AddString(_T("Could not allocate video parser context\n"));
+		MessageBox(NULL, TEXT("无法分配视频分割器上下文。"), TEXT("标题"), MB_OK);
 		return -1;
 	}
 
 	if (avcodec_open2(decoder->pCodecCtx,decoder->pCodec,NULL)<0)
 	{
 		//m_listErr.AddString(_T("Could not open codec\r\n"));
+		MessageBox(NULL, TEXT("无法打开解码器。"), TEXT("标题"), MB_OK);
 		return -1;
 	}
 
@@ -74,13 +78,14 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *outpu
 	decoder->packet.data = inputbuffer;
 	decoder->packet.size = frame_size;
 
-	decoder->cur_ptr = inputbuffer;
+	//decoder->cur_ptr = inputbuffer;
 
 	av_result = avcodec_decode_video2(decoder->pCodecCtx, decoder->pFrame, &decode_size, &decoder->packet);
 
 	if (av_result < 0)
 	{
 		//m_listErr.AddString(_T("Decode err.\r\n"));
+		MessageBox(NULL, TEXT("解码失败。"), TEXT("标题"), MB_OK);
 		return -1;
 	}
 

@@ -101,6 +101,20 @@ void CMFCTrackToolsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_btnApply, m_btnApply);
 	DDX_Control(pDX, IDC_btnDefault, m_btnDefault);
 	DDX_Control(pDX, IDC_picCam, m_picCam);
+	DDX_Control(pDX, IDC_btnUp, m_btnUp);
+	DDX_Control(pDX, IDC_btnLeft, m_btnLeft);
+	DDX_Control(pDX, IDC_btnDown, m_btnDown);
+	DDX_Control(pDX, IDC_btnRight, m_btnRight);
+	DDX_Control(pDX, IDC_grpBoxCam, m_grpBoxCam);
+	DDX_Control(pDX, IDC_txtTune, m_txtTune);
+	DDX_Control(pDX, IDC_txtFocus, m_txtFocus);
+	DDX_Control(pDX, IDC_btnOrigin, m_btnOrigin);
+	DDX_Control(pDX, IDC_btnTuneAsd, m_btnTuneAsd);
+	DDX_Control(pDX, IDC_btnTuneDsd, m_btnTuneDsd);
+	DDX_Control(pDX, IDC_btnTuneStop, m_btnTuneStop);
+	DDX_Control(pDX, IDC_btnFocusAsd, m_btnFocusAsd);
+	DDX_Control(pDX, IDC_btnFocusStop, m_btnFocusStop);
+	DDX_Control(pDX, IDC_btnFocusDsd, m_btnFocusDsd);
 }
 
 //ÏûÏ¢Ó³Éä
@@ -252,6 +266,24 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	m_picSrc.SetWindowPos(NULL, 40, PIC_TOP + 40, Frame_Width, Frame_Height, SWP_NOZORDER);
 	m_picCam.SetWindowPos(NULL, 40, PIC_TOP + 350, Frame_Width, Frame_Height, SWP_NOZORDER);
 	m_listErr.SetWindowPos(NULL, 600, PIC_TOP + 50, 360, 240, SWP_NOZORDER);
+
+	//
+	m_grpBoxCam.SetWindowPos(NULL, 600, PIC_TOP + 360, 360, 240, SWP_NOZORDER);
+	m_btnUp.SetWindowPos(NULL, 600 + 25 + 32, PIC_TOP + 360 + 25, 30, 30, SWP_NOZORDER);
+	m_btnLeft.SetWindowPos(NULL, 600 + 25, PIC_TOP + 360 + 25 + 32, 30, 30, SWP_NOZORDER);
+	m_btnDown.SetWindowPos(NULL, 600 + 25 + 32, PIC_TOP + 360 + 25 + 64, 30, 30, SWP_NOZORDER);
+	m_btnRight.SetWindowPos(NULL, 600 + 25 + 64, PIC_TOP + 360 + 25 + 32, 30, 30, SWP_NOZORDER);
+	m_btnOrigin.SetWindowPos(NULL, 600 + 25 + 28, PIC_TOP + 360 + 25 + 100, 40, 20, SWP_NOZORDER);
+
+	m_txtTune.SetWindowPos(NULL, 600 + 10, PIC_TOP + 360 + 25 + 140, 40, 30, SWP_NOZORDER);
+	m_btnTuneAsd.SetWindowPos(NULL, 600 + 45, PIC_TOP + 360 + 25 + 138, 20, 20, SWP_NOZORDER);
+	m_btnTuneStop.SetWindowPos(NULL, 600 + 65, PIC_TOP + 360 + 25 + 138, 40, 20, SWP_NOZORDER);
+	m_btnTuneDsd.SetWindowPos(NULL, 600 + 105, PIC_TOP + 360 + 25 + 138, 20, 20, SWP_NOZORDER);
+
+	m_txtFocus.SetWindowPos(NULL, 600 + 10, PIC_TOP + 360 + 25 + 180, 40, 30, SWP_NOZORDER);
+	m_btnFocusAsd.SetWindowPos(NULL, 600 + 45, PIC_TOP + 360 + 25 + 178, 20, 20, SWP_NOZORDER);
+	m_btnFocusStop.SetWindowPos(NULL, 600 + 65, PIC_TOP + 360 + 25 + 178, 40, 20, SWP_NOZORDER);
+	m_btnFocusDsd.SetWindowPos(NULL, 600 + 105, PIC_TOP + 360 + 25 + 178, 20, 20, SWP_NOZORDER);
 
 	pDC = GetDlgItem(IDC_picSrc)->GetDC();
 	hdc = pDC->GetSafeHdc();
@@ -747,3 +779,4 @@ void CMFCTrackToolsDlg::OnBnClickedbtndefault()
 		m_editTargetArea.EnableWindow(TRUE);
 	}
 }
+
