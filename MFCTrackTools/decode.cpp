@@ -112,7 +112,7 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outp
 
 		//int y_size = decoder->pCodecCtx->width*decoder->pCodecCtx->height;
 		outsize = (decoder->pCodecCtx->width * decoder->pCodecCtx->height * 3);
-		outputbuffer = (unsigned char *)malloc(outsize*sizeof(char));
+		//outputbuffer = (unsigned char *)malloc(outsize*sizeof(char));
 		memset(outputbuffer, 0, outsize*sizeof(char));
 		memcpy(outputbuffer, decoder->pFrameRGB->data[0], outsize);
 	}
