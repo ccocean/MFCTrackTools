@@ -257,6 +257,11 @@ static int clean_alloc(RecvStream_Handle_t* pStream_handle)
 	}
 	if (pClient_handle)
 	{
+		if (pClient_handle->streamDecode.data)
+		{
+			free(pClient_handle->streamDecode.data);
+			pClient_handle->streamDecode.data = NULL;
+		}
 		delete pClient_handle;
 		pClient_handle = NULL;
 	}
@@ -284,12 +289,13 @@ static void* stream_pop_thread(void* arg)
 		{
 			pStream_messgage = pClient_handle->list_Handle.front();
 			pClient_handle->list_Handle.pop_front();
-			//OutputDebugString(_T("helloff=====================\n"));
-			//			share_outputlog(NS_INFO, "========= list_size:%d pStream_messgage->fh.nFrameLength:%d pStream_recv_handle->channel:%d %p\n",
-			//					list_size, pStream_messgage->fh.nFrameLength, pStream_recv_handle->channel, pClient_handle);
-			//addxcc===============================================
-			call_back_fun((char*)(pStream_messgage->stream_data), pStream_recv_handle->param1);
 
+			H264_To_RGB((unsigned char*)(pStream_messgage->stream_data), pStream_messgage->fh.nFrameLength,
+				pClient_handle->streamDecode.data, &(pClient_handle->decoder));
+			pClient_handle->streamDecode.height = pStream_messgage->fh.nHight;
+			pClient_handle->streamDecode.width = pStream_messgage->fh.nWidth;
+			call_back_fun(&(pClient_handle->streamDecode), pStream_recv_handle->param1);
+		
 			free_stream_message(pStream_messgage);
 
 		}
@@ -332,6 +338,15 @@ int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 		ret = -1;
 		goto EXIT;
 	}
+	pClient_handle->streamDecode.data =(unsigned char *)malloc(MAX_STEAM_WIDTH * MAX_STEAM_HEIGHT * 3);
+	if (pClient_handle->streamDecode.data == NULL)
+	{
+		OutputDebugString(_T("pClient_handle->streamDecode.data malloc is NULL"));
+		ret = -1;
+		goto EXIT;
+	}
+
+	H264_init(&(pClient_handle->decoder));
 	pClient_handle->list_Handle.clear();
 	//指向客户端信息
 	pStream_handle->outParm = pClient_handle;

@@ -1,8 +1,9 @@
 #ifndef	__RH_SOCKET_H__
 #define	__RH_SOCKET_H__
 
-#include <windows.h>
+//#include <windows.h>
 //#include <WinBase.h>
+#include "stdafx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>

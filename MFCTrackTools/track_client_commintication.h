@@ -2,16 +2,23 @@
 #include "tch_params.h"
 #include "communtication.h"
 #include "share_stream.h"
+#include"decode.h"
 #include <list>
+
 using namespace std;
 #define STU_SETTRACK_CMD  0x100
 #define TEA_SETTRACK_CMD  0x101
 #define STU_GETTRACK_CMD  0x102
 #define TEA_GETTRACK_CMD  0x103
 #define TIMEOUT 500
-typedef int(*Stream_Call_Back)(char *pBuf, void*param);
+
 #define TEACH_STREAM_PORT 21303
 #define STUDENT_STREAM_PORT  21302
+#define STU_CHANNL 0
+#define TEACH_CHANNL 1
+
+#define MAX_STEAM_WIDTH 1280
+#define MAX_STEAM_HEIGHT 720
 typedef enum
 {
 	STREAMCLINT_START = 0,
@@ -19,6 +26,16 @@ typedef enum
 	STREAM_STATUS_ERR,
 
 }StreamClient_Status_t;
+
+typedef struct _DecodeInfo
+{
+	unsigned char * data;
+	int height;
+	int width;
+
+}Decode_Info_t;
+
+typedef int(*Stream_Call_Back)(Decode_Info_t *pInfo, void*param);
 typedef struct Stream_Message
 {
 	RH_FRAMEHEAD_t fh;
@@ -33,7 +50,9 @@ typedef struct _TRACK_CMD_INFO_T{
 typedef struct _Client_Handle
 {
 	LISTSTREAM list_Handle;
+	Decode_Info_t  streamDecode;
 	StreamClient_Status_t nRun_Status;
+	Tools_decoder_t decoder;
 	int first_frame;
 	int nChannel;
 	pthread_mutex_t lock;

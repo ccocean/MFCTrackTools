@@ -6,7 +6,7 @@
 #include "MFCTrackTools.h"
 #include "MFCTrackToolsDlg.h"
 #include "afxdialogex.h"
-#include "track_client_commintication.h"
+//#include "track_client_commintication.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -173,23 +173,47 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化代码
 	return initProgramControl();
 }
-static int video_call_back(char *pBuf, void*param)
+static int video_call_back(Decode_Info_t *pInfo, void*param)
 {
 	CMFCTrackToolsDlg* pSelf = (CMFCTrackToolsDlg*)param;
-	if (pSelf == NULL || pBuf == NULL)
+	if (pSelf == NULL || pInfo == NULL || pInfo->data == NULL)
 	{
 		OutputDebugString("video_call_back is NULL\n");
 	}
-	pSelf->video_display(pBuf);
+	pSelf->video_display(pInfo);
 	return 0;
 }
-int CMFCTrackToolsDlg::video_display(char *pBuf)
+int CMFCTrackToolsDlg::video_display(Decode_Info_t *pInfo)
 {
-	//OutputDebugString("stream=============\n");
+	OutputDebugString("stream=============\n");
+	int nResult = StretchDIBits(hdc,
+		0, 0,
+		WIDTH, HEIGHT,
+		0, 0,
+		WIDTH, HEIGHT,
+		pInfo->data,
+		&m_bmphdr,
+		DIB_RGB_COLORS,
+		SRCCOPY);
 	return 0;
 }
 BOOL CMFCTrackToolsDlg::initNetCommuntication()
 {
+	memset(&m_bmphdr, 0, sizeof(BITMAPINFO));
+	DWORD dwBmpHdr = sizeof(BITMAPINFO);
+	m_bmphdr.bmiHeader.biBitCount = 24;
+	m_bmphdr.bmiHeader.biClrImportant = 0;
+	m_bmphdr.bmiHeader.biSize = dwBmpHdr;
+	m_bmphdr.bmiHeader.biSizeImage = 0;
+	m_bmphdr.bmiHeader.biWidth = 480;//pixel_w;
+	//注意BMP在y方向是反着存储的，一次必须设置一个负值，才能使图像正着显示出来  
+	m_bmphdr.bmiHeader.biHeight = -264;//-pixel_h;
+	m_bmphdr.bmiHeader.biXPelsPerMeter = 0;
+	m_bmphdr.bmiHeader.biYPelsPerMeter = 0;
+	m_bmphdr.bmiHeader.biClrUsed = 0;
+	m_bmphdr.bmiHeader.biPlanes = 1;
+	m_bmphdr.bmiHeader.biCompression = BI_RGB;
+
 
 	ctrlClient_init_trackCommuntication();
 	RecvStream_Handle_t recv_stream_handle;

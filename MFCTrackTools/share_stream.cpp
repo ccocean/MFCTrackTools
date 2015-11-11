@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include<stdio.h>
 #include<string.h>
+#include<timeapi.h>
 #pragma comment(lib,"winmm.lib")
 #define DEFAULT_CHECK_START_CODE '$'
 #define DEFAULT_CHECK_END_CODE   '#'

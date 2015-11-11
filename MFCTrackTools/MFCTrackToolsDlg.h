@@ -10,8 +10,9 @@
 //#include <opencv2/core/core.hpp>
 //#include <opencv2/highgui/highgui.hpp>
 #include "avcodec.h"
-
-
+#include "track_client_commintication.h"
+#define WIDTH 480
+#define HEIGHT 264
 //using namespace cv;
 
 //‘§÷√Œªª¨øÈ
@@ -167,10 +168,11 @@ public:
 	CButton m_btnFocusAsd;
 	CButton m_btnFocusStop;
 	CButton m_btnFocusDsd;
+	BITMAPINFO m_bmphdr;
 private:
 	BOOL initProgramControl();
 	BOOL initNetCommuntication();
 public:
-	int video_display(char *pBuf);
+	int video_display(Decode_Info_t *pInfo);
 	afx_msg void OnBnClickedbtnup();
 };
