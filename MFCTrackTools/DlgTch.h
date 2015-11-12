@@ -1,6 +1,6 @@
 #pragma once
 #include "afxwin.h"
-
+#include "tch_params.h"
 
 // DlgTch ¶Ô»°¿ò
 
@@ -29,4 +29,8 @@ public:
 	CEdit m_editStand;
 	CEdit m_editTargetArea;
 	CEdit m_editOutSide;
+
+	TeaITRACK_Params tch_params;
+
+	afx_msg void OnBnClickedbtnapply();
 };

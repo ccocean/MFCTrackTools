@@ -13,7 +13,7 @@
 
 #define LEFT_PIXEL 1020
 #define UP_PIXEL 20
-#define PIC_TOP 20
+#define PIC_TOP 60
 
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
@@ -153,6 +153,18 @@ int CMFCTrackToolsDlg::video_display(Decode_Info_t *pInfo)
 		&m_bmphdr,
 		DIB_RGB_COLORS,
 		SRCCOPY);
+
+	//pDC->Rectangle(picRect);
+	//CPen pen(PS_SOLID, 1, RGB(255, 0, 0));
+	//CPen *pOldPen = pDC->SelectObject(&pen);
+	//pDC->SetDCPenColor(RGB(255, 0, 0));
+	pOldPen = pDC->SelectObject(&pen);
+	trackdraw();
+	pDC->SelectObject(pOldPen);
+	//pDC->Rectangle(50, 50, 100, 100);
+	//pDC->RectVisible(CRect(50, 50, 100, 100));
+	//pDC->SelectObject(pOldPen);
+
 	return 0;
 }
 BOOL CMFCTrackToolsDlg::initNetCommuntication()
@@ -198,7 +210,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	m_tabTrack.SetWindowPos(NULL, LEFT_PIXEL-20, UP_PIXEL - 10, 240, 640, SWP_NOZORDER);
 	m_tabTrack.InsertItem(0, "教师");
 	m_tabTrack.InsertItem(1, "学生");
-
+	
 	//绑定dlgTch到Tab控件
 	dlgTch.Create(IDD_DlgTch, GetDlgItem(IDC_tabTrack));
 
@@ -213,35 +225,35 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgTch.ShowWindow(true);
 
 	//显示控件及日志控件
-	m_picOverall.SetWindowPos(NULL, 40, PIC_TOP + 40, Frame_Width, Frame_Height, SWP_NOZORDER);
-	m_picFeature.SetWindowPos(NULL, 40, PIC_TOP + 350, Frame_Width, Frame_Height, SWP_NOZORDER);
-	m_listErr.SetWindowPos(NULL, 600, PIC_TOP + 50, 360, 240, SWP_NOZORDER);
+	m_picOverall.SetWindowPos(NULL, 40, PIC_TOP, Frame_Width, Frame_Height, SWP_NOZORDER);
+	m_picFeature.SetWindowPos(NULL, 40, PIC_TOP + 310, Frame_Width, Frame_Height, SWP_NOZORDER);
+	m_listErr.SetWindowPos(NULL, 600, PIC_TOP + 10, 360, 240, SWP_NOZORDER);
 
 	//
-	m_grpBoxCam.SetWindowPos(NULL, 600, PIC_TOP + 360, 360, 240, SWP_NOZORDER);
-	m_btnUp.SetWindowPos(NULL, 600 + 25 + 32, PIC_TOP + 360 + 25, 30, 30, SWP_NOZORDER);
-	m_btnLeft.SetWindowPos(NULL, 600 + 25, PIC_TOP + 360 + 25 + 32, 30, 30, SWP_NOZORDER);
-	m_btnDown.SetWindowPos(NULL, 600 + 25 + 32, PIC_TOP + 360 + 25 + 64, 30, 30, SWP_NOZORDER);
-	m_btnRight.SetWindowPos(NULL, 600 + 25 + 64, PIC_TOP + 360 + 25 + 32, 30, 30, SWP_NOZORDER);
-	m_btnOrigin.SetWindowPos(NULL, 600 + 25 + 28, PIC_TOP + 360 + 25 + 100, 40, 20, SWP_NOZORDER);
+	m_grpBoxCam.SetWindowPos(NULL, 600, PIC_TOP + 320, 360, 240, SWP_NOZORDER);
+	m_btnUp.SetWindowPos(NULL, 600 + 25 + 32, PIC_TOP + 320 + 25, 30, 30, SWP_NOZORDER);
+	m_btnLeft.SetWindowPos(NULL, 600 + 25, PIC_TOP + 320 + 25 + 32, 30, 30, SWP_NOZORDER);
+	m_btnDown.SetWindowPos(NULL, 600 + 25 + 32, PIC_TOP + 320 + 25 + 64, 30, 30, SWP_NOZORDER);
+	m_btnRight.SetWindowPos(NULL, 600 + 25 + 64, PIC_TOP + 320 + 25 + 32, 30, 30, SWP_NOZORDER);
+	m_btnOrigin.SetWindowPos(NULL, 600 + 25 + 28, PIC_TOP + 320 + 25 + 100, 40, 20, SWP_NOZORDER);
 
-	m_txtTune.SetWindowPos(NULL, 600 + 10, PIC_TOP + 360 + 25 + 140, 40, 30, SWP_NOZORDER);
-	m_btnTuneAsd.SetWindowPos(NULL, 600 + 45, PIC_TOP + 360 + 25 + 138, 20, 20, SWP_NOZORDER);
-	m_btnTuneStop.SetWindowPos(NULL, 600 + 65, PIC_TOP + 360 + 25 + 138, 40, 20, SWP_NOZORDER);
-	m_btnTuneDsd.SetWindowPos(NULL, 600 + 105, PIC_TOP + 360 + 25 + 138, 20, 20, SWP_NOZORDER);
+	m_txtTune.SetWindowPos(NULL, 600 + 10, PIC_TOP + 320 + 25 + 140, 40, 30, SWP_NOZORDER);
+	m_btnTuneAsd.SetWindowPos(NULL, 600 + 45, PIC_TOP + 320 + 25 + 138, 20, 20, SWP_NOZORDER);
+	m_btnTuneStop.SetWindowPos(NULL, 600 + 65, PIC_TOP + 320 + 25 + 138, 40, 20, SWP_NOZORDER);
+	m_btnTuneDsd.SetWindowPos(NULL, 600 + 105, PIC_TOP + 320 + 25 + 138, 20, 20, SWP_NOZORDER);
 
-	m_txtFocus.SetWindowPos(NULL, 600 + 10, PIC_TOP + 360 + 25 + 180, 40, 30, SWP_NOZORDER);
-	m_btnFocusAsd.SetWindowPos(NULL, 600 + 45, PIC_TOP + 360 + 25 + 178, 20, 20, SWP_NOZORDER);
-	m_btnFocusStop.SetWindowPos(NULL, 600 + 65, PIC_TOP + 360 + 25 + 178, 40, 20, SWP_NOZORDER);
-	m_btnFocusDsd.SetWindowPos(NULL, 600 + 105, PIC_TOP + 360 + 25 + 178, 20, 20, SWP_NOZORDER);
+	m_txtFocus.SetWindowPos(NULL, 600 + 10, PIC_TOP + 320 + 25 + 180, 40, 30, SWP_NOZORDER);
+	m_btnFocusAsd.SetWindowPos(NULL, 600 + 45, PIC_TOP + 320 + 25 + 178, 20, 20, SWP_NOZORDER);
+	m_btnFocusStop.SetWindowPos(NULL, 600 + 65, PIC_TOP + 320 + 25 + 178, 40, 20, SWP_NOZORDER);
+	m_btnFocusDsd.SetWindowPos(NULL, 600 + 105, PIC_TOP + 320 + 25 + 178, 20, 20, SWP_NOZORDER);
 
 	pDC = GetDlgItem(IDC_picSrc)->GetDC();
 	hdc = pDC->GetSafeHdc();
 	GetDlgItem(IDC_picSrc)->GetClientRect(&picRect);
-	//g_video = cvCaptureFromFile(g_videoPath.c_str());
-
-	//fps = cvGetCaptureProperty(g_video, CV_CAP_PROP_FPS);
-	//vfps = 1000 / fps;
+	pen.CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+	
+	
+	
 	SetTimer(1, fps, NULL);
 
 	p1.x = 0;
@@ -313,81 +325,76 @@ void CMFCTrackToolsDlg::OnClose()
 	CDialogEx::OnClose();
 }
 
-
-void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
+void CMFCTrackToolsDlg::drawRectangle(CPoint a, CPoint c)
 {
-	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	/*CDC *pDC = GetDlgItem(IDC_picSrc)->GetDC();
-	HDC hdc = pDC->GetSafeHdc();*/
-	//if (g_video == NULL)
-	//{
-	//	printf("No video!");
-	//}
-	//frame = cvQueryFrame(g_video);
-	//if (frame)
-	//{
-	//	//cvResize(frame, srcImg, 1);
-	//	if (g_drawPS==1)
-	//	{
-	//		for (int i = 0; i < Frame_Width; i += (Frame_Width / int_pos))
-	//		{
-	//			//cvLine(srcImg, cvPoint(i, 0), cvPoint(i, Frame_Height), cvScalar(0, 0, 255));
-	//			//cvRectangle(srcImg, cvPoint(camPosSlide.left*(Frame_Width / int_pos), 0), cvPoint((camPosSlide.right + 1) * (Frame_Width / int_pos), Frame_Height), cvScalar(255, 0, 0));//画预置位滑框
-	//		}
-	//	}
-	//	if (g_drawTch==1)
-	//	{
-	//		//cvRectangle(srcImg, cvPoint(tch.x, tch.y), cvPoint(tch.x + tch.width, tch.y + tch.height), cvScalar(0, 255, 0));
-	//		//cvRectangle(srcImg, cvPoint(blk.x, blk.y), cvPoint(blk.x + blk.width, blk.y + blk.height), cvScalar(0, 255, 0));
-	//		/*p1.x = -1; p1.y = -1;
-	//		p2.x = -1; p2.y = -1;
-	//		pt.x = -1; pt.y = -1;*/
-	//	}
-	//	if (g_drawBlk==1)
-	//	{
-	//		//cvRectangle(srcImg, cvPoint(blk.x, blk.y), cvPoint(blk.x + blk.width, blk.y + blk.height), cvScalar(0, 255, 0));
-	//	}
-	//	if (mouseStatus == Mouse_LBDOWN)
-	//	{
-	//		if (pt.x > 0 && pt.y > 0)
-	//		{
-	//			//cvRectangle(srcImg, p1, pt, cvScalar(0, 255, 255), 1, 8, 0);
-	//		}
-	//	}
-	//	else if (mouseStatus==Mouse_LBUP)
-	//	{
-	//		if (p2.x<p1.x||p2.y<p1.y)
-	//		{
-	//			pt = p2;
-	//			p2 = p1;
-	//			p1 = pt;
-	//		}
-	//		if (p2.x>p1.x&&p2.y<p1.y)
-	//		{
-	//			pt.y = p1.y;
-	//			p1.y = p2.y;
-	//			p2.y = pt.y;
-	//		}
-	//		if (p2.x<p1.x&&p2.y>p1.y)
-	//		{
-	//			pt.x = p1.x;
-	//			p1.x = p2.x;
-	//			p2.x = pt.x;
-	//		}
-	//		//cvRectangle(srcImg, p1, p2, cvScalar(0, 255, 255), 1, 8, 0);
-	//		SetDlgItemInt(IDC_editX, p1.x);
-	//		SetDlgItemInt(IDC_editY, p1.y);
-	//		SetDlgItemInt(IDC_editW, p2.x-p1.x);
-	//		SetDlgItemInt(IDC_editH, p2.y-p1.y);
-	//	}
-	//	else if (mouseStatus==Mouse_DRAG)
-	//	{
-	//		//cvRectangle(srcImg, p1, p2, cvScalar(0, 255, 255), 1, 8, 0);
-	//	}
-	//	//cimg.CopyOf(srcImg, srcImg->nChannels);
-	//	//cimg.DrawToHDC(hdc, &picRect);
-	//}
-	//CDialogEx::OnTimer(nIDEvent);
+	CPoint b, d;
+	b.x = c.x; b.y = a.y;
+	d.x = a.x, d.y = c.y;
+	pDC->MoveTo(a);
+	pDC->LineTo(b);
+	pDC->MoveTo(b);
+	pDC->LineTo(c);
+	pDC->MoveTo(c);
+	pDC->LineTo(d);
+	pDC->MoveTo(d);
+	pDC->LineTo(a);
+}
+
+void CMFCTrackToolsDlg::trackdraw()
+{
+	if (g_drawPS == 1)
+	{
+		for (int i = 0; i < Frame_Width; i += (Frame_Width / int_pos))
+		{
+			//cvLine(srcImg, cvPoint(i, 0), cvPoint(i, Frame_Height), cvScalar(0, 0, 255));
+			//cvRectangle(srcImg, cvPoint(camPosSlide.left*(Frame_Width / int_pos), 0), cvPoint((camPosSlide.right + 1) * (Frame_Width / int_pos), Frame_Height), cvScalar(255, 0, 0));//画预置位滑框
+		}
+	}
+	if (g_drawTch==1)
+	{
+		drawRectangle(CPoint(tch.x,tch.y), CPoint(tch.x+tch.width,tch.y+tch.height));
+	}
+	if (g_drawBlk==1)
+	{
+		drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
+	}
+	if (mouseStatus == Mouse_LBDOWN)
+	{
+		if (pt.x > 0 && pt.y > 0)
+		{
+			drawRectangle(p1, pt);
+		}
+	}
+	else if (mouseStatus==Mouse_LBUP)
+	{
+		if (p2.x<p1.x||p2.y<p1.y)
+		{
+			pt = p2;
+			p2 = p1;
+			p1 = pt;
+		}
+		if (p2.x>p1.x&&p2.y<p1.y)
+		{
+			pt.y = p1.y;
+			p1.y = p2.y;
+			p2.y = pt.y;
+		}
+		if (p2.x<p1.x&&p2.y>p1.y)
+		{
+			pt.x = p1.x;
+			p1.x = p2.x;
+			p2.x = pt.x;
+		}
+		drawRectangle(p1, p2);
+		SetDlgItemInt(IDC_editX, p1.x);
+		SetDlgItemInt(IDC_editY, p1.y);
+		SetDlgItemInt(IDC_editW, p2.x-p1.x);
+		SetDlgItemInt(IDC_editH, p2.y-p1.y);
+	}
+	else if (mouseStatus==Mouse_DRAG)
+	{
+		drawRectangle(p1, p2);
+	}
 }
 
 
@@ -395,9 +402,9 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	
-	if (20 <= point.x&&point.x <= 20 + Frame_Width&&PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
+	if (40 <= point.x&&point.x <= 40 + Frame_Width&&PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
 	{
-		if (p1.x<point.x - 20 && point.x - 20<p2.x&&p1.y<point.y - PIC_TOP&&point.y - PIC_TOP<p2.y)
+		if (p1.x<point.x - 40 && point.x - 40<p2.x&&p1.y<point.y - PIC_TOP&&point.y - PIC_TOP<p2.y)
 		{
 			pt.x = point.x;
 			pt.y = point.y;
@@ -406,7 +413,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		else
 		{
 			pt.x = 0, pt.y = 0;
-			p1.x = point.x - 20;
+			p1.x = point.x - 40;
 			p1.y = point.y - PIC_TOP;
 			//p2.x = 0, p2.y = 0;
 			mouseStatus = Mouse_LBDOWN;
@@ -421,12 +428,14 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (20 <= point.x&&point.x <= 20 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
+	if (40 <= point.x&&point.x <= 40 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
 	{
 		//m_txtTchArg.SetWindowTextW(_T("Rect(0,0,0,0)"));
 		if (mouseStatus!=Mouse_DRAG)
 		{
-			p2.x = point.x - 20;
+			//p2.x = point.x - 40;
+			p2.x = Frame_Width;
+			p1.x = 0;
 			p2.y = point.y - PIC_TOP;
 			mouseStatus = Mouse_LBUP;
 			pt.x = -1;
@@ -454,12 +463,12 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (20 <= point.x&&point.x <= 20 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
+	if (40 <= point.x&&point.x <= 40 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
 	{
 		//m_txtTchArg.SetWindowTextW(_T("Rect(0,0,0,0)"));
 		if (mouseStatus==Mouse_LBDOWN)
 		{
-			pt.x = point.x - 20;
+			pt.x = point.x - 40;
 			pt.y = point.y - PIC_TOP;
 		}
 		if (mouseStatus==Mouse_DRAG)

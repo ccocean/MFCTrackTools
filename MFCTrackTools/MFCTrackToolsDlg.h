@@ -5,7 +5,7 @@
 #pragma once
 #include "afxwin.h"
 //#include "CvvImage.h"
-#include "tch_params.h"
+
 #include<string>
 //#include <opencv2/core/core.hpp>
 //#include <opencv2/highgui/highgui.hpp>
@@ -65,17 +65,12 @@ public:
 	// 用来播放视频的控件
 	CStatic m_picOverall;//全景控件
 	CStatic m_picFeature;//特写控件
-	//CButton m_btnPlay;
-	//afx_msg void OnBnClickedbtnplay();
 
-	//CvCapture *g_video;
-	//string g_videoPath = "video/teacher.mp4";
 	int g_flag = 0;
 	int g_drawPS = 0;
 	int g_drawTch = 0;
 	int g_drawBlk = 0;
 	int int_pos, int_slide;
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	AVCodec *pCodec = NULL;
 
@@ -97,6 +92,9 @@ public:
 
 	CDC *pDC ;
 	HDC hdc ;
+	CPen pen;
+	CPen *pOldPen;
+
 	double fps;
 	int vfps;
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -141,6 +139,8 @@ public:
 private:
 	BOOL initProgramControl();
 	BOOL initNetCommuntication();
+	void trackdraw();
+	void drawRectangle(CPoint a, CPoint b);
 public:
 	int video_display(Decode_Info_t *pInfo);
 	afx_msg void OnBnClickedbtnup();

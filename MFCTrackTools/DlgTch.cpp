@@ -37,7 +37,15 @@ void DlgTch::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(DlgTch, CDialog)
+	ON_BN_CLICKED(IDC_btnApply, &DlgTch::OnBnClickedbtnapply)
 END_MESSAGE_MAP()
 
 
 // DlgTch 消息处理程序
+
+
+void DlgTch::OnBnClickedbtnapply()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	tch_params = { 0 };
+}

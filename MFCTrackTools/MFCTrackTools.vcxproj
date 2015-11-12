@@ -109,6 +109,7 @@
   <ItemGroup>
     <ClInclude Include="communtication.h" />
     <ClInclude Include="decode.h" />
+    <ClInclude Include="DlgStu.h" />
     <ClInclude Include="DlgTch.h" />
     <ClInclude Include="MFCTrackTools.h" />
     <ClInclude Include="MFCTrackToolsDlg.h" />
@@ -124,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="communtication_client.cpp" />
     <ClCompile Include="decode.cpp" />
+    <ClCompile Include="DlgStu.cpp" />
     <ClCompile Include="DlgTch.cpp" />
     <ClCompile Include="MFCTrackTools.cpp" />
     <ClCompile Include="MFCTrackToolsDlg.cpp" />
