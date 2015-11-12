@@ -72,10 +72,11 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outp
 	{
 		return -1;
 	}
+	uint8_t         *buffer = NULL;
 	int             decode_size=0;
 	int             av_result=0;
 	int				outsize = 0;
-	uint8_t         *buffer = NULL;
+	
 	decoder->packet.data = inputbuffer;
 	decoder->packet.size = frame_size;
 
@@ -94,6 +95,7 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outp
 	{
 		if (decoder->firstTime)
 		{
+			
 			decoder->img_convert_ctx = sws_getContext(decoder->pCodecCtx->width, decoder->pCodecCtx->height, decoder->pCodecCtx->pix_fmt,
 				decoder->pCodecCtx->width, decoder->pCodecCtx->height, AV_PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
 
@@ -101,6 +103,9 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outp
 			av_image_fill_arrays(decoder->pFrameRGB->data, decoder->pFrameRGB->linesize, buffer, AV_PIX_FMT_BGR24, decoder->pCodecCtx->width, decoder->pCodecCtx->height, 16);
 
 			decoder->firstTime = 0;
+			//av_free(buffer);
+			/*free(buffer);
+			buffer = NULL;*/
 		}
 		else
 		{
@@ -118,7 +123,7 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outp
 	}
 	else
 	{
-		MessageBox(NULL, TEXT("解码失败。"), TEXT("标题"), MB_OK);
+		//MessageBox(NULL, TEXT("解码失败。"), TEXT("标题"), MB_OK);
 		return -1;
 	}
 	

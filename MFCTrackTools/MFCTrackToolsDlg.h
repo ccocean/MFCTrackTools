@@ -11,6 +11,8 @@
 //#include <opencv2/highgui/highgui.hpp>
 #include "avcodec.h"
 #include "track_client_commintication.h"
+#include "afxcmn.h"
+#include "DlgTch.h"
 #define WIDTH 480
 #define HEIGHT 264
 //using namespace cv;
@@ -58,44 +60,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnClose();
-	// 跟踪区域设置框体	// 跟踪区域设置框体
-	CStatic m_grpBoxTrack;
-	CStatic m_txtX;
-	CEdit m_editX;
-	CStatic m_txtY;
-	CEdit m_editY;
-	CStatic m_txtTch;
-	// Width
-	CStatic m_txtW;
-	// Edit Width
-	CEdit m_editW;
-	// Height
-	CStatic m_txtH;
-	// Edit Height
-	CEdit m_editH;
-	// 教师保存参数按钮
-	CButton m_btnSaveTch;
-	// 板书保存参数按钮
-	CButton m_btnSaveBlk;
-	CStatic m_txtT;
-	CStatic m_txtB;
-	// 用来显示教师跟踪区域的参数
-	CStatic m_txtTchArg;
-	// 用来显示板书跟踪区域的参数
-	CStatic m_txtBlkArg;
-	CStatic m_grpBoxPos;
-	CStatic m_txtPos;
-	CStatic m_txtSlide;
-	// 用来填写预置位的总个数
-	CEdit m_editPos;
-	// 用来填写预置位滑框的宽度
-	CEdit m_editSlide;
-	// 用来设置参数观察效果的按钮
-	CButton m_btnSet;
-	// 保存当前已经设置好的预置位参数
-	CButton m_btnSavePos;
+
+	DlgTch dlgTch;
 	// 用来播放视频的控件
-	CStatic m_picSrc;
+	CStatic m_picOverall;//全景控件
+	CStatic m_picFeature;//特写控件
 	//CButton m_btnPlay;
 	//afx_msg void OnBnClickedbtnplay();
 
@@ -153,7 +122,7 @@ public:
 	afx_msg void OnBnClickedbtnapply();
 	CButton m_btnDefault;
 	afx_msg void OnBnClickedbtndefault();
-	CStatic m_picCam;
+	
 	CButton m_btnUp;
 	CButton m_btnLeft;
 	CButton m_btnDown;
@@ -175,4 +144,5 @@ private:
 public:
 	int video_display(Decode_Info_t *pInfo);
 	afx_msg void OnBnClickedbtnup();
+	CTabCtrl m_tabTrack;
 };

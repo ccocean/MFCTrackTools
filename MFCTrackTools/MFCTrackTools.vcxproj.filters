@@ -51,6 +51,12 @@
     <ClInclude Include="track_client_commintication.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DlgTch.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stuTrack_settings_parameter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCTrackTools.cpp">
@@ -75,6 +81,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="track_client_communtication.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgTch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
