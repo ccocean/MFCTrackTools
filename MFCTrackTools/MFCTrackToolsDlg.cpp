@@ -16,6 +16,14 @@
 #define PIC_TOP 60
 
 
+static Track_cmd_info_t g_track_cmd[] =
+{
+	{ STU_SETTRACK_CMD, "设置学生参数" },
+	{ TEA_SETTRACK_CMD, "设置老师参数" },
+	{ STU_GETTRACK_CMD, "获取学生参数" },
+	{ TEA_GETTRACK_CMD, "获取老师参数" },
+};
+
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
 class CAboutDlg : public CDialogEx
@@ -58,6 +66,8 @@ CMFCTrackToolsDlg::CMFCTrackToolsDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CMFCTrackToolsDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
+	m_track_clientHandle = NULL;
 }
 
 void CMFCTrackToolsDlg::DoDataExchange(CDataExchange* pDX)
@@ -483,6 +493,109 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 	}
 	CDialogEx::OnMouseMove(nFlags, point);
 }
+
+
+
+static  inline char *get_track_cmd_name(int cmd)
+{
+	int i = 0;
+	while (g_track_cmd[i].cmd != -1)
+	{
+		if (cmd == g_track_cmd[i].cmd)
+			return g_track_cmd[i].cmd_name;
+		i++;
+	}
+	return "unknown name";
+}
+//回调心跳函数处理
+static int ctrlClient_process_trackHeartEx(char *buff, void * param)
+{
+	CMFCTrackToolsDlg* pTrackDlg = (CMFCTrackToolsDlg*)param;
+	if (param == NULL)
+	{
+		AfxMessageBox(_T("接收失败"));
+	}
+	
+	return pTrackDlg->ctrlClient_process_trackHeart(buff);
+}
+int CMFCTrackToolsDlg::ctrlClient_process_trackHeart(char *buff)
+{
+	OutputDebugString(_T("ctrlClient_process_trackHeart=====================\n"));
+	return 0;
+}
+static int ctrl_init_track(void * param)
+{
+	return  0;
+}
+//回调函数处理
+static int ctrlClient_process_trackMsgEx(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle, void * param)
+{
+	CMFCTrackToolsDlg* pTrackDlg = (CMFCTrackToolsDlg*)param;
+	if (param == NULL)
+	{
+		AfxMessageBox(_T("接收失败"));
+	}
+	return pTrackDlg->ctrlClient_process_trackMsg(head, msg, handle);
+}
+int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle)
+{
+
+	char errMsg[128] = { 0 };
+	if (NULL == head || NULL == msg || NULL == handle) {
+		AfxMessageBox(_T("接收信息失败"));
+		return -1;
+	}
+	int return_code = 0;
+	return_code = head->return_code;
+
+	if (return_code != 0)
+	{
+		sprintf_s(errMsg, sizeof(errMsg), "%s失败", get_track_cmd_name(head->cmd));
+		AfxMessageBox(_T(errMsg));
+		return -1;
+	}
+	switch (head->cmd)
+	{
+	case STU_SETTRACK_CMD:
+	{
+							 break;
+	}
+	case TEA_SETTRACK_CMD:
+	{
+							 break;
+	}
+	case STU_GETTRACK_CMD:
+	{
+							 break;
+	}
+	case TEA_GETTRACK_CMD:
+	{
+							 break;
+	}
+	}
+	sprintf_s(errMsg, sizeof(errMsg), "%s成功", get_track_cmd_name(head->cmd));
+	AfxMessageBox(_T(errMsg));
+	return 0;
+}
+int CMFCTrackToolsDlg::ctrlClient_init_trackCommuntication()
+{
+
+	if (m_track_clientHandle != NULL)
+	{
+		OutputDebugString(_T("ctrlClient_init_trackCommuntication is init"));
+		return -1;
+	}
+
+	m_track_clientHandle = communtication_create_clientHandle("192.168.11.140", C_CONTROL_TRACK,
+		ctrlClient_process_trackMsgEx, ctrlClient_process_trackHeartEx, ctrl_init_track, this);
+	if (m_track_clientHandle == NULL) {
+		AfxMessageBox(TEXT("创建客户端失败"));
+		return -1;
+	}
+	dlgTch.setConnectHandle(m_track_clientHandle);
+	return  0;
+}
+
 
 
 

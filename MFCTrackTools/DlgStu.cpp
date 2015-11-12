@@ -35,7 +35,6 @@ END_MESSAGE_MAP()
 
 // DlgStu 消息处理程序
 
-
 void DlgStu::OnBnClickedBtnstuapply()
 {
 	// TODO:  在此添加控件通知处理程序代码

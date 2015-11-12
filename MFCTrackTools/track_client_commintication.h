@@ -1,4 +1,5 @@
-#pragma onece
+#ifndef TRACK_CLIENT_COMMUNTICATION_H
+#define TRACK_CLIENT_COMMUNTICATION_H
 #include "tch_params.h"
 #include"stuTrack_settings_parameter.h"
 #include "communtication.h"
@@ -21,7 +22,7 @@ using namespace std;
 #define MAX_STEAM_WIDTH 1280
 #define MAX_STEAM_HEIGHT 720
 
-#define C_CONTROL_TRACK 152001
+#define C_CONTROL_TRACK 15200
 typedef enum
 {
 	STREAMCLINT_START = 0,
@@ -72,8 +73,10 @@ typedef struct Stream_Handle
 }RecvStream_Handle_t;
 int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle);
 
-int ctrlClient_init_trackCommuntication();
-int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param);
-int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param);
-int ctrlClient_get_teach_params();
-int ctrlClient_get_stu_params();
+int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param, Commutication_Handle_t ptrack_clientHandle);
+int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param, Commutication_Handle_t ptrack_clientHandle);
+int ctrlClient_get_teach_params(Commutication_Handle_t ptrack_clientHandle);
+int ctrlClient_get_stu_params(Commutication_Handle_t ptrack_clientHandle);
+
+
+#endif

@@ -3,151 +3,60 @@
 #include<tchar.h>
 #include<stdlib.h>
 #include "track_client_commintication.h"
-
-
-Commutication_Handle_t g_track_clientHandle = NULL;
-
-
-static Track_cmd_info_t g_track_cmd[] =
+int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param, Commutication_Handle_t ptrack_clientHandle)
 {
-	{ STU_SETTRACK_CMD, "设置学生参数" },
-	{ TEA_SETTRACK_CMD, "设置老师参数" },
-	{ STU_GETTRACK_CMD, "获取学生参数" },
-	{ TEA_GETTRACK_CMD, "获取老师参数" },
-};
-
-static  inline char *get_track_cmd_name(int cmd)
-{
-	int i = 0;
-	while (g_track_cmd[i].cmd != -1)
-	{
-		if (cmd == g_track_cmd[i].cmd)
-			return g_track_cmd[i].cmd_name;
-		i++;
-	}
-	return "unknown name";
-}
-static int ctrlClient_process_trackHeart(char *buff, void * param)
-{
-	OutputDebugString(_T("ctrlClient_process_trackHeart=====================\n"));
-	return 0;
-}
-
-static int ctrl_init_track(void * param)
-{
-	return  0;
-}
-//回调函数处理
-static int ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle, void * param)
-{
-	char errMsg[128] = { 0 };
-	if (NULL == head || NULL == msg || NULL == handle) {
-		MessageBox(NULL, _T("接收信息失败"), _T("标题"), MB_OK);
-		return -1;
-	}
-	int return_code = 0;
-	return_code = head->return_code;
-
-	if (return_code != 0) 
-	{
-		sprintf_s(errMsg, sizeof(errMsg), "%s失败", get_track_cmd_name(head->cmd));
-		MessageBox(NULL, _T(errMsg), _T("标题"), MB_OK);
-		return -1;
-	}
-	switch (head->cmd)
-	{
-		case STU_SETTRACK_CMD:
-		{
-								break;
-		}
-		case TEA_SETTRACK_CMD:
-		{
-								 break;
-		}
-		case STU_GETTRACK_CMD:
-		{
-								 break;
-		}
-		case TEA_GETTRACK_CMD:
-		{
-								 break;
-		}
-	}
-	sprintf_s(errMsg, sizeof(errMsg), "%s成功", get_track_cmd_name(head->cmd));
-	MessageBox(NULL, _T(errMsg), _T("标题"), MB_OK);
-	return 0;
-}
-int ctrlClient_init_trackCommuntication()
-{
-
-	if (g_track_clientHandle != NULL) 
-	{
-		OutputDebugString(_T("ctrlClient_init_trackCommuntication is init"));
-		return -1;
-	}
-
-	g_track_clientHandle = communtication_create_clientHandle("192.168.11.140", C_CONTROL_TRACK, 
-		ctrlClient_process_trackMsg, ctrlClient_process_trackHeart, ctrl_init_track, NULL);
-	if (g_track_clientHandle == NULL) {
-		MessageBox(NULL, TEXT("创建客户端失败"), TEXT("标题"), MB_OK);
-		return -1;
-	}
-
-	return  0;
-}
-int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param)
-{
-	if (g_track_clientHandle == NULL) {
-		MessageBox(NULL, TEXT("客户端连接失败"), TEXT("标题"), MB_OK);
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
 		return -1;
 	}
 	Communtication_Head_t head;
 	commutication_init_head(&head, C_CONTROL_TRACK);
 	head.cmd = TEA_SETTRACK_CMD;
-	communtication_send_clientMsg(&head, (char *)(tec_param), sizeof(TeaITRACK_Params), g_track_clientHandle);
+	communtication_send_clientMsg(&head, (char *)(tec_param), sizeof(TeaITRACK_Params), ptrack_clientHandle);
 	return 0;
 }
-int ctrlClient_get_teach_params()
+int ctrlClient_get_teach_params(Commutication_Handle_t ptrack_clientHandle)
 {
 	TeaITRACK_Params  tec_param = { 0 };
-	if (g_track_clientHandle == NULL) {
-		MessageBox(NULL, TEXT("客户端连接失败"), TEXT("标题"), MB_OK);
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
 		return -1;
 	}
 	Communtication_Head_t head;
 	commutication_init_head(&head, C_CONTROL_TRACK);
 	head.cmd = TEA_GETTRACK_CMD;
-	communtication_send_clientMsg(&head, (char *)(&tec_param), sizeof(TeaITRACK_Params), g_track_clientHandle);
+	communtication_send_clientMsg(&head, (char *)(&tec_param), sizeof(TeaITRACK_Params), ptrack_clientHandle);
 	return 0;
 }
-int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param)
+int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param, Commutication_Handle_t ptrack_clientHandle)
 {
-	if (g_track_clientHandle == NULL) {
-		MessageBox(NULL, TEXT("客户端连接失败"), TEXT("标题"), MB_OK);
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
 		return -1;
 	}
 	Communtication_Head_t head;
 	commutication_init_head(&head, C_CONTROL_TRACK);
 	memset(&head, 0, sizeof(Communtication_Head_t));
 	head.cmd = STU_SETTRACK_CMD;
-	communtication_send_clientMsg(&head, (char *)(stu_param), sizeof(StuITRACK_ClientParams_t), g_track_clientHandle);
+	communtication_send_clientMsg(&head, (char *)(stu_param), sizeof(StuITRACK_ClientParams_t), ptrack_clientHandle);
 	return 0;
 
 }
-int ctrlClient_get_stu_params()
+int ctrlClient_get_stu_params(Commutication_Handle_t ptrack_clientHandle)
 {
 	StuITRACK_ClientParams_t stu_param = { 0 };
-	if (g_track_clientHandle == NULL) {
-		MessageBox(NULL, TEXT("客户端连接失败"), TEXT("标题"), MB_OK);
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
 		return -1;
 	}
 	Communtication_Head_t head;
 	commutication_init_head(&head, C_CONTROL_TRACK);
 	memset(&head, 0, sizeof(Communtication_Head_t));
 	head.cmd = STU_GETTRACK_CMD;
-	communtication_send_clientMsg(&head, (char *)(&stu_param), sizeof(StuITRACK_ClientParams_t), g_track_clientHandle);
+	communtication_send_clientMsg(&head, (char *)(&stu_param), sizeof(StuITRACK_ClientParams_t), ptrack_clientHandle);
 	return 0;
 }
+
 //netstream==================================================================================================================
 
 static int free_stream_message(Stream_Message_t *pStream_messgage)
@@ -331,6 +240,7 @@ static void* stream_pop_thread(void* arg)
 			pStream_messgage = pClient_handle->list_Handle.front();
 			pClient_handle->list_Handle.pop_front();
 
+			
 			H264_To_RGB((unsigned char*)(pStream_messgage->stream_data), pStream_messgage->fh.nFrameLength,
 				pClient_handle->streamDecode.data, &(pClient_handle->decoder));
 			pClient_handle->streamDecode.height = pStream_messgage->fh.nHight;

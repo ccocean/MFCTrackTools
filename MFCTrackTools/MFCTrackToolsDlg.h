@@ -147,4 +147,11 @@ public:
 	int video_display(Decode_Info_t *pInfo);
 	afx_msg void OnBnClickedbtnup();
 	CTabCtrl m_tabTrack;
+public:
+	int ctrlClient_init_trackCommuntication();
+
+	int ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle);
+	int ctrlClient_process_trackHeart(char *buff);
+
+	Commutication_Handle_t m_track_clientHandle;
 };

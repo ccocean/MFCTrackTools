@@ -1,7 +1,7 @@
 #pragma once
 #include "afxwin.h"
 #include "tch_params.h"
-
+#include "track_client_commintication.h"
 // DlgTch ¶Ô»°¿ò
 
 class DlgTch : public CDialog
@@ -33,4 +33,7 @@ public:
 	TeaITRACK_Params tch_params;
 
 	afx_msg void OnBnClickedbtnapply();
+public:
+	void setConnectHandle(Commutication_Handle_t m_Connect_clientHandle);
+	Commutication_Handle_t m_Connect_clientHandle;
 };

@@ -62,7 +62,11 @@ static void *privCient_process_thread(void * arg) {
 		timeoutsec = timeout / 1000;
 		timeoutusec = 1000 * (timeout % 1000);
 	}
-
+	WORD wVersionRequested;
+	WSADATA wsaData;
+	int err;
+	wVersionRequested = MAKEWORD(1, 1);
+	err = WSAStartup(wVersionRequested, &wsaData);
 	for (;;) {
 		//nslog(NS_INFO, "connect server, ip = %s-port=%d,timeout=[%d]\n", src->ip, src->port, timeout);
 		sockfd = privClient_connect_Srv((char *)(src->ip), src->port);
@@ -149,6 +153,7 @@ static void *privCient_process_thread(void * arg) {
 		free(src);
 		src = NULL;
 	}
+	WSACleanup();
 	pthread_detach(pthread_self());
 	pthread_exit(0);
 	return NULL;

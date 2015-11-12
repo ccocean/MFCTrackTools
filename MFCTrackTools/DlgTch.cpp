@@ -48,4 +48,11 @@ void DlgTch::OnBnClickedbtnapply()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	tch_params = { 0 };
+	tch_params.frame.height = 264;
+	tch_params.frame.width = 480;
+	ctrlClient_set_teach_params(&tch_params, m_Connect_clientHandle);
+}
+void DlgTch::setConnectHandle(Commutication_Handle_t pConnect_clientHandle)
+{
+	m_Connect_clientHandle = pConnect_clientHandle;
 }
