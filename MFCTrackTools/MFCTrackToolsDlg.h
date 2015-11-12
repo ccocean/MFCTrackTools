@@ -13,6 +13,7 @@
 #include "track_client_commintication.h"
 #include "afxcmn.h"
 #include "DlgTch.h"
+#include "DlgStu.h"
 #define WIDTH 480
 #define HEIGHT 264
 //using namespace cv;
@@ -62,6 +63,7 @@ public:
 	afx_msg void OnClose();
 
 	DlgTch dlgTch;
+	DlgStu dlgStu;
 	// 用来播放视频的控件
 	CStatic m_picOverall;//全景控件
 	CStatic m_picFeature;//特写控件

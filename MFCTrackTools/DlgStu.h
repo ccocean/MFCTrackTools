@@ -1,5 +1,5 @@
 #pragma once
-
+#include "stuTrack_settings_parameter.h"
 
 // DlgStu ¶Ô»°¿ò
 
@@ -19,7 +19,9 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedBtnstuapply();
 
 	StuITRACK_ClientParams_t stu_params;
+	afx_msg void OnBnClickedBtnstuapply();
+
+	
 };
