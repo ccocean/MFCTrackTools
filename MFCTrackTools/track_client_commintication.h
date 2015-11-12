@@ -1,5 +1,6 @@
 #pragma onece
 #include "tch_params.h"
+#include"stuTrack_settings_parameter.h"
 #include "communtication.h"
 #include "share_stream.h"
 #include"decode.h"
@@ -19,6 +20,8 @@ using namespace std;
 
 #define MAX_STEAM_WIDTH 1280
 #define MAX_STEAM_HEIGHT 720
+
+#define C_CONTROL_TRACK 152001
 typedef enum
 {
 	STREAMCLINT_START = 0,
@@ -68,5 +71,9 @@ typedef struct Stream_Handle
 	void* param1;//扩展参数,由使用者带进去，通过回调函数call_back带出来
 }RecvStream_Handle_t;
 int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle);
+
 int ctrlClient_init_trackCommuntication();
 int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param);
+int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param);
+int ctrlClient_get_teach_params();
+int ctrlClient_get_stu_params();

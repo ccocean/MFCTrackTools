@@ -122,7 +122,7 @@ static int communtication_clientHeartThread(void *argv)
 	wVersionRequested = MAKEWORD(1, 1);
 	err = WSAStartup(wVersionRequested, &wsaData);
 REPEAT_CONNECT:
-	share_outputlog(NS_WARN, "client will connet to server [%s:%d]\n", ip, port);
+	//share_outputlog(NS_WARN, "client will connet to server [%s:%d]\n", ip, port);
 	handle->client_socket = -1;
 
 	if (client_socket > 0) {
@@ -243,7 +243,16 @@ int communtication_send_clientMsg(Communtication_Head_t *head, char *date, int b
 	return 0;
 
 }
+int commutication_init_head(Communtication_Head_t *head, int identifier)
+{
+	memset(head, 0, sizeof(Communtication_Head_t));
+	head->check_start[0] = head->check_start[1] = head->check_start[2] = head->check_start[3] = DEFAULT_CHECK_START_CODE;
+	head->check_end[0] = head->check_end[1] = head->check_end[2] = head->check_end[3] = DEFAULT_CHECK_END_CODE;
+	head->identifier = identifier;
+	head->total_len = DEFATULT_COMMUTICATION_TOTAL_LEN;
 
+	return 0;
+}
 
 /*创建handle，同时产生后台的线程*/
 Commutication_Handle_t communtication_create_clientHandle(char *dst_ip, unsigned short dst_port, DealCmdFunc func1, 

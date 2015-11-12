@@ -78,7 +78,7 @@ Commutication_Handle_t communtication_create_clientHandle(char *dst_ip, unsigned
 int communtication_send_clientMsg(Communtication_Head_t *head, char *date, int buflen, Communtication_Handle_t *handle);
 int communtication_set_handleStatus(Commutication_Handle_t handle, int status);
 
-
+int commutication_init_head(Communtication_Head_t *head, int identifier);
 
 #endif
 

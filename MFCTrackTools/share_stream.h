@@ -5,6 +5,13 @@
 #define IP_LEN 16
 #define	RH_FH_LEN	sizeof(RH_FRAMEHEAD_t)
 #define STREAM_CONNECT_TIMEOUT 2
+
+typedef enum
+{
+
+	START_STREAM = 0,
+	STOP_STREAM,
+};
 typedef unsigned short int	uint16_t;
 typedef signed char		int8_t;
 typedef struct RH_FRAMEHEAD_ {
@@ -51,6 +58,7 @@ typedef struct RH_tcp_stream_recv_cond_ {
 	void * (*getEmptyBuf)(void *arg, void **ppEmptyBufInfo, int data_len);
 	int(*putStreaminfo)(RH_FRAMEHEAD_t *fh, void *pEmptyBufInfo, void *arg, void *data);
 	int(*exception_msg)(int msg, void* prm);
+	int runstatus;
 } RH_tcp_stream_recv_cond_t;
 
 

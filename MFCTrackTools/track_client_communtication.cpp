@@ -4,7 +4,7 @@
 #include<stdlib.h>
 #include "track_client_commintication.h"
 
-#define C_CONTROL_TRACK 15200
+
 Commutication_Handle_t g_track_clientHandle = NULL;
 
 
@@ -102,9 +102,50 @@ int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param)
 		return -1;
 	}
 	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
+	head.cmd = TEA_SETTRACK_CMD;
+	communtication_send_clientMsg(&head, (char *)(tec_param), sizeof(TeaITRACK_Params), g_track_clientHandle);
+	return 0;
+}
+int ctrlClient_get_teach_params()
+{
+	TeaITRACK_Params  tec_param = { 0 };
+	if (g_track_clientHandle == NULL) {
+		MessageBox(NULL, TEXT("客户端连接失败"), TEXT("标题"), MB_OK);
+		return -1;
+	}
+	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
+	head.cmd = TEA_GETTRACK_CMD;
+	communtication_send_clientMsg(&head, (char *)(&tec_param), sizeof(TeaITRACK_Params), g_track_clientHandle);
+	return 0;
+}
+int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param)
+{
+	if (g_track_clientHandle == NULL) {
+		MessageBox(NULL, TEXT("客户端连接失败"), TEXT("标题"), MB_OK);
+		return -1;
+	}
+	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
 	memset(&head, 0, sizeof(Communtication_Head_t));
 	head.cmd = STU_SETTRACK_CMD;
-	communtication_send_clientMsg(&head, (char *)(tec_param), sizeof(TeaITRACK_Params), g_track_clientHandle);
+	communtication_send_clientMsg(&head, (char *)(stu_param), sizeof(StuITRACK_ClientParams_t), g_track_clientHandle);
+	return 0;
+
+}
+int ctrlClient_get_stu_params()
+{
+	StuITRACK_ClientParams_t stu_param = { 0 };
+	if (g_track_clientHandle == NULL) {
+		MessageBox(NULL, TEXT("客户端连接失败"), TEXT("标题"), MB_OK);
+		return -1;
+	}
+	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
+	memset(&head, 0, sizeof(Communtication_Head_t));
+	head.cmd = STU_GETTRACK_CMD;
+	communtication_send_clientMsg(&head, (char *)(&stu_param), sizeof(StuITRACK_ClientParams_t), g_track_clientHandle);
 	return 0;
 }
 //netstream==================================================================================================================
