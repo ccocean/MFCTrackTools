@@ -52,8 +52,88 @@ END_MESSAGE_MAP()
 
 // DlgStu 消息处理程序
 
+void DlgStu::getParameters()
+{
+
+}
+
+int DlgStu::checkParameters()
+{
+	CString standAgl, standFrm, sitFrm, moveDev, moveDly;
+	int _standAgl, _standFrm, _sitFrm, _moveDev, _moveDly;
+	if (stu_params.stuTrack_vertex[0].x <= 0 || stu_params.stuTrack_vertex[0].y <= 0)
+	{
+		MessageBox("顶点位置错误！");
+		return -1;
+	}
+	if (stu_params.stuTrack_direct_standard[0] <= 0 || stu_params.stuTrack_direct_standard[1] <= 0
+		|| stu_params.stuTrack_direct_standard[2] <= 0 || stu_params.stuTrack_direct_standard[3] <= 0)
+	{
+		MessageBox("顶点角度错误！");
+		return -1;
+	}
+	if (stu_params.stuTrack_stuWidth_standard[0] <= 0 || stu_params.stuTrack_stuWidth_standard[1] <= 0
+		|| stu_params.stuTrack_stuWidth_standard[2] <= 0 || stu_params.stuTrack_stuWidth_standard[3] <= 0)
+	{
+		MessageBox("顶点宽度错误！");
+		return -1;
+	}
+	m_edtStandAgl.GetWindowText(standAgl);
+	m_edtStandFrm.GetWindowText(standFrm);
+	m_edtSitFrm.GetWindowText(sitFrm);
+	m_edtMoveDev.GetWindowText(moveDev);
+	m_edtMoveDly.GetWindowText(moveDly);
+	if (standAgl.IsEmpty()||standFrm.IsEmpty()||sitFrm.IsEmpty()||moveDev.IsEmpty()||moveDly.IsEmpty())
+	{
+		MessageBox("数据不能为空！");
+		return -1;
+	}
+	else
+	{
+		_standAgl = _ttoi(standAgl);
+		_standFrm = _ttoi(standFrm);
+		_sitFrm = _ttoi(sitFrm);
+		_moveDev = _ttoi(moveDev);
+		_moveDly = _ttoi(moveDly);
+		if (_standAgl<0)
+		{
+			MessageBox("起立角度偏移数据错误！");
+			return -1;
+		}
+		if (_standFrm<=0)
+		{
+			MessageBox("起立阈值数据错误！");
+			return -1;
+		}
+		if (_sitFrm <= 0)
+		{
+			MessageBox("坐下阈值数据错误！");
+			return -1;
+		}
+		if (_moveDev <= 0)
+		{
+			MessageBox("移动偏离数据错误！");
+			return -1;
+		}
+		if (_moveDly <= 0)
+		{
+			MessageBox("移动延时数据错误！");
+			return -1;
+		}
+		stu_params.stuTrack_direct_range = _standAgl;
+		stu_params.stuTrack_standCount_threshold = _standFrm;
+		stu_params.stuTrack_sitdownCount_threshold = _sitFrm;
+		stu_params.stuTrack_move_threshold = _moveDev;
+		stu_params.stuTrack_moveDelayed_threshold = _moveDly;
+	}
+	return 0;
+}
+
 void DlgStu::OnBnClickedBtnstuapply()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	stu_params = { 0 };
+	if (checkParameters()==0)
+	{
+		//ctrlClient_set_teach_params(&stu_params, m_Connect_clientHandle);
+	}
 }

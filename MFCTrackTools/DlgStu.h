@@ -23,7 +23,8 @@ public:
 
 	StuITRACK_ClientParams_t stu_params;
 	afx_msg void OnBnClickedBtnstuapply();
-
+	int checkParameters();
+	void getParameters();
 	
 	CEdit m_edtLfetUpPos;
 	CEdit m_edtLeftDnPos;

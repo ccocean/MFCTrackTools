@@ -337,6 +337,16 @@ HCURSOR CMFCTrackToolsDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CMFCTrackToolsDlg::OnOK()
+{
+
+}
+
+void CMFCTrackToolsDlg::OnCancel()
+{
+
+}
+
 void CMFCTrackToolsDlg::OnClose()
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值

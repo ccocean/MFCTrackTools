@@ -33,6 +33,8 @@ public:
 	TeaITRACK_Params tch_params;
 
 	afx_msg void OnBnClickedbtnapply();
+	int checkParameters();
+	void getParameters();
 public:
 	void setConnectHandle(Commutication_Handle_t m_Connect_clientHandle);
 	Commutication_Handle_t m_Connect_clientHandle;
