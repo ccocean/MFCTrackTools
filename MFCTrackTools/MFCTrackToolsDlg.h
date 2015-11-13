@@ -61,9 +61,21 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnClose();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnBnClickedbtnsavetch();
+	afx_msg void OnBnClickedbtnsaveblk();
+	afx_msg void OnBnClickedbtnset();
+	afx_msg void OnBnClickedbtnsavepos();
+	afx_msg void OnBnClickedbtnsavetrack();
+	afx_msg void OnBnClickedbtnsavethreshold();
+	afx_msg void OnBnClickedbtnapply();
+	afx_msg void OnBnClickedbtndefault();
 
 	DlgTch dlgTch;
 	DlgStu dlgStu;
+	int CurSel;//标签的标志
 	// 用来播放视频的控件
 	CStatic m_picOverall;//全景控件
 	CStatic m_picFeature;//特写控件
@@ -85,30 +97,28 @@ public:
 	CString str;
 	CString tmp;
 	//CvvImage cimg;
-	int mouseStatus=0;
+	
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
 
 	CPoint p1, p2, pt;
 	Tch_Rect_t tch, blk;
+	int mouseStatus = 0;
+	int mouseCnt = 0;
+	int whichRect = 0;
 
 	CDC *pDC ;
 	HDC hdc ;
-	CPen pen;
+	CPen penY;
+	CPen penG;
 	CPen *pOldPen;
 
 	double fps;
 	int vfps;
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnBnClickedbtnsavetch();
-	afx_msg void OnBnClickedbtnsaveblk();
-	afx_msg void OnBnClickedbtnset();
-	afx_msg void OnBnClickedbtnsavepos();
+	
 	CListBox m_listErr;
 	CButton m_btnSaveTrack;
-	afx_msg void OnBnClickedbtnsavetrack();
+	
 	CStatic m_txtStand;
 	CStatic m_txtTargetArea;
 	CStatic m_txtOutSide;
@@ -117,11 +127,11 @@ public:
 	CEdit m_editOutSide;
 	CStatic m_grpBoxThreshold;
 	CButton m_btnSaveThreshold;
-	afx_msg void OnBnClickedbtnsavethreshold();
+	
 	CButton m_btnApply;
-	afx_msg void OnBnClickedbtnapply();
+	
 	CButton m_btnDefault;
-	afx_msg void OnBnClickedbtndefault();
+	
 	
 	CButton m_btnUp;
 	CButton m_btnLeft;
@@ -154,4 +164,5 @@ public:
 	int ctrlClient_process_trackHeart(char *buff);
 
 	Commutication_Handle_t m_track_clientHandle;
+	afx_msg void OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult);
 };
