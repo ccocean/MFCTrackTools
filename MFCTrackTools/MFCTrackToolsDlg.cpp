@@ -66,7 +66,6 @@ CMFCTrackToolsDlg::CMFCTrackToolsDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CMFCTrackToolsDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-
 	m_track_clientHandle = NULL;
 }
 
@@ -195,17 +194,24 @@ BOOL CMFCTrackToolsDlg::initNetCommuntication()
 	m_bmphdr.bmiHeader.biPlanes = 1;
 	m_bmphdr.bmiHeader.biCompression = BI_RGB;
 
+	
+	m_connectDialog.setConectfunCall(ctrlClient_init_trackCommunticationEx, this);
+	m_connectDialog.DoModal();
 
-	//ctrlClient_init_trackCommuntication();
+	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+
+}
+BOOL CMFCTrackToolsDlg::ctrlClient_init_Stream()
+{
 	RecvStream_Handle_t recv_stream_handle;
 	recv_stream_handle.channel = 0;
-	strcpy_s(recv_stream_handle.iP, sizeof(recv_stream_handle.iP), _T("192.168.11.140"));
+	strcpy_s(recv_stream_handle.iP, sizeof(recv_stream_handle.iP), m_trackIp);
 	recv_stream_handle.port = TEACH_STREAM_PORT;
 	recv_stream_handle.channel = 1;
 	recv_stream_handle.param1 = this;
 	recv_stream_handle.call_back_fun = video_call_back;
 	init_stream_recv(&recv_stream_handle);
-	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+	return TRUE;
 
 }
 BOOL CMFCTrackToolsDlg::initProgramControl()
@@ -335,16 +341,6 @@ void CMFCTrackToolsDlg::OnPaint()
 HCURSOR CMFCTrackToolsDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
-}
-
-void CMFCTrackToolsDlg::OnOK()
-{
-
-}
-
-void CMFCTrackToolsDlg::OnCancel()
-{
-
 }
 
 void CMFCTrackToolsDlg::OnClose()
@@ -615,8 +611,36 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackHeart(char *buff)
 	OutputDebugString(_T("ctrlClient_process_trackHeart=====================\n"));
 	return 0;
 }
-static int ctrl_init_track(void * param)
+static int ctrl_connect_status(Connect_Status status, void * param)
 {
+	CMFCTrackToolsDlg* pTrackDlg = (CMFCTrackToolsDlg*)param;
+	if (pTrackDlg == NULL || status == CONNECT_FAIL)
+	{
+		if (pTrackDlg)
+		{
+			free(pTrackDlg->m_track_clientHandle);
+			pTrackDlg->m_track_clientHandle = NULL;
+
+		}
+
+		AfxMessageBox(_T("连接失败"));
+	}
+	else if (status == DISCONNECT_SUCCESS)
+	{
+		if (pTrackDlg)
+		{
+			free(pTrackDlg->m_track_clientHandle);
+			pTrackDlg->m_track_clientHandle = NULL;
+
+		}
+		AfxMessageBox(_T("服务器断开连接"));
+	}
+	else
+	{
+		pTrackDlg->ctrlClient_init_Stream();
+		pTrackDlg->m_connectDialog.EndDialog(0);
+
+	}
 	return  0;
 }
 //回调函数处理
@@ -669,6 +693,18 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	AfxMessageBox(_T(errMsg));
 	return 0;
 }
+int CMFCTrackToolsDlg::ctrlClient_init_trackCommunticationEx(void*param, Net_Info * pnetInfo)
+{
+	CMFCTrackToolsDlg* pTrackDialog = (CMFCTrackToolsDlg*)param;
+	if (pTrackDialog == NULL || pnetInfo == NULL)
+	{
+		AfxMessageBox("程序出错");
+	}
+	
+	strcpy(pTrackDialog->m_trackIp, pnetInfo->Ip);
+	return pTrackDialog->ctrlClient_init_trackCommuntication();
+
+}
 int CMFCTrackToolsDlg::ctrlClient_init_trackCommuntication()
 {
 
@@ -678,13 +714,14 @@ int CMFCTrackToolsDlg::ctrlClient_init_trackCommuntication()
 		return -1;
 	}
 
-	m_track_clientHandle = communtication_create_clientHandle("192.168.11.140", C_CONTROL_TRACK,
-		ctrlClient_process_trackMsgEx, ctrlClient_process_trackHeartEx, ctrl_init_track, this);
+	m_track_clientHandle = communtication_create_clientHandle(m_trackIp, C_CONTROL_TRACK,
+		ctrlClient_process_trackMsgEx, ctrlClient_process_trackHeartEx, ctrl_connect_status, this);
 	if (m_track_clientHandle == NULL) {
 		AfxMessageBox(TEXT("创建客户端失败"));
 		return -1;
 	}
 	dlgTch.setConnectHandle(m_track_clientHandle);
+	dlgStu.setConnectHandle(m_track_clientHandle);
 	return  0;
 }
 
@@ -708,4 +745,18 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 
 	*pResult = 0;
+}
+
+
+BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	if (pMsg->message == WM_KEYDOWN   &&   pMsg->wParam == VK_ESCAPE)
+	{
+		pMsg->wParam = VK_RETURN;   //将ESC键的消息替换为回车键的消息，这样，按ESC的时候  
+		//也会去调用OnOK函数，而OnOK什么也不做，这样ESC也被屏蔽  
+	}
+	if (pMsg->message == WM_KEYDOWN&&pMsg->wParam == VK_RETURN)
+		return TRUE;
+	return CDialogEx::PreTranslateMessage(pMsg);
 }

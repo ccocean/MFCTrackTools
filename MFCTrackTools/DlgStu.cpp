@@ -54,7 +54,13 @@ END_MESSAGE_MAP()
 
 void DlgStu::getParameters()
 {
-
+	int ret = 0;
+	ret = ctrlClient_get_stu_params(m_Connect_clientHandle);
+	if (ret != 0)
+	{
+		OutputDebugString("获取学生参数失败！");
+	}
+	return;
 }
 
 int DlgStu::checkParameters()
@@ -128,12 +134,29 @@ int DlgStu::checkParameters()
 	}
 	return 0;
 }
-
+void DlgStu::setConnectHandle(Commutication_Handle_t pConnect_clientHandle)
+{
+	m_Connect_clientHandle = pConnect_clientHandle;
+}
 void DlgStu::OnBnClickedBtnstuapply()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	if (checkParameters()==0)
 	{
-		//ctrlClient_set_teach_params(&stu_params, m_Connect_clientHandle);
+		ctrlClient_set_stu_params(&stu_params, m_Connect_clientHandle);
 	}
+}
+
+
+BOOL DlgStu::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	if (pMsg->message == VK_RETURN || pMsg->wParam == VK_ESCAPE)
+	{
+		pMsg->wParam = VK_RETURN;   //将ESC键的消息替换为回车键的消息，这样，按ESC的时候  
+		//也会去调用OnOK函数，而OnOK什么也不做，这样ESC也被屏蔽    
+	}
+	if (pMsg->message == WM_KEYDOWN&&pMsg->wParam == VK_RETURN)
+		return TRUE;
+	return CDialog::PreTranslateMessage(pMsg);
 }

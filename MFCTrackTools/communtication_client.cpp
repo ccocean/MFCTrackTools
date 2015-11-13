@@ -115,13 +115,13 @@ static int communtication_clientHeartThread(void *argv)
 
 	Communtication_Head_t *head = NULL;
 	//char headbuf[256] = {0};
-	Sleep(2000);
+	//Sleep(2000);
 	WORD wVersionRequested;
 	WSADATA wsaData;
 	int err;
 	wVersionRequested = MAKEWORD(1, 1);
 	err = WSAStartup(wVersionRequested, &wsaData);
-REPEAT_CONNECT:
+//REPEAT_CONNECT:
 	//share_outputlog(NS_WARN, "client will connet to server [%s:%d]\n", ip, port);
 	handle->client_socket = -1;
 
@@ -137,8 +137,11 @@ REPEAT_CONNECT:
 
 	if (ret != RHRETSUCCESS) {
 		share_outputlog(NS_ERROR, "connet server fd is failed,the pot is [%d] ip:%s\n", port, ip);
-		Sleep(1000);
-		goto REPEAT_CONNECT;
+		//Sleep(1000);
+		if (handle->ConnectStatusPtr != NULL) {
+			handle->ConnectStatusPtr(CONNECT_FAIL, handle->param);
+		}
+		goto CLIENT_EXIT;
 	}
 
 	share_outputlog(NS_INFO, "connet [%s:%d] is ok\n", ip, port);
@@ -146,8 +149,8 @@ REPEAT_CONNECT:
 	communtication_set_handleStatus(handle, START_STATUS);
 
 	//init ;
-	if (handle->ConnectServerInitPtr != NULL) {
-		handle->ConnectServerInitPtr(handle->param);
+	if (handle->ConnectStatusPtr != NULL) {
+		handle->ConnectStatusPtr(CONNECT_SUCCESS, handle->param);
 	}
 
 	RH_SetRcvTimeoutFd(client_socket, 3, 0);
@@ -164,15 +167,15 @@ REPEAT_CONNECT:
 		if (ret != RHRETSUCCESS || RecvLen != needlen) {
 			OutputDebugString(_T("tcp recv failed\n"));
 			share_outputlog(NS_ERROR, "tcp recv failed,the port is [%u].\n", port);
-			Sleep(500);
-			goto REPEAT_CONNECT;
+			//Sleep(500);
+			break;
 		}
 
 		//check head
 		if (communtication_check_head(&headbuf) != 0) {
 			share_outputlog(NS_ERROR, "%s,communtication_check_head is failed,the port = [%u].\n", __FUNCTION__, port);
-			Sleep(500);
-			goto REPEAT_CONNECT;
+			//Sleep(500);
+			break;
 		}
 
 		head = &headbuf;
@@ -183,8 +186,8 @@ REPEAT_CONNECT:
 
 		if (ret != RHRETSUCCESS || RecvLen != needlen) {
 			share_outputlog(NS_ERROR, "Commutication tcp recv is failed,the cmd is [%u],the port = [%u]\n", head->cmd, port);
-			Sleep(500);
-			goto REPEAT_CONNECT;
+			//Sleep(500);
+			break;
 		}
 
 		//心跳也需要上报
@@ -197,14 +200,18 @@ REPEAT_CONNECT:
 			}
 		}
 	}
-
-
 	handle->client_socket = -1;
 
 	if (client_socket > 0) {
 		RH_Close(__FILE__, (char *)__FUNCTION__, client_socket);
 		client_socket = -1;
 	}
+	if (handle->ConnectStatusPtr != NULL) {
+		handle->ConnectStatusPtr(DISCONNECT_SUCCESS, handle->param);
+	}
+CLIENT_EXIT:
+
+	
 	WSACleanup();
 	//printf_pthread_delete(__FILE__, (char *)__FUNCTION__);
 	pthread_detach(pthread_self());
@@ -256,7 +263,7 @@ int commutication_init_head(Communtication_Head_t *head, int identifier)
 
 /*创建handle，同时产生后台的线程*/
 Commutication_Handle_t communtication_create_clientHandle(char *dst_ip, unsigned short dst_port, DealCmdFunc func1, 
-	DealheartbitFunc func2, ConnectServerInitFunc func3, void * param)
+	DealheartbitFunc func2, ConnectStatuscall func3, void * param)
 {
 	if (dst_ip == NULL || dst_port == 0) {
 		 share_outputlog(NS_ERROR, "local_ip or local_port is error\n");
@@ -289,7 +296,7 @@ Commutication_Handle_t communtication_create_clientHandle(char *dst_ip, unsigned
 	handle->port = dst_port;
 	handle->DealCmdFuncPtr = func1;
 	handle->DealHeartbitFuncPtr = func2;
-	handle->ConnectServerInitPtr = func3;
+	handle->ConnectStatusPtr = func3;
 	handle->param = param;
 	sprintf_s(task_name, sizeof(task_name), "clientcommutication_%d", dst_port);
 	//printf_pthread_create(__FILE__, ("communtication_clientHeartThread"));

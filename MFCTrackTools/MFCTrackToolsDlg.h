@@ -14,6 +14,7 @@
 #include "afxcmn.h"
 #include "DlgTch.h"
 #include "DlgStu.h"
+#include"connect.h"
 #define WIDTH 480
 #define HEIGHT 264
 //using namespace cv;
@@ -61,8 +62,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnClose();
-	afx_msg void OnOK();
-	afx_msg void OnCancel();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
@@ -151,6 +150,7 @@ public:
 	CButton m_btnFocusDsd;
 	BITMAPINFO m_bmphdr;
 private:
+	char m_trackIp[16];
 	BOOL initProgramControl();
 	BOOL initNetCommuntication();
 	void trackdraw();
@@ -164,7 +164,11 @@ public:
 
 	int ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle);
 	int ctrlClient_process_trackHeart(char *buff);
+	BOOL ctrlClient_init_Stream();
 
 	Commutication_Handle_t m_track_clientHandle;
 	afx_msg void OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	static int ctrlClient_init_trackCommunticationEx(void*param, Net_Info * pnetInfo);
+	trackconnect m_connectDialog;
 };

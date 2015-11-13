@@ -45,7 +45,13 @@ END_MESSAGE_MAP()
 
 void DlgTch::getParameters()
 {
-
+	int ret = 0;
+	ret = ctrlClient_get_teach_params(m_Connect_clientHandle);
+	if (ret != 0)
+	{
+		OutputDebugString("获取老师参数失败！");
+	}
+	return;
 }
 
 int DlgTch::checkParameters()
@@ -130,4 +136,17 @@ void DlgTch::OnBnClickedbtnapply()
 void DlgTch::setConnectHandle(Commutication_Handle_t pConnect_clientHandle)
 {
 	m_Connect_clientHandle = pConnect_clientHandle;
+}
+
+BOOL DlgTch::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	if (pMsg->message == WM_KEYDOWN   &&   pMsg->wParam == VK_ESCAPE)
+	{
+		pMsg->wParam = VK_RETURN;   //将ESC键的消息替换为回车键的消息，这样，按ESC的时候  
+		//也会去调用OnOK函数，而OnOK什么也不做，这样ESC也被屏蔽   
+	}
+	if (pMsg->message == WM_KEYDOWN&&pMsg->wParam == VK_RETURN)
+		return TRUE;
+	return CDialog::PreTranslateMessage(pMsg);
 }

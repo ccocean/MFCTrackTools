@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="communtication.h" />
+    <ClInclude Include="connect.h" />
     <ClInclude Include="decode.h" />
     <ClInclude Include="DlgStu.h" />
     <ClInclude Include="DlgTch.h" />
@@ -124,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="communtication_client.cpp" />
+    <ClCompile Include="connect.cpp" />
     <ClCompile Include="decode.cpp" />
     <ClCompile Include="DlgStu.cpp" />
     <ClCompile Include="DlgTch.cpp" />

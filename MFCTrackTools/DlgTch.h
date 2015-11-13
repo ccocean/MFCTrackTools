@@ -17,7 +17,6 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
-
 	DECLARE_MESSAGE_MAP()
 public:
 	CEdit m_editX;
@@ -36,6 +35,7 @@ public:
 	int checkParameters();
 	void getParameters();
 public:
-	void setConnectHandle(Commutication_Handle_t m_Connect_clientHandle);
+	void setConnectHandle(Commutication_Handle_t pConnect_clientHandle);
 	Commutication_Handle_t m_Connect_clientHandle;
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

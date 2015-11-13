@@ -60,6 +60,9 @@
     <ClInclude Include="DlgStu.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="connect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCTrackTools.cpp">
@@ -90,6 +93,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DlgStu.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="connect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

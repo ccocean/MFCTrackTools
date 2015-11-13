@@ -19,7 +19,7 @@ typedef int			int32_t;
 
 #define RHRETSUCCESS			0
 #define RHRETFAIL				-1
-#define COMMUN_CONNECT_TIMEOUT 2
+#define COMMUN_CONNECT_TIMEOUT 1
 // *****************************************************
 // function	: 以阻塞模式TCP SOCKET 发送数据
 // author 	: zhengyb		2014.9.1

@@ -1,7 +1,7 @@
 #pragma once
 #include "stuTrack_settings_parameter.h"
 #include "afxwin.h"
-
+#include "track_client_commintication.h"
 // DlgStu ¶Ô»°¿ò
 
 class DlgStu : public CDialog
@@ -43,4 +43,8 @@ public:
 	CEdit m_edtSitFrm;
 	CEdit m_edtMoveDev;
 	CEdit m_edtMoveDly;
+public:
+	void setConnectHandle(Commutication_Handle_t pConnect_clientHandle);
+	Commutication_Handle_t m_Connect_clientHandle;
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
