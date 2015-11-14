@@ -722,8 +722,7 @@ static int ctrl_connect_status(Connect_Status status, void * param)
 	else
 	{
 		pTrackDlg->ctrlClient_init_Stream();
-		pTrackDlg->m_connectDialog.EndDialog(0);
-
+		PostMessage(pTrackDlg->m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 	}
 	return  0;
 }
