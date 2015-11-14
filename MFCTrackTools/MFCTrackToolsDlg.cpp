@@ -371,6 +371,7 @@ void CMFCTrackToolsDlg::OnClose()
 	if (MessageBox(_T("确定退出吗"), _T("提示"), MB_YESNO | MB_ICONWARNING)
 		== IDNO)
 		return;
+	skinppExitSkin();
 	CDialogEx::OnClose();
 }
 
