@@ -38,4 +38,6 @@ public:
 	void setConnectHandle(Commutication_Handle_t pConnect_clientHandle);
 	Commutication_Handle_t m_Connect_clientHandle;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	CStatic m_txtTchArg;
+	CStatic m_txtBlkArg;
 };

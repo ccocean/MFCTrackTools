@@ -33,6 +33,8 @@ void DlgTch::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_editStand, m_editStand);
 	DDX_Control(pDX, IDC_editTargetArea, m_editTargetArea);
 	DDX_Control(pDX, IDC_editOutSide, m_editOutSide);
+	DDX_Control(pDX, IDC_txtTchArg, m_txtTchArg);
+	DDX_Control(pDX, IDC_txtBlkArg, m_txtBlkArg);
 }
 
 

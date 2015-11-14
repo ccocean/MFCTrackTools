@@ -288,7 +288,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	GetDlgItem(IDC_picSrc)->GetClientRect(&picRect);
 	penY.CreatePen(PS_SOLID, 1, RGB(0, 255, 255));
 	penG.CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
-	
+	penR.CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 	
 	
 	SetTimer(1, fps, NULL);
@@ -403,6 +403,7 @@ void CMFCTrackToolsDlg::trackdraw()
 	{
 		if (pt.x > 0 && pt.y > 0)
 		{
+			pOldPen = pDC->SelectObject(&penR);
 			drawRectangle(p1, pt);
 		}
 		if (mouseCnt == 1)
@@ -540,27 +541,89 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				tch.x = p1.x; tch.y = p1.y;
 				tch.width = p2.x - p1.x;
 				tch.height = p2.y - p1.y;
+
+				tmp = _T(" ,");
+				s.Format(_T("%d"), tch.x);
+				str += s;
+				str += tmp;
+				dlgTch.m_editX.SetWindowTextA(s);
+				s.Format(_T("%d"), tch.y);
+				str += s;
+				str += tmp;
+				dlgTch.m_editY.SetWindowTextA(s);
+				s.Format(_T("%d"), tch.width);
+				str += s;
+				str += tmp;
+				dlgTch.m_editW.SetWindowTextA(s);
+				s.Format(_T("%d"), tch.height);
+				str += s;
+				dlgTch.m_editH.SetWindowTextA(s);
+				dlgTch.m_txtTchArg.SetWindowTextA(str);
+				str = _T("");
 			}
 			if (mouseCnt == 2)
 			{
 				blk.x = p1.x; blk.y = p1.y;
 				blk.width = p2.x - p1.x;
 				blk.height = p2.y - p1.y;
+
+				tmp = _T(" ,");
+				s.Format(_T("%d"), blk.x);
+				str += s;
+				str += tmp;
+				dlgTch.m_editX.SetWindowTextA(s);
+				s.Format(_T("%d"), blk.y);
+				str += s;
+				str += tmp;
+				dlgTch.m_editY.SetWindowTextA(s);
+				s.Format(_T("%d"), blk.width);
+				str += s;
+				str += tmp;
+				dlgTch.m_editW.SetWindowTextA(s);
+				s.Format(_T("%d"), blk.height);
+				str += s;
+				dlgTch.m_editH.SetWindowTextA(s);
+				dlgTch.m_txtBlkArg.SetWindowTextA(str);
+				str = _T("");
 			}
 		}
 		else
 		{
-			if (p1.x < point.x&&point.x < p2.x&&p1.y < point.y&&point.y < p2.y)
+			if (whichRect == 1)
 			{
-				mouseStatus = Mouse_LBUP;
+				tmp = _T(" ,");
+				s.Format(_T("%d"), tch.x);
+				str += s;
+				str += tmp;
+				s.Format(_T("%d"), tch.y);
+				str += s;
+				str += tmp;
+				s.Format(_T("%d"), tch.width);
+				str += s;
+				str += tmp;
+				s.Format(_T("%d"), tch.height);
+				str += s;
+				dlgTch.m_txtTchArg.SetWindowTextA(str);
+				str = _T("");
 			}
-			else
+			else if (whichRect == 2)
 			{
-				/*p1.x = 0, p1.y = 0;
-				p2.x = 0, p2.y = 0;
-				pt.x = point.x, pt.y = point.y;*/
-				mouseStatus = Mouse_LBUP;
+				tmp = _T(" ,");
+				s.Format(_T("%d"), blk.x);
+				str += s;
+				str += tmp;
+				s.Format(_T("%d"), blk.y);
+				str += s;
+				str += tmp;
+				s.Format(_T("%d"), blk.width);
+				str += s;
+				str += tmp;
+				s.Format(_T("%d"), blk.height);
+				str += s;
+				dlgTch.m_txtBlkArg.SetWindowTextA(str);
+				str = _T("");
 			}
+			mouseStatus = Mouse_LBUP;
 		}
 	}
 	CDialogEx::OnLButtonUp(nFlags, point);

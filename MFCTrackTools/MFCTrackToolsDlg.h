@@ -98,6 +98,7 @@ public:
 	//CvRect tch, blk;
 	CString str;
 	CString tmp;
+	CString s;
 	//CvvImage cimg;
 	
 	Track_CamPosSlide_t camPosSlide;
@@ -113,6 +114,7 @@ public:
 	HDC hdc ;
 	CPen penY;
 	CPen penG;
+	CPen penR;
 	CPen *pOldPen;
 
 	double fps;
