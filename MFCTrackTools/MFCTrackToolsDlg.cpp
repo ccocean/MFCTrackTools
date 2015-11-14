@@ -16,6 +16,8 @@
 #define PIC_TOP 60
 
 
+#pragma comment(lib,"SkinPPWTL.lib")
+#include "SkinPPWTL.h"
 static Track_cmd_info_t g_track_cmd[] =
 {
 	{ STU_SETTRACK_CMD, "设置学生参数" },
@@ -67,6 +69,7 @@ CMFCTrackToolsDlg::CMFCTrackToolsDlg(CWnd* pParent /*=NULL*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_track_clientHandle = NULL;
+	m_strSkin = "";
 }
 
 void CMFCTrackToolsDlg::DoDataExchange(CDataExchange* pDX)
@@ -223,8 +226,9 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 
 	//初始化控件
 
+
 	//跟踪参数控件
-	m_tabTrack.SetWindowPos(NULL, LEFT_PIXEL-20, UP_PIXEL - 10, 240, 640, SWP_NOZORDER);
+	m_tabTrack.SetWindowPos(NULL, LEFT_PIXEL-20, UP_PIXEL - 10, 300, 640, SWP_NOZORDER);
 	m_tabTrack.InsertItem(0, "教师");
 	m_tabTrack.InsertItem(1, "学生");
 	
@@ -233,16 +237,21 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgStu.Create(IDD_DlgStu, GetDlgItem(IDC_tabTrack));
 
 	CRect rs;
+	int cx = 0;
+	int cy = 0;
 	m_tabTrack.GetClientRect(&rs);
+
+	cx = rs.right - rs.left;
+	cy = rs.bottom - rs.top - 20;
 	rs.top += 20;
 	rs.bottom -= 0;
 	rs.left += 0;
 	rs.right -= 0;
-	dlgTch.SetWindowPos(NULL, 0, 0, 220, 400, SWP_NOZORDER);
+	dlgTch.SetWindowPos(NULL, 0, 0, cx, cy, SWP_NOZORDER | SWP_NOMOVE);
 	dlgTch.MoveWindow(rs);
 	dlgTch.ShowWindow(TRUE);
 
-	dlgStu.SetWindowPos(NULL, 0, 0, 220, 400, SWP_NOZORDER);
+	dlgStu.SetWindowPos(NULL, 0, 0, cx, cy, SWP_NOZORDER | SWP_NOMOVE);
 	dlgStu.MoveWindow(rs);
 	dlgStu.ShowWindow(FALSE);
 
@@ -289,6 +298,18 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	p2.x = 0;
 	p2.y = 0;
 
+
+
+
+	GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
+	CString str(m_pExeDir);
+	int n = str.ReverseFind('\\');
+	str = str.Left(n);
+
+	memcpy(m_pExeDir, str.GetString(), MAX_PATH);
+	m_strSkin = m_pExeDir;
+	m_strSkin += SKINNAME;
+	skinppLoadSkin((char*)m_strSkin.GetString());
 	return initNetCommuntication();
 
 }

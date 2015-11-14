@@ -17,6 +17,7 @@
 #include"connect.h"
 #define WIDTH 480
 #define HEIGHT 264
+#define SKINNAME "\\skin\\xp_corona.ssk"
 //using namespace cv;
 
 //‘§÷√Œªª¨øÈ
@@ -171,4 +172,6 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	static int ctrlClient_init_trackCommunticationEx(void*param, Net_Info * pnetInfo);
 	trackconnect m_connectDialog;
+	char m_pExeDir[MAX_PATH];
+	CString m_strSkin;
 };
