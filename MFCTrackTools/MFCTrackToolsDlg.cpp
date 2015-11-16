@@ -75,24 +75,13 @@ CMFCTrackToolsDlg::CMFCTrackToolsDlg(CWnd* pParent /*=NULL*/)
 void CMFCTrackToolsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	//  DDX_Control(pDX, IDC_Exit, m_Exit);
+
 	DDX_Control(pDX, IDC_picSrc, m_picOverall);
-	DDX_Control(pDX, IDC_listErr, m_listErr);
+
 	DDX_Control(pDX, IDC_picCam, m_picFeature);
-	DDX_Control(pDX, IDC_btnUp, m_btnUp);
-	DDX_Control(pDX, IDC_btnLeft, m_btnLeft);
-	DDX_Control(pDX, IDC_btnDown, m_btnDown);
-	DDX_Control(pDX, IDC_btnRight, m_btnRight);
+
 	DDX_Control(pDX, IDC_grpBoxCam, m_grpBoxCam);
-	DDX_Control(pDX, IDC_txtTune, m_txtTune);
-	DDX_Control(pDX, IDC_txtFocus, m_txtFocus);
-	DDX_Control(pDX, IDC_btnOrigin, m_btnOrigin);
-	DDX_Control(pDX, IDC_btnTuneAsd, m_btnTuneAsd);
-	DDX_Control(pDX, IDC_btnTuneDsd, m_btnTuneDsd);
-	DDX_Control(pDX, IDC_btnTuneStop, m_btnTuneStop);
-	DDX_Control(pDX, IDC_btnFocusAsd, m_btnFocusAsd);
-	DDX_Control(pDX, IDC_btnFocusStop, m_btnFocusStop);
-	DDX_Control(pDX, IDC_btnFocusDsd, m_btnFocusDsd);
+
 	DDX_Control(pDX, IDC_tabTrack, m_tabTrack);
 }
 
@@ -259,11 +248,11 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 
 	dlgTch.tch_params = { 0 };
 	dlgStu.stu_params = { 0 };
-
+	/*
 	//显示控件及日志控件
 	m_picOverall.SetWindowPos(NULL, 40, PIC_TOP, Frame_Width, Frame_Height, SWP_NOZORDER);
 	m_picFeature.SetWindowPos(NULL, 40, PIC_TOP + 310, Frame_Width, Frame_Height, SWP_NOZORDER);
-	m_listErr.SetWindowPos(NULL, 600, PIC_TOP + 10, 360, 240, SWP_NOZORDER);
+	//m_listErr.SetWindowPos(NULL, 600, PIC_TOP + 10, 360, 240, SWP_NOZORDER);
 
 	//
 	m_grpBoxCam.SetWindowPos(NULL, 600, PIC_TOP + 320, 360, 240, SWP_NOZORDER);
@@ -300,7 +289,13 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 
 
 
-
+	*/
+	pDC = GetDlgItem(IDC_picSrc)->GetDC();
+	hdc = pDC->GetSafeHdc();
+	GetDlgItem(IDC_picSrc)->GetClientRect(&picRect);
+	penY.CreatePen(PS_SOLID, 1, RGB(0, 255, 255));
+	penG.CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+	penR.CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 	GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
 	CString str(m_pExeDir);
 	int n = str.ReverseFind('\\');
