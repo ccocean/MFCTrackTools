@@ -29,12 +29,12 @@ void DlgTch::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_editW, m_editW);
 	DDX_Control(pDX, IDC_editH, m_editH);
 	DDX_Control(pDX, IDC_editPos, m_editPos);
-	DDX_Control(pDX, IDC_editSlide, m_editSlide);
-	DDX_Control(pDX, IDC_editStand, m_editStand);
 	DDX_Control(pDX, IDC_editTargetArea, m_editTargetArea);
 	DDX_Control(pDX, IDC_editOutSide, m_editOutSide);
 	DDX_Control(pDX, IDC_txtTchArg, m_txtTchArg);
 	DDX_Control(pDX, IDC_txtBlkArg, m_txtBlkArg);
+	DDX_Control(pDX, IDC_comboSlide, m_comboSlide);
+	DDX_Control(pDX, IDC_comboStand, m_comboStand);
 }
 
 
@@ -73,7 +73,9 @@ int DlgTch::checkParameters()
 		return -1;
 	}
 	m_editPos.GetWindowText(position);
-	m_editSlide.GetWindowText(slide);
+	//m_editSlide.GetWindowText(slide);
+	int_slide = m_comboSlide.GetCurSel();
+	m_comboSlide.GetLBText(int_slide, slide);
 	if (position.IsEmpty() || slide.IsEmpty())
 	{
 		MessageBox("预置位或滑框宽度为空！");
@@ -99,7 +101,8 @@ int DlgTch::checkParameters()
 			tch_params.numOfSlide = int_slide;
 		}
 	}
-	m_editStand.GetWindowText(stand);
+	//m_editStand.GetWindowText(stand);
+	m_comboStand.GetWindowText(stand);
 	m_editTargetArea.GetWindowText(targetArea);
 	m_editOutSide.GetWindowText(outside);
 	if (stand.IsEmpty() || targetArea.IsEmpty() || outside.IsEmpty())
@@ -109,7 +112,8 @@ int DlgTch::checkParameters()
 	}
 	else
 	{
-		_stand = _ttoi(stand);
+		_stand = m_comboStand.GetCurSel();
+		_stand += 1;
 		_targetArea = _ttoi(targetArea);
 		_outside = _ttoi(outside);
 		if (_stand <= 0 || _targetArea <= 0 || _outside <= 0)

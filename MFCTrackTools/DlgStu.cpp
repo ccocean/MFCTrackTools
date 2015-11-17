@@ -25,7 +25,7 @@ DlgStu::~DlgStu()
 void DlgStu::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDT_LEFTUP_POS, m_edtLfetUpPos);
+	DDX_Control(pDX, IDC_EDT_LEFTUP_POS, m_edtLeftUpPos);
 	DDX_Control(pDX, IDC_EDT_LEFTDN_POS, m_edtLeftDnPos);
 	DDX_Control(pDX, IDC_EDT_RIGHTUP_POS, m_edtRightUpPos);
 	DDX_Control(pDX, IDC_EDT_RIGHTDN_POS, m_edtRightDnPos);

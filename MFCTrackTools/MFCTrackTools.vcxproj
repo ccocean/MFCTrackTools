@@ -110,6 +110,7 @@
     <ClInclude Include="communtication.h" />
     <ClInclude Include="connect.h" />
     <ClInclude Include="decode.h" />
+    <ClInclude Include="DlgCam.h" />
     <ClInclude Include="DlgStu.h" />
     <ClInclude Include="DlgTch.h" />
     <ClInclude Include="MFCTrackTools.h" />
@@ -127,6 +128,7 @@
     <ClCompile Include="communtication_client.cpp" />
     <ClCompile Include="connect.cpp" />
     <ClCompile Include="decode.cpp" />
+    <ClCompile Include="DlgCam.cpp" />
     <ClCompile Include="DlgStu.cpp" />
     <ClCompile Include="DlgTch.cpp" />
     <ClCompile Include="MFCTrackTools.cpp" />

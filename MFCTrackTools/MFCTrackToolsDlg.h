@@ -14,10 +14,11 @@
 #include "afxcmn.h"
 #include "DlgTch.h"
 #include "DlgStu.h"
+#include "DlgCam.h"
 #include"connect.h"
 #define WIDTH 480
 #define HEIGHT 264
-#define SKINNAME "\\skin\\xp_corona.ssk"
+#define SKINNAME "\\skin\\XP-Metallic.ssk"
 //using namespace cv;
 
 //预置位滑块
@@ -30,12 +31,21 @@ typedef struct CamPositionSlide
 	int width;
 }Track_CamPosSlide_t;
 
-#define Mouse_LBDOWN 1
 #define Mouse_LBUP 0
-#define Mouse_DRAG 3
+#define Mouse_LBDOWN 1
+#define Mouse_RBDOWN 2
+#define Mouse_RBUP 3
+#define Mouse_DRAG 4
+#define Mouse_ADJUST_A 5
+#define Mouse_ADJUST_B 6
+#define Mouse_ADJUST_C 7
+#define Mouse_ADJUST_D 8
 
 #define Frame_Width 480	    //960
 #define Frame_Height 264	//540
+
+#define TCH_TAB 0
+#define STU_TAB 1
 
 // CMFCTrackToolsDlg 对话框
 class CMFCTrackToolsDlg : public CDialogEx
@@ -66,17 +76,18 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnBnClickedbtnsavetch();
-	afx_msg void OnBnClickedbtnsaveblk();
-	afx_msg void OnBnClickedbtnset();
-	afx_msg void OnBnClickedbtnsavepos();
-	afx_msg void OnBnClickedbtnsavetrack();
-	afx_msg void OnBnClickedbtnsavethreshold();
+	//afx_msg void OnBnClickedbtnsavetch();
+	//afx_msg void OnBnClickedbtnsaveblk();
+	//afx_msg void OnBnClickedbtnset();
+	//afx_msg void OnBnClickedbtnsavepos();
+	//afx_msg void OnBnClickedbtnsavetrack();
+	//afx_msg void OnBnClickedbtnsavethreshold();
 	afx_msg void OnBnClickedbtnapply();
 	afx_msg void OnBnClickedbtndefault();
 
 	DlgTch dlgTch;
 	DlgStu dlgStu;
+	DlgCam dlgCam;
 	int CurSel;//标签的标志
 	// 用来播放视频的控件
 	CStatic m_picOverall;//全景控件
@@ -91,11 +102,6 @@ public:
 	AVCodec *pCodec = NULL;
 
 	CRect picRect;
-	//IplImage *frame;
-	//IplImage *srcImg = cvCreateImage(cvSize(Frame_Width, Frame_Height), 8, 3);
-	//CvPoint p1, p2;
-	//CvPoint pt;
-	//CvRect tch, blk;
 	CString str;
 	CString tmp;
 	CString s;
@@ -105,6 +111,7 @@ public:
 	TeaITRACK_Params params;
 
 	CPoint p1, p2, pt;
+	CPoint pa, pb, pc, pd;
 	Tch_Rect_t tch, blk;
 	int mouseStatus = 0;
 	int mouseCnt = 0;
@@ -158,9 +165,9 @@ private:
 	BOOL initNetCommuntication();
 	void trackdraw();
 	void drawRectangle(CPoint a, CPoint b);
+	void drawRectangle(CPoint a, CPoint b, CPoint c, CPoint d);
 public:
 	int video_display(Decode_Info_t *pInfo);
-	afx_msg void OnBnClickedbtnup();
 	CTabCtrl m_tabTrack;
 public:
 	int ctrlClient_init_trackCommuntication();
@@ -176,4 +183,7 @@ public:
 	trackconnect m_connectDialog;
 	char m_pExeDir[MAX_PATH];
 	CString m_strSkin;
+	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 };

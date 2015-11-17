@@ -25,7 +25,6 @@ public:
 	CEdit m_editH;
 	CEdit m_editPos;
 	CEdit m_editSlide;
-	CEdit m_editStand;
 	CEdit m_editTargetArea;
 	CEdit m_editOutSide;
 
@@ -40,4 +39,6 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CStatic m_txtTchArg;
 	CStatic m_txtBlkArg;
+	CComboBox m_comboSlide;
+	CComboBox m_comboStand;
 };

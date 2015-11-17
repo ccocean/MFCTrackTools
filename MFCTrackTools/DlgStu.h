@@ -26,7 +26,7 @@ public:
 	int checkParameters();
 	void getParameters();
 	
-	CEdit m_edtLfetUpPos;
+	CEdit m_edtLeftUpPos;
 	CEdit m_edtLeftDnPos;
 	CEdit m_edtRightUpPos;
 	CEdit m_edtRightDnPos;
