@@ -12,7 +12,8 @@ extern "C"
 #include "../include/libavutil/imgutils.h"
 #include "../include/libavutil/pixfmt.h"
 }
-
+#define WIDTH 480
+#define HEIGHT 264
 typedef struct _decoder 
 {
 	AVCodec         *pCodec = NULL;

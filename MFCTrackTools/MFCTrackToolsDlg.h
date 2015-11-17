@@ -16,9 +16,34 @@
 #include "DlgStu.h"
 #include "DlgCam.h"
 #include"connect.h"
-#define WIDTH 480
-#define HEIGHT 264
+#include <cmath>
+#include "decode.h"
+
+
 #define SKINNAME "\\skin\\XP-Metallic.ssk"
+
+#define Mouse_LBUP 0
+#define Mouse_LBDOWN 1
+#define Mouse_RBDOWN 2
+#define Mouse_RBUP 3
+#define Mouse_LBDRAG 4
+#define Mouse_RBDRAG 5
+#define Mouse_ADJUST_A 6
+#define Mouse_ADJUST_B 7
+#define Mouse_ADJUST_C 8
+#define Mouse_ADJUST_D 9
+
+#define Frame_Width WIDTH	    //960
+#define Frame_Height HEIGHT	//540
+
+#define TCH_TAB 0
+#define STU_TAB 1
+
+#define DRAW_ANGLE 0
+#define DRAW_WIDTH 1
+
+#define ITC_RADIAN_TO_ANGLE	57.29577951308 //弧度转角度参数
+
 //using namespace cv;
 
 //预置位滑块
@@ -31,21 +56,7 @@ typedef struct CamPositionSlide
 	int width;
 }Track_CamPosSlide_t;
 
-#define Mouse_LBUP 0
-#define Mouse_LBDOWN 1
-#define Mouse_RBDOWN 2
-#define Mouse_RBUP 3
-#define Mouse_DRAG 4
-#define Mouse_ADJUST_A 5
-#define Mouse_ADJUST_B 6
-#define Mouse_ADJUST_C 7
-#define Mouse_ADJUST_D 8
 
-#define Frame_Width 480	    //960
-#define Frame_Height 264	//540
-
-#define TCH_TAB 0
-#define STU_TAB 1
 
 // CMFCTrackToolsDlg 对话框
 class CMFCTrackToolsDlg : public CDialogEx
@@ -110,54 +121,40 @@ public:
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
 
-	CPoint p1, p2, pt;
-	CPoint pa, pb, pc, pd;
+	CPoint p1 = { 0 }, p2 = { 0 }, pt = { 0 };//教师区域跟踪框的点
+	CPoint pa = { 0 }, pb = { 0 }, pc = { 0 }, pd = { 0 };//学生跟踪参数四顶点的坐标
+	CPoint pA = { 0 }, pB = { 0 }, pC = { 0 }, pD = { 0 };//学生跟踪参数四顶点的角度，delta值为pA-pa。
+	CPoint ln1[2],ln2[2],ln3[2],ln4[2];//表示宽度的线段
+
 	Tch_Rect_t tch, blk;
 	int mouseStatus = 0;
 	int mouseCnt = 0;
 	int whichRect = 0;
+	int isKeyDown = 0;
+	int isRightButton = 0;
+	int whichVertex = -1;
+
+	int rst = -1;
+	int angle = 0;//角度
+	int dist = 0;
 
 	CDC *pDC ;
 	HDC hdc ;
 	CPen penY;
 	CPen penG;
 	CPen penR;
+	CPen penB;
 	CPen *pOldPen;
+	CBrush *pBrush = CBrush::FromHandle((HBRUSH)
+		GetStockObject(NULL_BRUSH));
+	CBrush *pOldBrush;
 
-	double fps;
-	int vfps;
-	
-	CListBox m_listErr;
-	CButton m_btnSaveTrack;
-	
-	CStatic m_txtStand;
-	CStatic m_txtTargetArea;
-	CStatic m_txtOutSide;
-	CEdit m_editStand;
-	CEdit m_editTargetArea;
-	CEdit m_editOutSide;
-	CStatic m_grpBoxThreshold;
-	CButton m_btnSaveThreshold;
-	
-	CButton m_btnApply;
-	
-	CButton m_btnDefault;
 	
 	
-	CButton m_btnUp;
-	CButton m_btnLeft;
-	CButton m_btnDown;
-	CButton m_btnRight;
-	CStatic m_grpBoxCam;
-	CStatic m_txtTune;
-	CStatic m_txtFocus;
-	CButton m_btnOrigin;
-	CButton m_btnTuneAsd;
-	CButton m_btnTuneDsd;
-	CButton m_btnTuneStop;
-	CButton m_btnFocusAsd;
-	CButton m_btnFocusStop;
-	CButton m_btnFocusDsd;
+
+	
+	
+	
 	BITMAPINFO m_bmphdr;
 private:
 	char m_trackIp[16];
@@ -166,6 +163,12 @@ private:
 	void trackdraw();
 	void drawRectangle(CPoint a, CPoint b);
 	void drawRectangle(CPoint a, CPoint b, CPoint c, CPoint d);
+	void drawLine(CPoint a, CPoint b);
+	void drawEndRect(CPoint center,int size);
+	void drawLines(int flag);
+	int minimalDistance(CPoint in);
+	int getDistance(CPoint a, CPoint b);
+	void updateLines();
 public:
 	int video_display(Decode_Info_t *pInfo);
 	CTabCtrl m_tabTrack;
@@ -186,4 +189,6 @@ public:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 };

@@ -97,7 +97,7 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outp
 			uint8_t         *buffer = NULL;
 			int initSize = 0;
 			decoder->img_convert_ctx = sws_getContext(decoder->pCodecCtx->width, decoder->pCodecCtx->height, decoder->pCodecCtx->pix_fmt,
-				decoder->pCodecCtx->width, decoder->pCodecCtx->height, AV_PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
+				WIDTH, HEIGHT, AV_PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
 			initSize = av_image_get_buffer_size(AV_PIX_FMT_BGR24, decoder->pCodecCtx->width, decoder->pCodecCtx->height, 16);
 			buffer = (uint8_t *)malloc(initSize*sizeof(uint8_t));
 			memset(buffer, 0, initSize);
@@ -117,7 +117,10 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outp
 		outsize = (decoder->pCodecCtx->width * decoder->pCodecCtx->height * 3);
 		//outputbuffer = (unsigned char *)malloc(outsize*sizeof(char));
 		memset(outputbuffer, 0, outsize*sizeof(char));
-		memcpy(outputbuffer, decoder->pFrameRGB->data[0], outsize);
+		for (int i = 0; i < HEIGHT;i++)
+		{
+			memcpy(outputbuffer + WIDTH * 3 * i, (decoder->pFrameRGB->linesize[0])*i + decoder->pFrameRGB->data[0], WIDTH * 3);
+		}
 
 		
 
