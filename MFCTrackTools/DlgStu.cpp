@@ -41,7 +41,7 @@ void DlgStu::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDT_STAND_FRM, m_edtStandFrm);
 	DDX_Control(pDX, IDC_EDT_SIT_FRM, m_edtSitFrm);
 	DDX_Control(pDX, IDC_EDT_MOVE_DEV, m_edtMoveDev);
-	DDX_Control(pDX, IDC_EDT_MOVE_DLY, m_edtMoveDly);
+	DDX_Control(pDX, IDC_COMBO_MOVE_DLY, m_comboDly);
 }
 
 
@@ -88,7 +88,9 @@ int DlgStu::checkParameters()
 	m_edtStandFrm.GetWindowText(standFrm);
 	m_edtSitFrm.GetWindowText(sitFrm);
 	m_edtMoveDev.GetWindowText(moveDev);
-	m_edtMoveDly.GetWindowText(moveDly);
+	_moveDly = m_comboDly.GetCurSel();
+	m_comboDly.GetLBText(_moveDly, moveDly);
+	//m_edtMoveDly.GetWindowText(moveDly);
 	if (standAgl.IsEmpty()||standFrm.IsEmpty()||sitFrm.IsEmpty()||moveDev.IsEmpty()||moveDly.IsEmpty())
 	{
 		MessageBox("数据不能为空！");

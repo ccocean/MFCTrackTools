@@ -261,7 +261,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgStu.stu_params = { 0 };
 	
 	//初始化DlgTch中的控件
-	dlgTch.m_editPos.SetWindowTextA(_T("大于滑框宽度"));
+	dlgTch.m_editPos.SetWindowText(_T("大于滑框宽度"));
 	dlgTch.m_comboSlide.InsertString(0,_T("3"));
 	dlgTch.m_comboSlide.InsertString(1,_T("5"));
 	dlgTch.m_comboSlide.InsertString(2,_T("7"));
@@ -271,6 +271,18 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgTch.m_comboStand.InsertString(2, _T("3秒"));
 	dlgTch.m_comboStand.InsertString(3, _T("4秒"));
 	dlgTch.m_comboStand.InsertString(4, _T("5秒"));
+
+	//初始化DlgStu中的控件
+	dlgStu.m_edtStandAgl.SetWindowText(_T("0~360度"));
+	dlgStu.m_edtStandFrm.SetWindowText(_T("3~10帧"));
+	dlgStu.m_edtSitFrm.SetWindowText(_T("3~10帧"));
+	dlgStu.m_edtMoveDev.SetWindowText(_T("0.2~2.0"));
+	dlgStu.m_comboDly.InsertString(0, _T("500ms"));
+	dlgStu.m_comboDly.InsertString(1, _T("1000ms"));
+	dlgStu.m_comboDly.InsertString(2, _T("1500ms"));
+	dlgStu.m_comboDly.InsertString(3, _T("2000ms"));
+	dlgStu.m_comboDly.InsertString(4, _T("2500ms"));
+	dlgStu.m_comboDly.InsertString(5, _T("3000ms"));
 
 	p1.x = 0;
 	p1.y = 0;
@@ -880,6 +892,7 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				mouseStatus = Mouse_LBUP;
 			}
 		}
+		//学生界面的左键抬起操作
 		else
 		{
 			if (mouseStatus==Mouse_LBDOWN)
@@ -907,6 +920,18 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				}
 				pb.x = pc.x; pb.y = pa.y;
 				pd.x = pa.x; pd.y = pc.y;
+
+				dlgStu.stu_params.stuTrack_vertex[0].x = pa.x;
+				dlgStu.stu_params.stuTrack_vertex[0].y = pa.y;
+
+				dlgStu.stu_params.stuTrack_vertex[1].x = pb.x;
+				dlgStu.stu_params.stuTrack_vertex[1].y = pb.y;
+
+				dlgStu.stu_params.stuTrack_vertex[2].x = pc.x;
+				dlgStu.stu_params.stuTrack_vertex[2].y = pc.y;
+
+				dlgStu.stu_params.stuTrack_vertex[3].x = pd.x;
+				dlgStu.stu_params.stuTrack_vertex[3].y = pd.y;
 
 				updateLines();
 
@@ -949,6 +974,17 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 			}
 			else
 			{
+				dlgStu.stu_params.stuTrack_vertex[0].x = pa.x;
+				dlgStu.stu_params.stuTrack_vertex[0].y = pa.y;
+
+				dlgStu.stu_params.stuTrack_vertex[1].x = pb.x;
+				dlgStu.stu_params.stuTrack_vertex[1].y = pb.y;
+
+				dlgStu.stu_params.stuTrack_vertex[2].x = pc.x;
+				dlgStu.stu_params.stuTrack_vertex[2].y = pc.y;
+
+				dlgStu.stu_params.stuTrack_vertex[3].x = pd.x;
+				dlgStu.stu_params.stuTrack_vertex[3].y = pd.y;
 				updateLines();
 				tmp = _T(" ,");
 				s.Format(_T("%d"), pa.x);
@@ -1204,74 +1240,84 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 					isRightButton = 1;
 				}
 			}
-			else
+			else if (pA.x - 10 <= point.x - 40 && point.x - 40 <= pA.x + 10 && pA.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pA.y + 10)
 			{
-				//拖拽终点调整四个顶点的角度
-				if (pA.x > 0 && pA.y > 0)
+				if (pA.x>0&&pA.y>0)
 				{
-					if (pA.x - 10 <= point.x - 40 && point.x - 40 <= pA.x + 10 && pA.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pA.y + 10)
-					{
-						pt = point;
-						p1 = pa;
-						mouseStatus = Mouse_RBDRAG;
-					}
+					pt = point;
+					p1 = pa;
+					mouseStatus = Mouse_RBDRAG;
+					whichVertex = -1;
 				}
-				if (pB.x > 0 && pB.y > 0)
+			}
+			else if (pB.x - 10 <= point.x - 40 && point.x - 40 <= pB.x + 10 && pB.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pB.y + 10)
+			{
+				if (pB.x>0&&pB.y>0)
 				{
-					if (pB.x - 10 <= point.x - 40 && point.x - 40 <= pB.x + 10 && pB.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pB.y + 10)
-					{
-						pt = point;
-						p1 = pb;
-						mouseStatus = Mouse_RBDRAG;
-					}
+					pt = point;
+					p1 = pb;
+					mouseStatus = Mouse_RBDRAG;
+					whichVertex = -1;
 				}
+			}
+			else if (pC.x - 10 <= point.x - 40 && point.x - 40 <= pC.x + 10 && pC.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pC.y + 10)
+			{
 				if (pC.x > 0 && pC.y > 0)
 				{
-					if (pC.x - 10 <= point.x - 40 && point.x - 40 <= pC.x + 10 && pC.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pC.y + 10)
-					{
-						pt = point;
-						p1 = pc;
-						mouseStatus = Mouse_RBDRAG;
-					}
+					pt = point;
+					p1 = pc;
+					mouseStatus = Mouse_RBDRAG;
+					whichVertex = -1;
 				}
+			}
+			else if (pD.x - 10 <= point.x - 40 && point.x - 40 <= pD.x + 10 && pD.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pD.y + 10)
+			{
 				if (pD.x > 0 && pD.y > 0)
 				{
-					if (pD.x - 10 <= point.x - 40 && point.x - 40 <= pD.x + 10 && pD.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pD.y + 10)
-					{
-						pt = point;
-						p1 = pd;
-						mouseStatus = Mouse_RBDRAG;
-					}
-				}
-				//调整四个顶点的宽度
-				if (ln1[1].x - 5 <= point.x - 40 && point.x - 40 <= ln1[1].x + 5 && ln1[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln1[1].y + 5)
-				{
 					pt = point;
-					//p2 = pa;
-					whichVertex = 0;
+					p1 = pd;
 					mouseStatus = Mouse_RBDRAG;
+					whichVertex = -1;
 				}
-				if (ln2[1].x - 5 <= point.x - 40 && point.x - 40 <= ln2[1].x + 5 && ln2[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln2[1].y + 5)
-				{
-					pt = point;
-					//p2 = pb;
-					whichVertex = 1;
-					mouseStatus = Mouse_RBDRAG;
-				}
-				if (ln3[1].x - 5 <= point.x - 40 && point.x - 40 <= ln3[1].x + 5 && ln3[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln3[1].y + 5)
-				{
-					pt = point;
-					//p2 = pc;
-					whichVertex = 2;
-					mouseStatus = Mouse_RBDRAG;
-				}
-				if (ln4[1].x - 5 <= point.x - 40 && point.x - 40 <= ln4[1].x + 5 && ln4[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln4[1].y + 5)
-				{
-					pt = point;
-					//p2 = pd;
-					whichVertex = 3;
-					mouseStatus = Mouse_RBDRAG;
-				}
+			}
+			//调整四个顶点的宽度
+			else if (ln1[1].x - 5 <= point.x - 40 && point.x - 40 <= ln1[1].x + 5 && ln1[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln1[1].y + 5)
+			{
+				pt = point;
+				//p2 = pa;
+				whichVertex = 0;
+				mouseStatus = Mouse_RBDRAG;
+			}
+			else if (ln2[1].x - 5 <= point.x - 40 && point.x - 40 <= ln2[1].x + 5 && ln2[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln2[1].y + 5)
+			{
+				pt = point;
+				//p2 = pb;
+				whichVertex = 1;
+				mouseStatus = Mouse_RBDRAG;
+			}
+			else if (ln3[1].x - 5 <= point.x - 40 && point.x - 40 <= ln3[1].x + 5 && ln3[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln3[1].y + 5)
+			{
+				pt = point;
+				//p2 = pc;
+				whichVertex = 2;
+				mouseStatus = Mouse_RBDRAG;
+			}
+			else if (ln4[1].x - 5 <= point.x - 40 && point.x - 40 <= ln4[1].x + 5 && ln4[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln4[1].y + 5)
+			{
+				pt = point;
+				//p2 = pd;
+				whichVertex = 3;
+				mouseStatus = Mouse_RBDRAG;
+			}
+			else
+			{
+				pA = pB = pC = pD = { 0 };
+				p1 = p2 = pt = { 0 };
+				/*ln1[0] = ln1[1] = { 0 };
+				ln2[0] = ln2[1] = { 0 };
+				ln3[0] = ln3[1] = { 0 };
+				ln4[0] = ln4[1] = { 0 };*/
+				updateLines();
 			}
 		}
 	}
@@ -1300,19 +1346,20 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 		}
 		else
 		{
-			p2.x = point.x - 40;
-			p2.y = point.y - PIC_TOP;
-			CPoint p = p2 - p1;
-			angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
-			angle = angle < 0 ? angle + 360 : angle;
-			s.Format("%d", angle);
 			if (p1 == pa)
 			{
+				p2.x = point.x - 40;
+				p2.y = point.y - PIC_TOP;
+				CPoint p = p2 - p1;
+				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
+				angle = angle < 0 ? angle + 360 : angle;
+				s.Format("%d", angle);
 				if (pa.x>0 && pa.y > 0)
 				{
 					pA = p2;
 					p1 = p2 = { 0 };
 					dlgStu.m_edtLeftUpAgl.SetWindowText(s);
+					dlgStu.stu_params.stuTrack_direct_standard[0] = angle;
 				}
 				else
 				{
@@ -1321,11 +1368,18 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 			}
 			if (p1 == pb)
 			{
+				p2.x = point.x - 40;
+				p2.y = point.y - PIC_TOP;
+				CPoint p = p2 - p1;
+				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
+				angle = angle < 0 ? angle + 360 : angle;
+				s.Format("%d", angle);
 				if (pb.x > 0 && pb.y > 0)
 				{
 					pB = p2;
 					p1 = p2 = { 0 };
 					dlgStu.m_edtRightUpAgl.SetWindowText(s);
+					dlgStu.stu_params.stuTrack_direct_standard[1] = angle;
 				}
 				else
 				{
@@ -1334,11 +1388,18 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 			}
 			if (p1 == pc)
 			{
+				p2.x = point.x - 40;
+				p2.y = point.y - PIC_TOP;
+				CPoint p = p2 - p1;
+				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
+				angle = angle < 0 ? angle + 360 : angle;
+				s.Format("%d", angle);
 				if (pc.x > 0 && pc.y > 0)
 				{
 					pC = p2;
 					p1 = p2 = { 0 };
 					dlgStu.m_edtRightDnAgl.SetWindowText(s);
+					dlgStu.stu_params.stuTrack_direct_standard[2] = angle;
 				}
 				else
 				{
@@ -1347,11 +1408,18 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 			}
 			if (p1 == pd)
 			{
+				p2.x = point.x - 40;
+				p2.y = point.y - PIC_TOP;
+				CPoint p = p2 - p1;
+				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
+				angle = angle < 0 ? angle + 360 : angle;
+				s.Format("%d", angle);
 				if (pd.x > 0 && pd.y > 0)
 				{
 					pD = p2;
 					p1 = p2 = { 0 };
 					dlgStu.m_edtLeftDnAgl.SetWindowText(s);
+					dlgStu.stu_params.stuTrack_direct_standard[3] = angle;
 				}
 				else
 				{
@@ -1361,27 +1429,39 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 			if (whichVertex == 0)
 			{
 				ln1[1].x += (point.x - pt.x);
-				s.Format("%d", getDistance(ln1[0], ln1[1]));
+				dist = getDistance(ln1[0], ln1[1]);
+				s.Format("%d", dist);
 				dlgStu.m_edtLeftUpWid.SetWindowText(s);
+				whichVertex = -1;
+				dlgStu.stu_params.stuTrack_stuWidth_standard[0] = dist;
 				//pt = point;
 			}
 			if (whichVertex == 1)
 			{
 				ln2[1].x += (point.x - pt.x);
-				s.Format("%d", getDistance(ln2[0], ln2[1]));
-				dlgStu.m_edtLeftUpWid.SetWindowText(s);
+				dist = getDistance(ln2[0], ln2[1]);
+				s.Format("%d", dist);
+				dlgStu.m_edtRightUpWid.SetWindowText(s);
+				whichVertex = -1;
+				dlgStu.stu_params.stuTrack_stuWidth_standard[1] = dist;
 			}
 			if (whichVertex == 2)
 			{
 				ln3[1].x += (point.x - pt.x);
-				s.Format("%d", getDistance(ln3[0], ln3[1]));
-				dlgStu.m_edtLeftUpWid.SetWindowText(s);
+				dist = getDistance(ln3[0], ln3[1]);
+				s.Format("%d", dist);
+				dlgStu.m_edtRightDnWid.SetWindowText(s);
+				whichVertex = -1;
+				dlgStu.stu_params.stuTrack_stuWidth_standard[2] = dist;
 			}
 			if (whichVertex == 3)
 			{
 				ln4[1].x += (point.x - pt.x);
-				s.Format("%d", getDistance(ln4[0], ln4[1]));
-				dlgStu.m_edtLeftUpWid.SetWindowText(s);
+				dist = getDistance(ln4[0], ln4[1]);
+				s.Format("%d", dist);
+				dlgStu.m_edtLeftDnWid.SetWindowText(s);
+				whichVertex = -1;
+				dlgStu.stu_params.stuTrack_stuWidth_standard[3] = dist;
 			}
 			mouseStatus = Mouse_RBUP;
 			isRightButton = 0;

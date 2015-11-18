@@ -29,7 +29,7 @@ typedef struct _StuITRACK_ClientParams
 	int stuTrack_direct_range;					//起立时允许的角度偏离范围   0~360
 	int stuTrack_standCount_threshold;			//判定为起立的帧数阈值
 	int stuTrack_sitdownCount_threshold;		//判定为坐下的帧数阈值
-	int stuTrack_moveDelayed_threshold;			//移动目标保持跟踪的延时，超过这个时间无运动，则放弃跟踪(单位：500-5000毫秒)
+	int stuTrack_moveDelayed_threshold;			//移动目标保持跟踪的延时，超过这个时间无运动，则放弃跟踪(单位：500-3000毫秒)
 	double stuTrack_move_threshold;				//判定是移动目标的偏离阈值（比值）  0.2~2.0
 	TrackPrarms_Point_t stuTrack_vertex[4];		//学生区域四个顶点位置
 }StuITRACK_ClientParams_t;

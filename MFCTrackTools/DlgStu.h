@@ -42,9 +42,9 @@ public:
 	CEdit m_edtStandFrm;
 	CEdit m_edtSitFrm;
 	CEdit m_edtMoveDev;
-	CEdit m_edtMoveDly;
 public:
 	void setConnectHandle(Commutication_Handle_t pConnect_clientHandle);
 	Commutication_Handle_t m_Connect_clientHandle;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	CComboBox m_comboDly;
 };
