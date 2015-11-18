@@ -758,7 +758,6 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
-
 void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
@@ -1028,7 +1027,6 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
-
 
 void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 {

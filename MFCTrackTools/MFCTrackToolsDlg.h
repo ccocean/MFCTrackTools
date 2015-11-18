@@ -20,7 +20,7 @@
 #include "decode.h"
 
 
-#define SKINNAME "\\skin\\XP-Metallic.ssk"
+#define SKINNAME "\\skin\\Noire.ssk"
 
 #define Mouse_LBUP 0
 #define Mouse_LBDOWN 1
