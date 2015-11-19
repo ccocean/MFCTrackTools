@@ -1103,6 +1103,8 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 
 				pt.x = point.x;
 				pt.y = point.y;
+
+				updateLines();
 			}
 			if (mouseStatus == Mouse_ADJUST_A)
 			{
@@ -1493,33 +1495,6 @@ void CMFCTrackToolsDlg::updateLines()
 	ln4[1].x = pd.x + (pc.x - pd.x)*0.2;
 	ln4[1].y = pd.y + (pc.y - pd.y)*0.2;
 }
-
-//void CMFCTrackToolsDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-//{
-//	// TODO:  在此添加消息处理程序代码和/或调用默认值
-//	if (CurSel==STU_TAB)
-//	{
-//		if (nChar == VK_LSHIFT)
-//		{
-//			isKeyDown = 1;
-//		}
-//	}
-//	CDialogEx::OnKeyDown(nChar, nRepCnt, nFlags);
-//}
-//
-//void CMFCTrackToolsDlg::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
-//{
-//	// TODO:  在此添加消息处理程序代码和/或调用默认值
-//	if (CurSel == STU_TAB)
-//	{
-//		if (nChar == VK_LSHIFT)
-//		{
-//			isKeyDown = 0;
-//		}
-//	}
-//	CDialogEx::OnKeyUp(nChar, nRepCnt, nFlags);
-//}
-
 
 static  inline char *get_track_cmd_name(int cmd)
 {
