@@ -100,6 +100,7 @@ public:
 	DlgStu dlgStu;
 	DlgCam dlgCam;
 	int CurSel;//标签的标志
+	int pic_top = 0;
 	// 用来播放视频的控件
 	CStatic m_picOverall;//全景控件
 	CStatic m_picFeature;//特写控件

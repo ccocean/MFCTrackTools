@@ -232,6 +232,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	m_picFeature.SetWindowPos(NULL, 40, rectTrackClient.top + 350, Frame_Width, Frame_Height, SWP_NOZORDER);
 	m_picOverall.GetClientRect(&rs);
 
+	pic_top = rectTrackClient.top + 20;
 
 	m_tabTrack.InsertItem(TCH_TAB, "教师");
 	m_tabTrack.InsertItem(STU_TAB, "学生");
@@ -285,12 +286,12 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgStu.m_edtStandFrm.SetWindowText(_T("3~10帧"));
 	dlgStu.m_edtSitFrm.SetWindowText(_T("3~10帧"));
 	dlgStu.m_edtMoveDev.SetWindowText(_T("0.2~2.0"));
-	dlgStu.m_comboDly.InsertString(0, _T("500ms"));
-	dlgStu.m_comboDly.InsertString(1, _T("1000ms"));
-	dlgStu.m_comboDly.InsertString(2, _T("1500ms"));
-	dlgStu.m_comboDly.InsertString(3, _T("2000ms"));
-	dlgStu.m_comboDly.InsertString(4, _T("2500ms"));
-	dlgStu.m_comboDly.InsertString(5, _T("3000ms"));
+	dlgStu.m_comboDly.InsertString(0, _T("500"));
+	dlgStu.m_comboDly.InsertString(1, _T("1000"));
+	dlgStu.m_comboDly.InsertString(2, _T("1500"));
+	dlgStu.m_comboDly.InsertString(3, _T("2000"));
+	dlgStu.m_comboDly.InsertString(4, _T("2500"));
+	dlgStu.m_comboDly.InsertString(5, _T("3000"));
 
 	p1.x = 0;
 	p1.y = 0;
@@ -639,19 +640,19 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	
-	if (40 <= point.x&&point.x <= 40 + Frame_Width&&PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
+	if (40 <= point.x&&point.x <= 40 + Frame_Width&&pic_top <= point.y&&point.y <= pic_top + Frame_Height)
 	{
-		//if (p1.x<point.x - 40 && point.x - 40<p2.x&&p1.y<point.y - PIC_TOP&&point.y - PIC_TOP<p2.y)
+		//if (p1.x<point.x - 40 && point.x - 40<p2.x&&p1.y<point.y - pic_top&&point.y - pic_top<p2.y)
 		if (CurSel==TCH_TAB)
 		{
-			if ((tch.x < point.x - 40 && point.x - 40 < tch.x + tch.width&&tch.y < point.y - PIC_TOP&&point.y - PIC_TOP < tch.y + tch.height))
+			if ((tch.x < point.x - 40 && point.x - 40 < tch.x + tch.width&&tch.y < point.y - pic_top&&point.y - pic_top < tch.y + tch.height))
 			{
 				pt.x = point.x;
 				pt.y = point.y;
 				whichRect = 1;
 				mouseStatus = Mouse_LBDRAG;
 			}
-			else if ((blk.x < point.x - 40 && point.x - 40 < blk.x + blk.width&&blk.y < point.y - PIC_TOP&&point.y - PIC_TOP < blk.y + blk.height))
+			else if ((blk.x < point.x - 40 && point.x - 40 < blk.x + blk.width&&blk.y < point.y - pic_top&&point.y - pic_top < blk.y + blk.height))
 			{
 				pt.x = point.x;
 				pt.y = point.y;
@@ -663,7 +664,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				whichRect = 0;
 				pt.x = 0, pt.y = 0;
 				p1.x = point.x - 40;
-				p1.y = point.y - PIC_TOP;
+				p1.y = point.y - pic_top;
 				//p2.x = 0, p2.y = 0;
 				mouseStatus = Mouse_LBDOWN;
 				if (mouseCnt == 2)
@@ -676,14 +677,14 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		else
 		{
-			if (pa.x+10<point.x-40&&point.x-40<pc.x-10&&pa.y+10<point.y-PIC_TOP&&point.y-PIC_TOP<pc.y-10)
+			if (pa.x+10<point.x-40&&point.x-40<pc.x-10&&pa.y+10<point.y-pic_top&&point.y-pic_top<pc.y-10)
 			{
 				pt.x = point.x;
 				pt.y = point.y;
 				mouseStatus = Mouse_LBDRAG;
 				pA = pB = pC = pD = { 0 };
 			}
-			else if (pa.x - 10 <= point.x - 40 && point.x - 40 <= pa.x + 10 && pa.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pa.y + 10)
+			else if (pa.x - 10 <= point.x - 40 && point.x - 40 <= pa.x + 10 && pa.y - 10 <= point.y - pic_top&&point.y - pic_top <= pa.y + 10)
 			{
 				if (pa.x!=point.x&&pa.y!=point.y)
 				{
@@ -693,7 +694,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					pA = pB = pC = pD = { 0 };
 				}
 			}
-			else if (pb.x - 10 <= point.x - 40 && point.x - 40 <= pb.x + 10 && pb.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pb.y + 10)
+			else if (pb.x - 10 <= point.x - 40 && point.x - 40 <= pb.x + 10 && pb.y - 10 <= point.y - pic_top&&point.y - pic_top <= pb.y + 10)
 			{
 				if (pb.x != point.x&&pb.y != point.y)
 				{
@@ -703,7 +704,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					pA = pB = pC = pD = { 0 };
 				}
 			}
-			else if (pc.x - 10 <= point.x - 40 && point.x - 40 <= pc.x + 10 && pc.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pc.y + 10)
+			else if (pc.x - 10 <= point.x - 40 && point.x - 40 <= pc.x + 10 && pc.y - 10 <= point.y - pic_top&&point.y - pic_top <= pc.y + 10)
 			{
 				if (pc.x != point.x&&pc.y != point.y)
 				{
@@ -713,7 +714,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					pA = pB = pC = pD = { 0 };
 				}
 			}
-			else if (pd.x - 10 <= point.x - 40 && point.x - 40 <= pd.x + 10 && pd.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pd.y + 10)
+			else if (pd.x - 10 <= point.x - 40 && point.x - 40 <= pd.x + 10 && pd.y - 10 <= point.y - pic_top&&point.y - pic_top <= pd.y + 10)
 			{
 				if (pd.x != point.x&&pd.y != point.y)
 				{
@@ -728,32 +729,32 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				mouseCnt--;
 				pt.x = 0, pt.y = 0;
 				pa.x = point.x - 40;
-				pa.y = point.y - PIC_TOP;
+				pa.y = point.y - pic_top;
 				mouseStatus = Mouse_LBDOWN;
 				pA = pB = pC = pD = { 0 };
 				p1 = p2 = { 0 };
 			}
 			/*if (mouseCnt == 1)
 			{
-				if (pa.x - 10 <= point.x - 40 && point.x - 40 <= pa.x + 10 && pa.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pa.y + 10)
+				if (pa.x - 10 <= point.x - 40 && point.x - 40 <= pa.x + 10 && pa.y - 10 <= point.y - pic_top&&point.y - pic_top <= pa.y + 10)
 				{
 					pt.x = point.x;
 					pt.y = point.y;
 					mouseStatus = Mouse_ADJUST_A;
 				}
-				else if (pb.x - 10 <= point.x - 40 && point.x - 40 <= pb.x + 10 && pb.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pb.y + 10)
+				else if (pb.x - 10 <= point.x - 40 && point.x - 40 <= pb.x + 10 && pb.y - 10 <= point.y - pic_top&&point.y - pic_top <= pb.y + 10)
 				{
 					pt.x = point.x;
 					pt.y = point.y;
 					mouseStatus = Mouse_ADJUST_B;
 				}
-				else if (pc.x - 10 <= point.x - 40 && point.x - 40 <= pc.x + 10 && pc.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pc.y + 10)
+				else if (pc.x - 10 <= point.x - 40 && point.x - 40 <= pc.x + 10 && pc.y - 10 <= point.y - pic_top&&point.y - pic_top <= pc.y + 10)
 				{
 					pt.x = point.x;
 					pt.y = point.y;
 					mouseStatus = Mouse_ADJUST_C;
 				}
-				else if (pd.x - 10 <= point.x - 40 && point.x - 40 <= pd.x + 10 && pd.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pd.y + 10)
+				else if (pd.x - 10 <= point.x - 40 && point.x - 40 <= pd.x + 10 && pd.y - 10 <= point.y - pic_top&&point.y - pic_top <= pd.y + 10)
 				{
 					pt.x = point.x;
 					pt.y = point.y;
@@ -769,7 +770,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (40 <= point.x&&point.x <= 40 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
+	if (40 <= point.x&&point.x <= 40 + Frame_Width && pic_top <= point.y&&point.y <= pic_top + Frame_Height)
 	{
 		if (CurSel==TCH_TAB)
 		{
@@ -778,7 +779,7 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				//p2.x = point.x - 40;
 				p2.x = Frame_Width;
 				p1.x = 0;
-				p2.y = point.y - PIC_TOP;
+				p2.y = point.y - pic_top;
 				mouseStatus = Mouse_LBUP;
 				pt.x = -1;
 				pt.y = -1;
@@ -905,7 +906,7 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 			if (mouseStatus==Mouse_LBDOWN)
 			{
 				pc.x = point.x - 40;
-				pc.y = point.y - PIC_TOP;
+				pc.y = point.y - pic_top;
 				mouseStatus = Mouse_LBUP;
 				if (pc.x < pa.x || pc.y<pa.y)
 				{
@@ -1039,14 +1040,14 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (40 <= point.x&&point.x <= 40 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
+	if (40 <= point.x&&point.x <= 40 + Frame_Width && pic_top <= point.y&&point.y <= pic_top + Frame_Height)
 	{
 		if (CurSel==TCH_TAB)
 		{
 			if (mouseStatus == Mouse_LBDOWN)
 			{
 				pt.x = point.x - 40;
-				pt.y = point.y - PIC_TOP;
+				pt.y = point.y - pic_top;
 			}
 			if (mouseStatus == Mouse_LBDRAG)
 			{
@@ -1083,17 +1084,17 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 			if (mouseStatus == Mouse_LBDOWN)
 			{
 				pt.x = point.x - 40;
-				pt.y = point.y - PIC_TOP;
+				pt.y = point.y - pic_top;
 			}
 			if (mouseStatus==Mouse_RBDOWN)
 			{
 				pt.x = point.x - 40;
-				pt.y = point.y - PIC_TOP;
+				pt.y = point.y - pic_top;
 			}
 			if (mouseStatus == Mouse_LBDRAG)
 			{
 				/*point.x -= 40;
-				point.y -= PIC_TOP;*/
+				point.y -= pic_top;*/
 				pa.x += (point.x  - pt.x);
 				pa.y += (point.y  - pt.y);
 
@@ -1145,7 +1146,7 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 			if (mouseStatus==Mouse_RBDOWN)
 			{
 				pt.x = point.x - 40;
-				pt.y = point.y - PIC_TOP;
+				pt.y = point.y - pic_top;
 			}
 			if (mouseStatus==Mouse_RBDRAG)
 			{
@@ -1207,12 +1208,12 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (40 <= point.x&&point.x <= 40 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
+	if (40 <= point.x&&point.x <= 40 + Frame_Width && pic_top <= point.y&&point.y <= pic_top + Frame_Height)
 	{
 		if (CurSel == STU_TAB)
 		{
 			pt = { 0 };
-			if (pa.x - 10 <= point.x - 40 && point.x - 40 <= pa.x + 10 && pa.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pa.y + 10)
+			if (pa.x - 10 <= point.x - 40 && point.x - 40 <= pa.x + 10 && pa.y - 10 <= point.y - pic_top&&point.y - pic_top <= pa.y + 10)
 			{
 				if (pa.x != point.x&&pa.y != point.y)
 				{
@@ -1221,7 +1222,7 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 					isRightButton = 1;
 				}
 			}
-			else if (pb.x - 10 <= point.x - 40 && point.x - 40 <= pb.x + 10 && pb.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pb.y + 10)
+			else if (pb.x - 10 <= point.x - 40 && point.x - 40 <= pb.x + 10 && pb.y - 10 <= point.y - pic_top&&point.y - pic_top <= pb.y + 10)
 			{
 				if (pb.x != point.x&&pb.y != point.y)
 				{
@@ -1230,7 +1231,7 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 					isRightButton = 1;
 				}
 			}
-			else if (pc.x - 10 <= point.x - 40 && point.x - 40 <= pc.x + 10 && pc.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pc.y + 10)
+			else if (pc.x - 10 <= point.x - 40 && point.x - 40 <= pc.x + 10 && pc.y - 10 <= point.y - pic_top&&point.y - pic_top <= pc.y + 10)
 			{
 				if (pc.x != point.x&&pc.y != point.y)
 				{
@@ -1239,7 +1240,7 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 					isRightButton = 1;
 				}
 			}
-			else if (pd.x - 10 <= point.x - 40 && point.x - 40 <= pd.x + 10 && pd.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pd.y + 10)
+			else if (pd.x - 10 <= point.x - 40 && point.x - 40 <= pd.x + 10 && pd.y - 10 <= point.y - pic_top&&point.y - pic_top <= pd.y + 10)
 			{
 				if (pd.x != point.x&&pd.y != point.y)
 				{
@@ -1248,7 +1249,7 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 					isRightButton = 1;
 				}
 			}
-			else if (pA.x - 10 <= point.x - 40 && point.x - 40 <= pA.x + 10 && pA.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pA.y + 10)
+			else if (pA.x - 10 <= point.x - 40 && point.x - 40 <= pA.x + 10 && pA.y - 10 <= point.y - pic_top&&point.y - pic_top <= pA.y + 10)
 			{
 				if (pA.x>0&&pA.y>0)
 				{
@@ -1258,7 +1259,7 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 					whichVertex = -1;
 				}
 			}
-			else if (pB.x - 10 <= point.x - 40 && point.x - 40 <= pB.x + 10 && pB.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pB.y + 10)
+			else if (pB.x - 10 <= point.x - 40 && point.x - 40 <= pB.x + 10 && pB.y - 10 <= point.y - pic_top&&point.y - pic_top <= pB.y + 10)
 			{
 				if (pB.x>0&&pB.y>0)
 				{
@@ -1268,7 +1269,7 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 					whichVertex = -1;
 				}
 			}
-			else if (pC.x - 10 <= point.x - 40 && point.x - 40 <= pC.x + 10 && pC.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pC.y + 10)
+			else if (pC.x - 10 <= point.x - 40 && point.x - 40 <= pC.x + 10 && pC.y - 10 <= point.y - pic_top&&point.y - pic_top <= pC.y + 10)
 			{
 				if (pC.x > 0 && pC.y > 0)
 				{
@@ -1278,7 +1279,7 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 					whichVertex = -1;
 				}
 			}
-			else if (pD.x - 10 <= point.x - 40 && point.x - 40 <= pD.x + 10 && pD.y - 10 <= point.y - PIC_TOP&&point.y - PIC_TOP <= pD.y + 10)
+			else if (pD.x - 10 <= point.x - 40 && point.x - 40 <= pD.x + 10 && pD.y - 10 <= point.y - pic_top&&point.y - pic_top <= pD.y + 10)
 			{
 				if (pD.x > 0 && pD.y > 0)
 				{
@@ -1289,28 +1290,28 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 				}
 			}
 			//调整四个顶点的宽度
-			else if (ln1[1].x - 5 <= point.x - 40 && point.x - 40 <= ln1[1].x + 5 && ln1[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln1[1].y + 5)
+			else if (ln1[1].x - 5 <= point.x - 40 && point.x - 40 <= ln1[1].x + 5 && ln1[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln1[1].y + 5)
 			{
 				pt = point;
 				//p2 = pa;
 				whichVertex = 0;
 				mouseStatus = Mouse_RBDRAG;
 			}
-			else if (ln2[1].x - 5 <= point.x - 40 && point.x - 40 <= ln2[1].x + 5 && ln2[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln2[1].y + 5)
+			else if (ln2[1].x - 5 <= point.x - 40 && point.x - 40 <= ln2[1].x + 5 && ln2[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln2[1].y + 5)
 			{
 				pt = point;
 				//p2 = pb;
 				whichVertex = 1;
 				mouseStatus = Mouse_RBDRAG;
 			}
-			else if (ln3[1].x - 5 <= point.x - 40 && point.x - 40 <= ln3[1].x + 5 && ln3[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln3[1].y + 5)
+			else if (ln3[1].x - 5 <= point.x - 40 && point.x - 40 <= ln3[1].x + 5 && ln3[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln3[1].y + 5)
 			{
 				pt = point;
 				//p2 = pc;
 				whichVertex = 2;
 				mouseStatus = Mouse_RBDRAG;
 			}
-			else if (ln4[1].x - 5 <= point.x - 40 && point.x - 40 <= ln4[1].x + 5 && ln4[1].y - 5 <= point.y - PIC_TOP&&point.y - PIC_TOP <= ln4[1].y + 5)
+			else if (ln4[1].x - 5 <= point.x - 40 && point.x - 40 <= ln4[1].x + 5 && ln4[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln4[1].y + 5)
 			{
 				pt = point;
 				//p2 = pd;
@@ -1335,7 +1336,7 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (40 <= point.x&&point.x <= 40 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
+	if (40 <= point.x&&point.x <= 40 + Frame_Width && pic_top <= point.y&&point.y <= pic_top + Frame_Height)
 	{
 		if (CurSel==TCH_TAB)
 		{
@@ -1357,7 +1358,7 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 			if (p1 == pa)
 			{
 				p2.x = point.x - 40;
-				p2.y = point.y - PIC_TOP;
+				p2.y = point.y - pic_top;
 				CPoint p = p2 - p1;
 				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
 				angle = angle < 0 ? angle + 360 : angle;
@@ -1377,7 +1378,7 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 			if (p1 == pb)
 			{
 				p2.x = point.x - 40;
-				p2.y = point.y - PIC_TOP;
+				p2.y = point.y - pic_top;
 				CPoint p = p2 - p1;
 				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
 				angle = angle < 0 ? angle + 360 : angle;
@@ -1397,7 +1398,7 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 			if (p1 == pc)
 			{
 				p2.x = point.x - 40;
-				p2.y = point.y - PIC_TOP;
+				p2.y = point.y - pic_top;
 				CPoint p = p2 - p1;
 				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
 				angle = angle < 0 ? angle + 360 : angle;
@@ -1417,7 +1418,7 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 			if (p1 == pd)
 			{
 				p2.x = point.x - 40;
-				p2.y = point.y - PIC_TOP;
+				p2.y = point.y - pic_top;
 				CPoint p = p2 - p1;
 				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
 				angle = angle < 0 ? angle + 360 : angle;
@@ -1481,7 +1482,7 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 void CMFCTrackToolsDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (40 <= point.x&&point.x <= 40 + Frame_Width && PIC_TOP <= point.y&&point.y <= PIC_TOP + Frame_Height)
+	if (40 <= point.x&&point.x <= 40 + Frame_Width && pic_top <= point.y&&point.y <= pic_top + Frame_Height)
 	{
 		
 	}
