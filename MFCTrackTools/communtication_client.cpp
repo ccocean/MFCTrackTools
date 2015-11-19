@@ -64,21 +64,7 @@ static int communtication_process_clientHeartMsg(Communtication_Head_t *head, ch
 	}
 
 	////nslog(NS_DEBUG,"communtication_process_clientHeartMsg\n");
-	int socket = handle->client_socket;
-	int sendlen = 0;
-	Communtication_Head_t head_s;
-	memcpy(&head_s, head, sizeof(Communtication_Head_t));
-	////nslog(NS_DEBUG,"communtication_process_clientHeartMsg1\n");
-	pthread_mutex_lock(&(handle->lock));
-	////nslog(NS_DEBUG,"communtication_process_clientHeartMsg4\n");
-	sendlen = sizeof(head_s);
-	RH_TcpSndBlockFd(socket, (char *)&head_s, &sendlen);
-	////nslog(NS_DEBUG,"communtication_process_clientHeartMsg5,buflen=%d\n",buflen);
-	sendlen = head_s.total_len;
-	////nslog(NS_DEBUG,"communtication_process_clientHeartMsg6,buflen=%d\n",buflen);
-	RH_TcpSndBlockFd(socket, buf, &sendlen);
-	////nslog(NS_DEBUG,"communtication_process_clientHeartMsg6\n");
-	pthread_mutex_unlock(&(handle->lock));
+
 
 	if (handle->DealHeartbitFuncPtr != NULL) {
 		handle->DealHeartbitFuncPtr(buf, handle->param);
@@ -88,7 +74,42 @@ static int communtication_process_clientHeartMsg(Communtication_Head_t *head, ch
 	return 0;
 }
 #endif
+void * ctrl_process_clientHeartThread(void *argv)
+{
+	Commutication_Handle_t pOprHandle = (Commutication_Handle_t)argv;
+	char HeartBitBUF[20] = { 0 };
+	int ret = 0;
+	Communtication_Head_t head_s;
+	if (pOprHandle == NULL)
+	{
+		share_outputlog(NS_ERROR, "ctrl_process_clientHeartThread parm is NULL");
+		return NULL;
+	}
 
+	int socket = pOprHandle->client_socket;
+	int sendlen = 0;
+	commutication_init_head(&head_s, pOprHandle->port);
+	head_s.total_len = sizeof(HeartBitBUF);
+	head_s.cmd = HEARTBIT_CMD;
+	while (communtication_get_handleStatus(pOprHandle) == START_STATUS)
+	{
+		//发送心跳流程	
+		{
+
+			pthread_mutex_lock(&(pOprHandle->lock));
+			sendlen = sizeof(head_s);
+			RH_TcpSndBlockFd(socket, (char *)&head_s, &sendlen);	
+			sendlen = head_s.total_len;
+			RH_TcpSndBlockFd(socket, HeartBitBUF, &sendlen);
+			pthread_mutex_unlock(&(pOprHandle->lock));
+		
+		}
+		Sleep(3000);
+	}
+	pthread_detach(pthread_self());
+	pthread_exit(0);
+	return NULL;
+}
 static int communtication_clientHeartThread(void *argv)
 {
 	char ip[16] = "127.0.0.1";
@@ -159,6 +180,15 @@ static int communtication_clientHeartThread(void *argv)
 	//重连的话，需要触发一些初始化逻辑，
 	//比如room重启或者HD重启后，需要重新下发 control的参数给其他模块，考虑在此加入一个回调来处理
 	
+	//创建心跳线程
+	pthread_t heart_tid;
+	ret = pthread_create(&heart_tid, NULL, ctrl_process_clientHeartThread, (void *)(handle));
+	if (ret != 0)
+	{
+		share_outputlog(NS_ERROR, "pthread_create ctrl_process_clientHeartThread is fail\n");
+		goto CLIENT_EXIT;
+	}
+
 	while (communtication_get_handleStatus(handle) == START_STATUS) {
 		needlen = sizeof(Communtication_Head_t);
 		memset(&headbuf, 0, sizeof(headbuf));
@@ -211,7 +241,7 @@ static int communtication_clientHeartThread(void *argv)
 	}
 CLIENT_EXIT:
 
-	
+	communtication_set_handleStatus(handle, STOP_STATUS);
 	WSACleanup();
 	//printf_pthread_delete(__FILE__, (char *)__FUNCTION__);
 	pthread_detach(pthread_self());
