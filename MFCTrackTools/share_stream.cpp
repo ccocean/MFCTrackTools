@@ -66,8 +66,9 @@ static void *privCient_process_thread(void * arg) {
 	WSADATA wsaData;
 	int err;
 	wVersionRequested = MAKEWORD(1, 1);
+	src->runstatus = 1;
 	err = WSAStartup(wVersionRequested, &wsaData);
-	for (;;) {
+	while (src->runstatus) {
 		//nslog(NS_INFO, "connect server, ip = %s-port=%d,timeout=[%d]\n", src->ip, src->port, timeout);
 		sockfd = privClient_connect_Srv((char *)(src->ip), src->port);
 		if (sockfd < 0) {
@@ -89,7 +90,7 @@ static void *privCient_process_thread(void * arg) {
 		}
 
 
-		for (;;) {
+		while (src->runstatus)  {
 			msg_num = 0;
 			memset(&fh, 0, RH_FH_LEN);
 			ret = RH_TcpRcvBlockFd(sockfd, (char *)&fh, fh_len, &readlen);
@@ -158,7 +159,13 @@ static void *privCient_process_thread(void * arg) {
 	pthread_exit(0);
 	return NULL;
 }
-
+int Stream_Stop(void*src)
+{
+	RH_tcp_stream_recv_cond_t * handle = (RH_tcp_stream_recv_cond_t *)src;
+	if (handle)
+		handle->runstatus = 0;
+	return 0;
+}
 void *Stream_init_client(RH_tcp_stream_recv_cond_t * InParm) {
 
 	pthread_attr_t attr;

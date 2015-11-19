@@ -70,6 +70,7 @@ CMFCTrackToolsDlg::CMFCTrackToolsDlg(CWnd* pParent /*=NULL*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_track_clientHandle = NULL;
+	m_streamHandle = NULL;
 	m_strSkin = "";
 }
 
@@ -206,7 +207,7 @@ BOOL CMFCTrackToolsDlg::ctrlClient_init_Stream()
 	recv_stream_handle.channel = 1;
 	recv_stream_handle.param1 = this;
 	recv_stream_handle.call_back_fun = video_call_back;
-	init_stream_recv(&recv_stream_handle);
+	m_streamHandle = init_stream_recv(&recv_stream_handle);
 	return TRUE;
 
 }
@@ -377,6 +378,8 @@ void CMFCTrackToolsDlg::OnClose()
 	if (MessageBox(_T("确定退出吗"), _T("提示"), MB_YESNO | MB_ICONWARNING)
 		== IDNO)
 		return;
+	stop_stream_stream(m_streamHandle);
+	communtication_set_handleStatus(m_track_clientHandle, STOP_STATUS);
 	skinppExitSkin();
 	CDialogEx::OnClose();
 }

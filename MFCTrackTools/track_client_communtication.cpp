@@ -254,14 +254,26 @@ static void* stream_pop_thread(void* arg)
 	}
 EXIT:
 	share_outputlog(NS_ERROR, "%s : stream_pop_thread is finsh\n", __FILE__);
-	clean_alloc(pStream_recv_handle);
+	//clean_alloc(pStream_recv_handle);
 
 	pthread_detach(pthread_self());
 	pthread_exit(0);
 	return NULL;
 	
 }
-int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
+int stop_stream_stream(void* param)
+{
+	RecvStream_Handle_t* pRecv_stream_handle = (RecvStream_Handle_t*)param;
+	if (pRecv_stream_handle)
+	{
+		Stream_Stop(pRecv_stream_handle->streamConnectHanlde);
+
+		Client_Handle_t* pClient_handle = (Client_Handle_t*)pRecv_stream_handle->outParm;
+		set_streamClient_status(pClient_handle, STREAMCLINT_STOP);
+	}
+	return 0;
+}
+void* init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 {
 	int ret = 0;
 	pthread_t tid;
@@ -269,7 +281,7 @@ int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 	if (pRecv_stream_handle == NULL)
 	{
 		MessageBox(NULL, _T("接收流失败"), _T("标题"), MB_OK);
-		return -1;
+		return NULL;
 	}
 	RecvStream_Handle_t* pStream_handle = (RecvStream_Handle_t*)malloc(sizeof(RecvStream_Handle_t));
 	if (pStream_handle == NULL)
@@ -313,7 +325,7 @@ int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 
 
 	pthread_mutex_init(&(pClient_handle->lock), NULL);
-	if (Stream_init_client(&(data_prm)))
+	if (pStream_handle->streamConnectHanlde = Stream_init_client(&(data_prm)))
 	{
 		set_streamClient_status(pClient_handle, STREAMCLINT_START);
 	}
@@ -330,8 +342,9 @@ EXIT:
 	if (ret == -1)
 	{
 		clean_alloc(pStream_handle);
+		pStream_handle = NULL;
 	}
-	return ret;
+	return pStream_handle;
 }
 
 

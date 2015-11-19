@@ -186,6 +186,8 @@ public:
 	BOOL ctrlClient_init_Stream();
 
 	Commutication_Handle_t m_track_clientHandle;
+	void* m_streamHandle;
+
 	afx_msg void OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	static int ctrlClient_init_trackCommunticationEx(void*param, Net_Info * pnetInfo);

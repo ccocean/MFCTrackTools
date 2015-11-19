@@ -70,8 +70,10 @@ typedef struct Stream_Handle
 	Stream_Call_Back call_back_fun;//将数据回调由video处理
 	void *outParm;//扩展(可由内部自己填充)
 	void* param1;//扩展参数,由使用者带进去，通过回调函数call_back带出来
+	void *streamConnectHanlde;
 }RecvStream_Handle_t;
-int init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle);
+void * init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle);
+int stop_stream_stream(void* pRecv_stream_handle);
 
 int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param, Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param, Commutication_Handle_t ptrack_clientHandle);
