@@ -40,6 +40,7 @@ void DlgTch::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(DlgTch, CDialog)
 	ON_BN_CLICKED(IDC_btnApply, &DlgTch::OnBnClickedbtnapply)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -155,4 +156,12 @@ BOOL DlgTch::PreTranslateMessage(MSG* pMsg)
 	if (pMsg->message == WM_KEYDOWN&&pMsg->wParam == VK_RETURN)
 		return TRUE;
 	return CDialog::PreTranslateMessage(pMsg);
+}
+
+
+void DlgTch::OnSize(UINT nType, int cx, int cy)
+{
+	CDialog::OnSize(nType, cx, cy);
+
+	// TODO: Add your message handler code here
 }

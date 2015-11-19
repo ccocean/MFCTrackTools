@@ -66,6 +66,7 @@ END_MESSAGE_MAP()
 //构造函数，初始化值
 CMFCTrackToolsDlg::CMFCTrackToolsDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CMFCTrackToolsDlg::IDD, pParent)
+	
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_track_clientHandle = NULL;
@@ -213,48 +214,55 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 {
 
 	//初始化窗口
-	CWnd::SetWindowPos(NULL, 0, 0, 960, 720, SWP_NOZORDER);//初始化窗口大小
-	CenterWindow();//窗口居中
+	CRect rs1;
+	CWnd::GetClientRect(rs1);
+
+	//CWnd::SetWindowPos(NULL, 0, 0, 960, 720, SWP_NOZORDER);//初始化窗口大小
+	//CenterWindow();//窗口居中
 
 	//初始化控件
 	CRect rs;
 	int cx = 0;
 	int cy = 0;
-	m_picOverall.SetWindowPos(NULL, 40, PIC_TOP, Frame_Width, Frame_Height, SWP_NOZORDER);
-	m_picFeature.SetWindowPos(NULL, 40, PIC_TOP + 310, Frame_Width, Frame_Height, SWP_NOZORDER);
+	CRect rectTrackClient;
+	GetDlgItem(IDC_tabTrack)->GetWindowRect(&rectTrackClient);//获取控件相对于屏幕的位置
+	ScreenToClient(rectTrackClient);//转化为对话框上的相对位置
+
+	m_picOverall.SetWindowPos(NULL, 40, rectTrackClient.top + 20, Frame_Width, Frame_Height, SWP_NOZORDER);
+	m_picFeature.SetWindowPos(NULL, 40, rectTrackClient.top + 350, Frame_Width, Frame_Height, SWP_NOZORDER);
 	m_picOverall.GetClientRect(&rs);
 
-	//跟踪参数控件
-	m_tabTrack.SetWindowPos(NULL, 40+rs.right+40,30, 360, 480, SWP_NOZORDER);
+
 	m_tabTrack.InsertItem(TCH_TAB, "教师");
 	m_tabTrack.InsertItem(STU_TAB, "学生");
 	
 	//绑定dlgTch到Tab控件
 	dlgTch.Create(IDD_DlgTch, GetDlgItem(IDC_tabTrack));
 	dlgStu.Create(IDD_DlgStu, GetDlgItem(IDC_tabTrack));
-	dlgCam.Create(IDD_CAMCONTROL, GetDlgItem(IDD_MFCTRACKTOOLS_DIALOG));
-
 	
-	m_tabTrack.GetClientRect(&rs);
 
+	//移动控件
+	m_tabTrack.GetClientRect(&rs);
 	cx = rs.right - rs.left;
 	cy = rs.bottom - rs.top - 20;
 	rs.top += 20;
-	rs.bottom -= 0;
-	rs.left += 0;
-	rs.right -= 0;
-	dlgTch.SetWindowPos(NULL, 0, 0, cx, cy, SWP_NOZORDER | SWP_NOMOVE);
 	dlgTch.MoveWindow(rs);
 	dlgTch.ShowWindow(TRUE);
-
-	dlgStu.SetWindowPos(NULL, 0, 0, cx, cy, SWP_NOZORDER | SWP_NOMOVE);
 	dlgStu.MoveWindow(rs);
 	dlgStu.ShowWindow(FALSE);
 
-	cy = rs.bottom + 30;
-	m_picFeature.GetClientRect(rs);
-	dlgCam.SetWindowPos(NULL, 40+rs.right+30, cy, cx, 130, SWP_NOZORDER);
+
+
+	CRect rsDlgcam;
+	dlgCam.Create(IDD_CAMCONTROL, GetDlgItem(IDD_CAMCONTROL));
+	dlgCam.GetClientRect(rsDlgcam);
+	rsDlgcam.left = rectTrackClient.left;
+	cx = rectTrackClient.right - rectTrackClient.left;
+	rsDlgcam.top = rectTrackClient.bottom;
+	cy = rsDlgcam.bottom;
+	dlgCam.SetWindowPos(NULL, rsDlgcam.left, rsDlgcam.top, cx, cy, SWP_NOZORDER);
 	dlgCam.ShowWindow(TRUE);
+	
 	m_tabTrack.SetCurSel(0);
 
 	dlgTch.tch_params = { 0 };

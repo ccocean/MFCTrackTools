@@ -41,4 +41,5 @@ public:
 	CStatic m_txtBlkArg;
 	CComboBox m_comboSlide;
 	CComboBox m_comboStand;
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
