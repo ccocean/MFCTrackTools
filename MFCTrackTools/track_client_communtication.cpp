@@ -36,7 +36,6 @@ int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param, Commuticatio
 	}
 	Communtication_Head_t head;
 	commutication_init_head(&head, C_CONTROL_TRACK);
-	memset(&head, 0, sizeof(Communtication_Head_t));
 	head.cmd = STU_SETTRACK_CMD;
 	communtication_send_clientMsg(&head, (char *)(stu_param), sizeof(StuITRACK_ClientParams_t), ptrack_clientHandle);
 	return 0;
@@ -51,7 +50,6 @@ int ctrlClient_get_stu_params(Commutication_Handle_t ptrack_clientHandle)
 	}
 	Communtication_Head_t head;
 	commutication_init_head(&head, C_CONTROL_TRACK);
-	memset(&head, 0, sizeof(Communtication_Head_t));
 	head.cmd = STU_GETTRACK_CMD;
 	communtication_send_clientMsg(&head, (char *)(&stu_param), sizeof(StuITRACK_ClientParams_t), ptrack_clientHandle);
 	return 0;

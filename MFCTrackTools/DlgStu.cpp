@@ -146,7 +146,15 @@ void DlgStu::OnBnClickedBtnstuapply()
 	// TODO:  在此添加控件通知处理程序代码
 	if (checkParameters()==0)
 	{
-		ctrlClient_set_stu_params(&stu_params, m_Connect_clientHandle);
+		if (m_Connect_clientHandle)
+		{
+			ctrlClient_set_stu_params(&stu_params, m_Connect_clientHandle);
+		}
+		else
+		{
+			MessageBox("未连接服务器！");
+		}
+		
 	}
 }
 

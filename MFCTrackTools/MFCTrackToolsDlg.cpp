@@ -1541,7 +1541,6 @@ static int ctrl_connect_status(Connect_Status status, void * param)
 		{
 			free(pTrackDlg->m_track_clientHandle);
 			pTrackDlg->m_track_clientHandle = NULL;
-
 		}
 
 		AfxMessageBox(_T("连接失败"));
@@ -1561,6 +1560,8 @@ static int ctrl_connect_status(Connect_Status status, void * param)
 		pTrackDlg->ctrlClient_init_Stream();
 		PostMessage(pTrackDlg->m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 	}
+	pTrackDlg->dlgTch.setConnectHandle(pTrackDlg->m_track_clientHandle);
+	pTrackDlg->dlgStu.setConnectHandle(pTrackDlg->m_track_clientHandle);
 	return  0;
 }
 //回调函数处理
@@ -1602,10 +1603,29 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	}
 	case STU_GETTRACK_CMD:
 	{
+		if (head->total_len != sizeof(StuITRACK_ClientParams_t))
+		{
+
+		}
+		else
+		{
+			StuITRACK_ClientParams_t * stu_params = (StuITRACK_ClientParams_t *)msg;
+
+		}
 							 break;
 	}
 	case TEA_GETTRACK_CMD:
 	{
+			if (head->total_len != sizeof(TeaITRACK_Params))
+			{
+				
+			}
+			else
+			{
+				TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
+				
+			}
+
 							 break;
 	}
 	}
@@ -1640,8 +1660,7 @@ int CMFCTrackToolsDlg::ctrlClient_init_trackCommuntication()
 		AfxMessageBox(TEXT("创建客户端失败"));
 		return -1;
 	}
-	dlgTch.setConnectHandle(m_track_clientHandle);
-	dlgStu.setConnectHandle(m_track_clientHandle);
+
 	return  0;
 }
 

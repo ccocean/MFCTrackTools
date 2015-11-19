@@ -137,7 +137,14 @@ void DlgTch::OnBnClickedbtnapply()
 	// TODO:  在此添加控件通知处理程序代码
 	if (checkParameters()==0)
 	{
-		ctrlClient_set_teach_params(&tch_params, m_Connect_clientHandle);
+		if (m_Connect_clientHandle)
+		{
+			ctrlClient_set_teach_params(&tch_params, m_Connect_clientHandle);
+		}
+		else
+		{
+			MessageBox("未连接服务器！");
+		}
 	}
 }
 void DlgTch::setConnectHandle(Commutication_Handle_t pConnect_clientHandle)
