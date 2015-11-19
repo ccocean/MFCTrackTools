@@ -20,7 +20,7 @@
 #include "decode.h"
 
 
-#define SKINNAME "\\skin\\Noire.ssk"
+#define SKINNAME "\\skin\\Longhorn.ssk"
 
 #define Mouse_LBUP 0
 #define Mouse_LBDOWN 1
