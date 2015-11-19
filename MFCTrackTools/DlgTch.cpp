@@ -57,6 +57,18 @@ void DlgTch::getParameters()
 	return;
 }
 
+void DlgTch::setTrackRects(Tch_Rect_t rc,int flag)
+{
+	if (flag==TCH_RECT)
+	{
+		tch_params.tch = rc;
+	}
+	else
+	{
+		tch_params.blk = rc;
+	}
+}
+
 int DlgTch::checkParameters()
 {
 	CString position, slide;

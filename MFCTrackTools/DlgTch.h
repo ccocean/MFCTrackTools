@@ -4,6 +4,9 @@
 #include "track_client_commintication.h"
 // DlgTch ¶Ô»°¿ò
 
+#define TCH_RECT 0
+#define BLK_RECT 1
+
 class DlgTch : public CDialog
 {
 	DECLARE_DYNAMIC(DlgTch)
@@ -24,7 +27,6 @@ public:
 	CEdit m_editW;
 	CEdit m_editH;
 	CEdit m_editPos;
-	CEdit m_editSlide;
 	CEdit m_editTargetArea;
 	CEdit m_editOutSide;
 
@@ -41,5 +43,6 @@ public:
 	CStatic m_txtBlkArg;
 	CComboBox m_comboSlide;
 	CComboBox m_comboStand;
+	void setTrackRects(Tch_Rect_t rc,int flag);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

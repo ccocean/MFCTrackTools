@@ -42,6 +42,9 @@
 #define DRAW_ANGLE 0
 #define DRAW_WIDTH 1
 
+#define PARAM_POSITION 0
+#define PARAM_WIDTH 1
+
 #define ITC_RADIAN_TO_ANGLE	57.29577951308 //弧度转角度参数
 
 //using namespace cv;
@@ -170,6 +173,8 @@ private:
 	int minimalDistance(CPoint in);
 	int getDistance(CPoint a, CPoint b);
 	void updateLines();
+	void updateParams(int flag);
+	void loadParamsFromTch(TeaITRACK_Params* params);
 public:
 	int video_display(Decode_Info_t *pInfo);
 	CTabCtrl m_tabTrack;

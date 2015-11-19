@@ -274,7 +274,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgTch.m_comboSlide.InsertString(0,_T("3"));
 	dlgTch.m_comboSlide.InsertString(1,_T("5"));
 	dlgTch.m_comboSlide.InsertString(2,_T("7"));
-	dlgTch.m_comboSlide.InsertString(3,_T("11"));
+	dlgTch.m_comboSlide.InsertString(3,_T("9"));
 	dlgTch.m_comboStand.InsertString(0, _T("1Ãë"));
 	dlgTch.m_comboStand.InsertString(1, _T("2Ãë"));
 	dlgTch.m_comboStand.InsertString(2, _T("3Ãë"));
@@ -544,6 +544,13 @@ void CMFCTrackToolsDlg::trackdraw()
 				drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
 			}
 		}
+		else
+		{
+			pOldPen = pDC->SelectObject(&penY);
+			drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
+			pOldPen = pDC->SelectObject(&penG);
+			drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
+		}
 	}
 	else
 	{
@@ -605,6 +612,10 @@ void CMFCTrackToolsDlg::trackdraw()
 		{
 			drawLines(DRAW_ANGLE);
 			drawLines(DRAW_WIDTH);
+		}
+		else
+		{
+			drawLines(DRAW_ANGLE);
 		}
 	}
 }
@@ -808,6 +819,8 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 					tch.width = p2.x - p1.x;
 					tch.height = p2.y - p1.y;
 
+					dlgTch.setTrackRects(tch, TCH_RECT);
+
 					tmp = _T(" ,");
 					s.Format(_T("%d"), tch.x);
 					str += s;
@@ -832,6 +845,8 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 					blk.x = p1.x; blk.y = p1.y;
 					blk.width = p2.x - p1.x;
 					blk.height = p2.y - p1.y;
+
+					dlgTch.setTrackRects(blk, BLK_RECT);
 
 					tmp = _T(" ,");
 					s.Format(_T("%d"), blk.x);
@@ -897,6 +912,8 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 					SetDlgItemInt(IDC_editW, blk.width);
 					SetDlgItemInt(IDC_editH, blk.height);
 				}
+				dlgTch.setTrackRects(tch, TCH_RECT);
+				dlgTch.setTrackRects(blk, BLK_RECT);
 				mouseStatus = Mouse_LBUP;
 			}
 		}
@@ -929,106 +946,16 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				pb.x = pc.x; pb.y = pa.y;
 				pd.x = pa.x; pd.y = pc.y;
 
-				dlgStu.stu_params.stuTrack_vertex[0].x = pa.x;
-				dlgStu.stu_params.stuTrack_vertex[0].y = pa.y;
-
-				dlgStu.stu_params.stuTrack_vertex[1].x = pb.x;
-				dlgStu.stu_params.stuTrack_vertex[1].y = pb.y;
-
-				dlgStu.stu_params.stuTrack_vertex[2].x = pc.x;
-				dlgStu.stu_params.stuTrack_vertex[2].y = pc.y;
-
-				dlgStu.stu_params.stuTrack_vertex[3].x = pd.x;
-				dlgStu.stu_params.stuTrack_vertex[3].y = pd.y;
-
+				updateParams(PARAM_POSITION);
 				updateLines();
-
-				tmp = _T(" ,");
-				s.Format(_T("%d"), pa.x);
-				str += s;
-				str += tmp;
-				s.Format(_T("%d"), pa.y);
-				str += s;
-				dlgStu.m_edtLeftUpPos.SetWindowTextA(str);
-				str = _T("");
-
-				tmp = _T(" ,");
-				s.Format(_T("%d"), pb.x);
-				str += s;
-				str += tmp;
-				s.Format(_T("%d"), pb.y);
-				str += s;
-				dlgStu.m_edtRightUpPos.SetWindowTextA(str);
-				str = _T("");
-
-				tmp = _T(" ,");
-				s.Format(_T("%d"), pd.x);
-				str += s;
-				str += tmp;
-				s.Format(_T("%d"), pd.y);
-				str += s;
-				dlgStu.m_edtLeftDnPos.SetWindowTextA(str);
-				str = _T("");
-
-				tmp = _T(" ,");
-				s.Format(_T("%d"), pc.x);
-				str += s;
-				str += tmp;
-				s.Format(_T("%d"), pc.y);
-				str += s;
-				dlgStu.m_edtRightDnPos.SetWindowTextA(str);
-				str = _T("");
-				mouseCnt++;
+				updateParams(PARAM_WIDTH);
+				mouseStatus = Mouse_LBUP;
 			}
 			else
 			{
-				dlgStu.stu_params.stuTrack_vertex[0].x = pa.x;
-				dlgStu.stu_params.stuTrack_vertex[0].y = pa.y;
-
-				dlgStu.stu_params.stuTrack_vertex[1].x = pb.x;
-				dlgStu.stu_params.stuTrack_vertex[1].y = pb.y;
-
-				dlgStu.stu_params.stuTrack_vertex[2].x = pc.x;
-				dlgStu.stu_params.stuTrack_vertex[2].y = pc.y;
-
-				dlgStu.stu_params.stuTrack_vertex[3].x = pd.x;
-				dlgStu.stu_params.stuTrack_vertex[3].y = pd.y;
+				updateParams(PARAM_POSITION);
 				updateLines();
-				tmp = _T(" ,");
-				s.Format(_T("%d"), pa.x);
-				str += s;
-				str += tmp;
-				s.Format(_T("%d"), pa.y);
-				str += s;
-				dlgStu.m_edtLeftUpPos.SetWindowTextA(str);
-				str = _T("");
-
-				tmp = _T(" ,");
-				s.Format(_T("%d"), pb.x);
-				str += s;
-				str += tmp;
-				s.Format(_T("%d"), pb.y);
-				str += s;
-				dlgStu.m_edtRightUpPos.SetWindowTextA(str);
-				str = _T("");
-
-				tmp = _T(" ,");
-				s.Format(_T("%d"), pd.x);
-				str += s;
-				str += tmp;
-				s.Format(_T("%d"), pd.y);
-				str += s;
-				dlgStu.m_edtLeftDnPos.SetWindowTextA(str);
-				str = _T("");
-
-				tmp = _T(" ,");
-				s.Format(_T("%d"), pc.x);
-				str += s;
-				str += tmp;
-				s.Format(_T("%d"), pc.y);
-				str += s;
-				dlgStu.m_edtRightDnPos.SetWindowTextA(str);
-				str = _T("");
+				updateParams(PARAM_WIDTH);
 				mouseStatus = Mouse_LBUP;
 				//SetDlgItemInt(IDC_EDT_LEFTUP_AGL,mouseStatus);
 			}
@@ -1505,6 +1432,98 @@ void CMFCTrackToolsDlg::updateLines()
 	ln4[1].y = pd.y + (pc.y - pd.y)*0.2;
 }
 
+void CMFCTrackToolsDlg::updateParams(int flag)
+{
+	if (PARAM_POSITION == flag)
+	{
+		dlgStu.stu_params.stuTrack_vertex[0].x = pa.x;
+		dlgStu.stu_params.stuTrack_vertex[0].y = pa.y;
+
+		dlgStu.stu_params.stuTrack_vertex[1].x = pb.x;
+		dlgStu.stu_params.stuTrack_vertex[1].y = pb.y;
+
+		dlgStu.stu_params.stuTrack_vertex[2].x = pc.x;
+		dlgStu.stu_params.stuTrack_vertex[2].y = pc.y;
+
+		dlgStu.stu_params.stuTrack_vertex[3].x = pd.x;
+		dlgStu.stu_params.stuTrack_vertex[3].y = pd.y;
+
+		tmp = _T(" ,");
+		s.Format(_T("%d"), pa.x);
+		str += s;
+		str += tmp;
+		s.Format(_T("%d"), pa.y);
+		str += s;
+		dlgStu.m_edtLeftUpPos.SetWindowTextA(str);
+		str = _T("");
+
+		tmp = _T(" ,");
+		s.Format(_T("%d"), pb.x);
+		str += s;
+		str += tmp;
+		s.Format(_T("%d"), pb.y);
+		str += s;
+		dlgStu.m_edtRightUpPos.SetWindowTextA(str);
+		str = _T("");
+
+		tmp = _T(" ,");
+		s.Format(_T("%d"), pd.x);
+		str += s;
+		str += tmp;
+		s.Format(_T("%d"), pd.y);
+		str += s;
+		dlgStu.m_edtLeftDnPos.SetWindowTextA(str);
+		str = _T("");
+
+		tmp = _T(" ,");
+		s.Format(_T("%d"), pc.x);
+		str += s;
+		str += tmp;
+		s.Format(_T("%d"), pc.y);
+		str += s;
+		dlgStu.m_edtRightDnPos.SetWindowTextA(str);
+		str = _T("");
+	}
+	else
+	{
+		dist = getDistance(ln1[0], ln1[1]);
+		s.Format("%d", dist);
+		dlgStu.m_edtLeftUpWid.SetWindowText(s);
+		dlgStu.stu_params.stuTrack_stuWidth_standard[0] = dist;
+
+		dist = getDistance(ln2[0], ln2[1]);
+		s.Format("%d", dist);
+		dlgStu.m_edtRightUpWid.SetWindowText(s);
+		dlgStu.stu_params.stuTrack_stuWidth_standard[1] = dist;
+
+		dist = getDistance(ln3[0], ln3[1]);
+		s.Format("%d", dist);
+		dlgStu.m_edtRightDnWid.SetWindowText(s);
+		dlgStu.stu_params.stuTrack_stuWidth_standard[2] = dist;
+
+		dist = getDistance(ln4[0], ln4[1]);
+		s.Format("%d", dist);
+		dlgStu.m_edtLeftDnWid.SetWindowText(s);
+		dlgStu.stu_params.stuTrack_stuWidth_standard[3] = dist;
+	}
+}
+
+void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
+{
+	int_pos = params->numOfPos;
+	int_slide = params->numOfSlide;
+	tch = params->tch;
+	blk = params->blk;
+	s.Format("%d", params->threshold.outside);
+	dlgTch.m_editOutSide.SetWindowText(s);
+	dlgTch.m_comboStand.SetCurSel(params->threshold.stand - 1);
+	dlgTch.m_comboSlide.SetCurSel((params->numOfSlide - 3) / 2);
+	s.Format("%d", int_pos);
+	dlgTch.m_editPos.SetWindowText(s);
+	s.Format("%d", params->threshold.targetArea);
+	dlgTch.m_editTargetArea.SetWindowText(s);
+}
+
 static  inline char *get_track_cmd_name(int cmd)
 {
 	int i = 0;
@@ -1623,6 +1642,10 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			else
 			{
 				TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
+				if (tea_params->isSetParams==1)
+				{
+					loadParamsFromTch(tea_params);
+				}
 				
 			}
 
