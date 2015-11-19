@@ -47,4 +47,5 @@ public:
 	Commutication_Handle_t m_Connect_clientHandle;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CComboBox m_comboDly;
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

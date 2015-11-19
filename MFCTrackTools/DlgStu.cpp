@@ -47,6 +47,7 @@ void DlgStu::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(DlgStu, CDialog)
 	ON_BN_CLICKED(IDC_BTNSTUAPPLY, &DlgStu::OnBnClickedBtnstuapply)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -161,4 +162,12 @@ BOOL DlgStu::PreTranslateMessage(MSG* pMsg)
 	if (pMsg->message == WM_KEYDOWN&&pMsg->wParam == VK_RETURN)
 		return TRUE;
 	return CDialog::PreTranslateMessage(pMsg);
+}
+
+
+void DlgStu::OnSize(UINT nType, int cx, int cy)
+{
+	CDialog::OnSize(nType, cx, cy);
+
+	// TODO:  在此处添加消息处理程序代码
 }
