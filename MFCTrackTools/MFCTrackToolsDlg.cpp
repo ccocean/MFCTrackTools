@@ -240,6 +240,8 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	//绑定dlgTch到Tab控件
 	dlgTch.Create(IDD_DlgTch, GetDlgItem(IDC_tabTrack));
 	dlgStu.Create(IDD_DlgStu, GetDlgItem(IDC_tabTrack));
+
+	initCamDlg(cx, cx, rectTrackClient);
 	
 
 	//移动控件
@@ -251,9 +253,6 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgTch.ShowWindow(TRUE);
 	dlgStu.MoveWindow(rs);
 	dlgStu.ShowWindow(FALSE);
-
-
-	initCamDlg(cx,cy,rectTrackClient);
 	
 	
 	m_tabTrack.SetCurSel(0);
@@ -1901,8 +1900,13 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 		dlgCam.m_comboSpeed.InsertString(i, str);
 	}
 	dlgCam.m_comboSpeed.SetCurSel(55);
-
+	HI_NET_DEV_Init();
+	int iResult = 0;
+	WSADATA wsaData = { 0 };
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	
 	connectCam();
+	
 }
 
 
@@ -1930,13 +1934,14 @@ void CMFCTrackToolsDlg::connectCam()
 			//SetDlgItemText(IDC_BTN_CNT, ConvertString("Disconnect"));
 
 			//HI_NET_DEV_SetReconnect(m_uiHandle, 3);
-			MessageBox(_T("Login Success"), _T("msg"), MB_ICONINFORMATION);
+			HI_NET_DEV_PTZ_Ctrl_Standard(dlgCam.m_uiHandle, HI_NET_DEV_CTRL_PTZ_FOCUS_AUTO, dlgCam.m_comboSpeed.GetCurSel());
+			MessageBox(ConvertString("Login Success"), ConvertString("msg"), MB_ICONINFORMATION);
 
 			flag = 1;
 		}
 		else
 		{
-			MessageBox(dlgCam.m_strHost + "\n" + _T("Connect Failure"), _T("msg"), MB_ICONEXCLAMATION);
+			MessageBox(dlgCam.m_strHost + "\n" + ConvertString("Connect Failure"), ConvertString("msg"), MB_ICONEXCLAMATION);
 			dlgCam.m_uiHandle = 100;
 			flag = 0;
 		}

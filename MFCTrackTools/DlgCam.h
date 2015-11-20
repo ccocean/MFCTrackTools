@@ -28,7 +28,12 @@ public:
 	UINT		m_uiPort;
 	CString		m_strPword;
 	CString		m_strUname;
+	CRect rc;
+	int whichBtn = -1;
 
 	CComboBox m_comboSpeed;
-	afx_msg void OnBnClickedButtonUp();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	CButton m_btnUp;
+	CButton m_btnLeft;
+	afx_msg void OnBnClickedButtonHome();
 };

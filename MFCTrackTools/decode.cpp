@@ -75,7 +75,6 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outp
 	
 	int             decode_size=0;
 	int             av_result=0;
-	int				outsize = 0;
 	
 	decoder->packet.data = inputbuffer;
 	decoder->packet.size = frame_size;
@@ -113,10 +112,7 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outp
 		sws_scale(decoder->img_convert_ctx, (const uint8_t* const*)decoder->pFrame->data, decoder->pFrame->linesize, 0, decoder->pCodecCtx->height,
 			decoder->pFrameRGB->data, decoder->pFrameRGB->linesize);
 
-		//int y_size = decoder->pCodecCtx->width*decoder->pCodecCtx->height;
-		outsize = (decoder->pCodecCtx->width * decoder->pCodecCtx->height * 3);
-		//outputbuffer = (unsigned char *)malloc(outsize*sizeof(char));
-		memset(outputbuffer, 0, outsize*sizeof(char));
+
 		for (int i = 0; i < HEIGHT;i++)
 		{
 			memcpy(outputbuffer + WIDTH * 3 * i, (decoder->pFrameRGB->linesize[0])*i + decoder->pFrameRGB->data[0], WIDTH * 3);

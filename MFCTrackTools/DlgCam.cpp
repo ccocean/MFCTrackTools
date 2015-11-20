@@ -25,49 +25,171 @@ void DlgCam::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_SPEED, m_comboSpeed);
+	DDX_Control(pDX, IDC_BUTTON_UP, m_btnUp);
+	DDX_Control(pDX, IDC_BUTTON_LEFT, m_btnLeft);
 }
 
 
 BEGIN_MESSAGE_MAP(DlgCam, CDialog)
-	ON_BN_CLICKED(IDC_BUTTON_UP, &DlgCam::OnBnClickedButtonUp)
+	ON_BN_CLICKED(IDC_BUTTON_HOME, &DlgCam::OnBnClickedButtonHome)
 END_MESSAGE_MAP()
 
-//CString	g_strPath = "";
-////“英文字符串”转换为“当前语言类型的字符串”
-//CString ConvertString(CString strText)
-//{
-//	char *val = new char[200];
-//	CString strIniPath, strRet;
-//
-//	if (g_strPath != "")
-//		strIniPath = g_strPath + "\\langchn.ini";
-//	else
-//		strIniPath = "./langchn.ini";
-//	memset(val, 0, 200);
-//	GetPrivateProfileString("String", strText, "",
-//		val, 200, strIniPath);
-//	//printf("%s\n", val);
-//	strRet = val;
-//	if (strRet.GetLength() == 0)
-//	{
-//		//如果ini文件中不存在对应的字符串，设置为默认值（英文）
-//		strRet = strText;
-//	}
-//	delete[] val;
-//	return strRet;
-//}
 
 // DlgCam 消息处理程序
-void DlgCam::OnBnClickedButtonUp()
+
+BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	if (pMsg->message == WM_KEYDOWN   &&   pMsg->wParam == VK_ESCAPE)
+	{
+		pMsg->wParam = VK_RETURN;   //将ESC键的消息替换为回车键的消息，这样，按ESC的时候  
+		//也会去调用OnOK函数，而OnOK什么也不做，这样ESC也被屏蔽   
+	}
+	if (pMsg->message == WM_KEYDOWN&&pMsg->wParam == VK_RETURN)
+	{
+		return TRUE;
+	}
+	if (pMsg->message == WM_LBUTTONDOWN)
+	{
+		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_UP)->m_hWnd)
+		{
+			if (m_uiHandle == 100)
+			{
+				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
+				//return;
+			}
+
+			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_UP, m_comboSpeed.GetCurSel());
+		}
+		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_LEFT)->m_hWnd)
+		{
+			if (m_uiHandle == 100)
+			{
+				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
+				//return;
+			}
+
+			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_LEFT, m_comboSpeed.GetCurSel());
+		}
+		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_RIGHT)->m_hWnd)
+		{
+			if (m_uiHandle == 100)
+			{
+				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
+				//return;
+			}
+
+			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_RIGHT, m_comboSpeed.GetCurSel());
+		}
+		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_DOWN)->m_hWnd)
+		{
+			if (m_uiHandle == 100)
+			{
+				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
+				//return;
+			}
+
+			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_DOWN, m_comboSpeed.GetCurSel());
+		}
+		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMIN)->m_hWnd)
+		{
+			if (m_uiHandle == 100)
+			{
+				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
+				//return;
+			}
+
+			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_ZOOMIN, m_comboSpeed.GetCurSel());
+		}
+		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMOUT)->m_hWnd)
+		{
+			if (m_uiHandle == 100)
+			{
+				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
+				//return;
+			}
+
+			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_ZOOMOUT, m_comboSpeed.GetCurSel());
+		}
+		m_btnUp.SetState(TRUE);
+	}
+	if (pMsg->message == WM_LBUTTONUP)
+	{
+		HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_STOP, m_comboSpeed.GetCurSel());
+		m_btnUp.SetState(FALSE);
+	}
+		
+	return CDialog::PreTranslateMessage(pMsg);
+}
+
+//void DlgCam::OnLButtonDown(UINT nFlags, CPoint point)
+//{
+//	// TODO:  在此添加消息处理程序代码和/或调用默认值
+//
+//	m_btnUp.GetWindowRect(rc);
+//	if (PtInRect(rc,point))
+//	{
+//		SetDlgItemText(IDC_grpBoxCam, "Button Up DOWN");
+//		whichBtn = 0;
+//	}
+//
+//	CDialog::OnLButtonDown(nFlags, point);
+//}
+//
+//
+//void DlgCam::OnLButtonUp(UINT nFlags, CPoint point)
+//{
+//	// TODO:  在此添加消息处理程序代码和/或调用默认值
+//
+//	//m_btnUp.GetWindowRect(rc);
+//	if (0==whichBtn)
+//	{
+//		SetDlgItemText(IDC_grpBoxCam, "Button Up Up");
+//	}
+//
+//	CDialog::OnLButtonUp(nFlags, point);
+//}
+
+
+//void DlgCam::OnBnClickedButtonUp()
+//{
+//	// TODO:  在此添加控件通知处理程序代码
+//	//MessageBox("fuck");
+//	whichBtn = 0;
+//	//SetTimer(1, 1, NULL);
+//}
+//
+//
+//void DlgCam::OnTimer(UINT_PTR nIDEvent)
+//{
+//	// TODO:  在此添加消息处理程序代码和/或调用默认值
+//	if (whichBtn==0)
+//	{
+//		HI_S32 s32Ret = HI_FAILURE;
+//
+//
+//		if (m_uiHandle == 100)
+//		{
+//			MessageBox(ConvertString("No connection"), ConvertString("msg"), MB_ICONEXCLAMATION);
+//			return;
+//		}
+//
+//		HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_UP, m_comboSpeed.GetCurSel());
+//	}
+//	CDialog::OnTimer(nIDEvent);
+//}
+
+
+void DlgCam::OnBnClickedButtonHome()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	HI_S32 s32Ret = HI_FAILURE;
 
-	if (m_uiHandle == 100)
+	if (m_uiHandle == -1)
 	{
-		MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
+		MessageBox(ConvertString("No connection"), ConvertString("msg"), MB_ICONEXCLAMATION);
 		return;
 	}
 
-	HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_UP, m_comboSpeed.GetCurSel());
+	HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_HOME, m_comboSpeed.GetCurSel());
 }

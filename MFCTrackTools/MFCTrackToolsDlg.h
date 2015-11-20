@@ -173,14 +173,14 @@ private:
 	void updateParams(int flag);
 	void loadParamsFromTch(TeaITRACK_Params* params);
 	void loadParamsFromStu(StuITRACK_ClientParams_t* params);
-	void initCamDlg(int cx,int cy, CRect rct);
+	void initCamDlg(int cx, int cy, CRect rct);
 	void connectCam();
 public:
 	int video_display(Decode_Info_t *pInfo);
 	CTabCtrl m_tabTrack;
 public:
 	int ctrlClient_init_trackCommuntication();
-
+	
 	int ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle);
 	int ctrlClient_process_trackHeart(char *buff);
 	BOOL ctrlClient_init_Stream();
