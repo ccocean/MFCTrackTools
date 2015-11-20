@@ -64,4 +64,5 @@ typedef struct RH_tcp_stream_recv_cond_ {
 
 
 void *Stream_init_client(RH_tcp_stream_recv_cond_t *src);
+int Stream_Stop(void*src);
 #endif	//__RH_STREAM_H__

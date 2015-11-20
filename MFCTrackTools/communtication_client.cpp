@@ -106,6 +106,7 @@ void * ctrl_process_clientHeartThread(void *argv)
 		}
 		Sleep(3000);
 	}
+	share_outputlog(NS_INFO, "*************ctrl_process_clientHeartThread is quit*******\n");
 	pthread_detach(pthread_self());
 	pthread_exit(0);
 	return NULL;
@@ -139,6 +140,7 @@ static int communtication_clientHeartThread(void *argv)
 	//Sleep(2000);
 	WORD wVersionRequested;
 	WSADATA wsaData;
+	Connect_Status nConnectstatus = CONNECT_SUCCESS;
 	int err;
 	wVersionRequested = MAKEWORD(1, 1);
 	err = WSAStartup(wVersionRequested, &wsaData);
@@ -160,6 +162,7 @@ static int communtication_clientHeartThread(void *argv)
 		share_outputlog(NS_ERROR, "connet server fd is failed,the pot is [%d] ip:%s\n", port, ip);
 		//Sleep(1000);
 		if (handle->ConnectStatusPtr != NULL) {
+			nConnectstatus = CONNECT_FAIL;
 			handle->ConnectStatusPtr(CONNECT_FAIL, handle->param);
 		}
 		goto CLIENT_EXIT;
@@ -171,6 +174,7 @@ static int communtication_clientHeartThread(void *argv)
 
 	//init ;
 	if (handle->ConnectStatusPtr != NULL) {
+		nConnectstatus = CONNECT_SUCCESS;
 		handle->ConnectStatusPtr(CONNECT_SUCCESS, handle->param);
 	}
 
@@ -230,18 +234,26 @@ static int communtication_clientHeartThread(void *argv)
 			}
 		}
 	}
+
+CLIENT_EXIT:
+
 	handle->client_socket = -1;
 
 	if (client_socket > 0) {
 		RH_Close(__FILE__, (char *)__FUNCTION__, client_socket);
 		client_socket = -1;
 	}
-	communtication_set_handleStatus(handle, STOP_STATUS);
-	if (handle->ConnectStatusPtr != NULL) {
-		handle->ConnectStatusPtr(DISCONNECT_SUCCESS, handle->param);
+
+	share_outputlog(NS_INFO, "*************communtication_clientHeartThread is quit %d*******\n", nConnectstatus);
+	if (nConnectstatus != CONNECT_FAIL)
+	{
+		communtication_set_handleStatus(handle, STOP_STATUS);
+		pthread_join(heart_tid, NULL);
+		share_outputlog(NS_INFO, "*************pthread_join heart******\n");
+		if (handle->ConnectStatusPtr != NULL) {
+			handle->ConnectStatusPtr(DISCONNECT_SUCCESS, handle->param);
+		}
 	}
-CLIENT_EXIT:
-	pthread_join(heart_tid,NULL);
 	
 	WSACleanup();
 	//printf_pthread_delete(__FILE__, (char *)__FUNCTION__);
