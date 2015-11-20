@@ -175,6 +175,7 @@ private:
 	void updateLines();
 	void updateParams(int flag);
 	void loadParamsFromTch(TeaITRACK_Params* params);
+	void loadParamsFromStu(StuITRACK_ClientParams_t* params);
 public:
 	int video_display(Decode_Info_t *pInfo);
 	CTabCtrl m_tabTrack;

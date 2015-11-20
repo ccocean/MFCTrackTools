@@ -490,6 +490,10 @@ void CMFCTrackToolsDlg::trackdraw()
 				//cvRectangle(srcImg, cvPoint(camPosSlide.left*(Frame_Width / int_pos), 0), cvPoint((camPosSlide.right + 1) * (Frame_Width / int_pos), Frame_Height), cvScalar(255, 0, 0));//画预置位滑框
 			}
 		}
+		pOldPen = pDC->SelectObject(&penY);
+		drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
+		pOldPen = pDC->SelectObject(&penG);
+		drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
 		if (mouseStatus == Mouse_LBDOWN)
 		{
 			if (pt.x > 0 && pt.y > 0)
@@ -497,7 +501,7 @@ void CMFCTrackToolsDlg::trackdraw()
 				pOldPen = pDC->SelectObject(&penR);
 				drawRectangle(p1, pt);
 			}
-			if (mouseCnt == 1)
+			/*if (mouseCnt == 1)
 			{
 				pOldPen = pDC->SelectObject(&penY);
 				drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
@@ -508,55 +512,63 @@ void CMFCTrackToolsDlg::trackdraw()
 				drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
 				pOldPen = pDC->SelectObject(&penG);
 				drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
-			}
+			}*/
 		}
 		else if (mouseStatus == Mouse_LBUP)
 		{
 
-			//drawRectangle(p1, p2);
-			if (mouseCnt == 1)
-			{
-				pOldPen = pDC->SelectObject(&penY);
-				drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-			}
-			if (mouseCnt == 2)
-			{
-				pOldPen = pDC->SelectObject(&penY);
-				drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-				pOldPen = pDC->SelectObject(&penG);
-				drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
-			}
+			////drawRectangle(p1, p2);
+			//if (mouseCnt == 1)
+			//{
+			//	pOldPen = pDC->SelectObject(&penY);
+			//	drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
+			//}
+			//if (mouseCnt == 2)
+			//{
+			//	pOldPen = pDC->SelectObject(&penY);
+			//	drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
+			//	pOldPen = pDC->SelectObject(&penG);
+			//	drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
+			//}
 			SetDlgItemInt(IDC_editX, p1.x);
 			SetDlgItemInt(IDC_editY, p1.y);
 			SetDlgItemInt(IDC_editW, p2.x - p1.x);
 			SetDlgItemInt(IDC_editH, p2.y - p1.y);
 		}
-		else if (mouseStatus == Mouse_LBDRAG)
+		//else if (mouseStatus == Mouse_LBDRAG)
+		//{
+		//	//drawRectangle(p1, p2);
+		//	if (mouseCnt == 1)
+		//	{
+		//		pOldPen = pDC->SelectObject(&penY);
+		//		drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
+		//	}
+		//	if (mouseCnt == 2)
+		//	{
+		//		pOldPen = pDC->SelectObject(&penY);
+		//		drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
+		//		pOldPen = pDC->SelectObject(&penG);
+		//		drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
+		//	}
+		//}
+		/*else
 		{
-			//drawRectangle(p1, p2);
-			if (mouseCnt == 1)
-			{
-				pOldPen = pDC->SelectObject(&penY);
-				drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-			}
-			if (mouseCnt == 2)
-			{
-				pOldPen = pDC->SelectObject(&penY);
-				drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-				pOldPen = pDC->SelectObject(&penG);
-				drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
-			}
-		}
-		else
-		{
-			pOldPen = pDC->SelectObject(&penY);
-			drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-			pOldPen = pDC->SelectObject(&penG);
-			drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
-		}
+		pOldPen = pDC->SelectObject(&penY);
+		drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
+		pOldPen = pDC->SelectObject(&penG);
+		drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
+		}*/
 	}
 	else
 	{
+		pOldPen = pDC->SelectObject(&penY);
+		drawRectangle(pa, pb, pc, pd);
+		drawEndRect(pa, 10);
+		drawEndRect(pb, 10);
+		drawEndRect(pc, 10);
+		drawEndRect(pd, 10);
+		drawLines(DRAW_WIDTH);
+		drawLines(DRAW_ANGLE);
 		if (mouseStatus==Mouse_LBDOWN)
 		{
 			if (pt.x > 0 && pt.y > 0)
@@ -1525,6 +1537,63 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 	dlgTch.m_editPos.SetWindowText(s);
 	s.Format("%d", params->threshold.targetArea);
 	dlgTch.m_editTargetArea.SetWindowText(s);
+	mouseCnt = 2;
+}
+
+void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
+{
+	//先载入四个顶角位置
+	pa.x = params->stuTrack_vertex[0].x;
+	pa.y = params->stuTrack_vertex[0].y;
+
+	pb.x = params->stuTrack_vertex[1].x;
+	pb.y = params->stuTrack_vertex[1].y;
+
+	pc.x = params->stuTrack_vertex[2].x;
+	pc.y = params->stuTrack_vertex[2].y;
+
+	pd.x = params->stuTrack_vertex[3].x;
+	pd.y = params->stuTrack_vertex[3].y;
+
+	//载入四个宽度
+	CPoint v1, v2;
+	int mod1 = 0, mod2 = 0;
+	v1 = pb - pa; v2 = pd - pc;
+	mod1 = sqrt(v1.x*v1.x + v1.y*v1.y);
+	mod2 = sqrt(v2.x*v2.x + v2.y*v2.y);
+	v1.x = v1.x / mod1; v1.y = v1.y / mod1;
+	v2.x = v2.x / mod2; v2.y = v2.y / mod2;
+
+	ln1[0] = pa;
+	ln1[1].x = pa.x + v1.x*params->stuTrack_stuWidth_standard[0];
+	ln1[1].y = pa.y + v1.y*params->stuTrack_stuWidth_standard[0];
+
+	ln2[0] = pb;
+	ln2[1].x = pb.x - v1.x*params->stuTrack_stuWidth_standard[1];
+	ln2[1].y = pb.y - v1.y*params->stuTrack_stuWidth_standard[1];
+
+	ln3[0] = pc;
+	ln3[1].x = pc.x + v2.x*params->stuTrack_stuWidth_standard[2];
+	ln3[1].y = pc.y + v2.y*params->stuTrack_stuWidth_standard[2];
+
+	ln4[0] = pd;
+	ln4[1].x = pd.x - v2.x*params->stuTrack_stuWidth_standard[3];
+	ln4[1].y = pd.y - v2.y*params->stuTrack_stuWidth_standard[3];
+	updateParams(PARAM_POSITION);
+	updateParams(PARAM_WIDTH);
+
+	//载入四个角度值
+	pA.x = pa.x + cos(params->stuTrack_direct_standard[0] - 180) * 20;
+	pA.y = pa.y + sin(params->stuTrack_direct_standard[0] - 180) * 20;
+
+	pB.x = pb.x + cos(params->stuTrack_direct_standard[1] - 180) * 20;
+	pB.y = pb.y + sin(params->stuTrack_direct_standard[1] - 180) * 20;
+
+	pC.x = pc.x + cos(params->stuTrack_direct_standard[2] - 180) * 20;
+	pC.y = pc.y + sin(params->stuTrack_direct_standard[2] - 180) * 20;
+
+	pD.x = pd.x + cos(params->stuTrack_direct_standard[3] - 180) * 20;
+	pD.y = pd.y + sin(params->stuTrack_direct_standard[3] - 180) * 20;
 }
 
 static  inline char *get_track_cmd_name(int cmd)
@@ -1580,6 +1649,7 @@ static int ctrl_connect_status(Connect_Status status, void * param)
 	else
 	{
 		pTrackDlg->ctrlClient_init_Stream();
+		ctrlClient_get_teach_params(pTrackDlg->m_track_clientHandle);
 		PostMessage(pTrackDlg->m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 	}
 	pTrackDlg->dlgTch.setConnectHandle(pTrackDlg->m_track_clientHandle);
@@ -1625,32 +1695,31 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	}
 	case STU_GETTRACK_CMD:
 	{
-		if (head->total_len != sizeof(StuITRACK_ClientParams_t))
-		{
+							 if (head->total_len != sizeof(StuITRACK_ClientParams_t))
+							 {
 
-		}
-		else
-		{
-			StuITRACK_ClientParams_t * stu_params = (StuITRACK_ClientParams_t *)msg;
+							 }
+							 else
+							 {
+								 StuITRACK_ClientParams_t * stu_params = (StuITRACK_ClientParams_t *)msg;
+								 loadParamsFromStu(stu_params);
 
-		}
+							 }
 							 break;
 	}
 	case TEA_GETTRACK_CMD:
 	{
-			if (head->total_len != sizeof(TeaITRACK_Params))
-			{
-				
-			}
-			else
-			{
-				TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
-				if (tea_params->isSetParams==1)
-				{
-					loadParamsFromTch(tea_params);
-				}
-				
-			}
+							 if (head->total_len != sizeof(TeaITRACK_Params))
+							 {
+
+							 }
+							 else
+							 {
+								 TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
+								 loadParamsFromTch(tea_params);
+		
+
+							 }
 
 							 break;
 	}
@@ -1708,6 +1777,7 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		p1.x = 0; p1.y = 0;
 		p2.x = 0; p2.y = 0;
 		mouseCnt = 0;
+		ctrlClient_get_teach_params(m_track_clientHandle);
 		break;
 	case 1:
 		dlgTch.ShowWindow(FALSE);
@@ -1718,6 +1788,7 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		blk.width = 0; blk.height = 0;
 		pt.x = 0; pt.y = 0;
 		mouseCnt = 0;
+		ctrlClient_get_stu_params(m_track_clientHandle);
 		break;
 	default:
 		;
