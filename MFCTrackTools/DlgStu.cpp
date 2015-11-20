@@ -67,7 +67,8 @@ void DlgStu::getParameters()
 int DlgStu::checkParameters()
 {
 	CString standAgl, standFrm, sitFrm, moveDev, moveDly;
-	int _standAgl, _standFrm, _sitFrm, _moveDev, _moveDly;
+	int _standAgl, _standFrm, _sitFrm,  _moveDly;
+	double _moveDev;
 	if (stu_params.stuTrack_vertex[0].x <= 0 || stu_params.stuTrack_vertex[0].y <= 0)
 	{
 		MessageBox("¶¥µãÎ»ÖÃ´íÎó£¡");
@@ -102,7 +103,7 @@ int DlgStu::checkParameters()
 		_standAgl = _ttoi(standAgl);
 		_standFrm = _ttoi(standFrm);
 		_sitFrm = _ttoi(sitFrm);
-		_moveDev = _ttoi(moveDev);
+		_moveDev = _ttof(moveDev);
 		_moveDly = _ttoi(moveDly);
 		if (_standAgl<0)
 		{

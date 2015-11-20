@@ -236,12 +236,13 @@ static int communtication_clientHeartThread(void *argv)
 		RH_Close(__FILE__, (char *)__FUNCTION__, client_socket);
 		client_socket = -1;
 	}
+	communtication_set_handleStatus(handle, STOP_STATUS);
 	if (handle->ConnectStatusPtr != NULL) {
 		handle->ConnectStatusPtr(DISCONNECT_SUCCESS, handle->param);
 	}
 CLIENT_EXIT:
-
-	communtication_set_handleStatus(handle, STOP_STATUS);
+	pthread_join(heart_tid,NULL);
+	
 	WSACleanup();
 	//printf_pthread_delete(__FILE__, (char *)__FUNCTION__);
 	pthread_detach(pthread_self());
