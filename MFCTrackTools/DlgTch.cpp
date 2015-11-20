@@ -57,6 +57,17 @@ void DlgTch::getParameters()
 	return;
 }
 
+void DlgTch::setParams(TeaITRACK_Params* params)
+{
+	tch_params.blk = params->blk;
+	tch_params.frame = params->frame;
+	tch_params.isSetParams = params->isSetParams;
+	tch_params.numOfPos = params->numOfPos;
+	tch_params.numOfSlide = params->numOfSlide;
+	tch_params.tch = params->tch;
+	tch_params.threshold = params->threshold;
+}
+
 void DlgTch::setTrackRects(Tch_Rect_t rc,int flag)
 {
 	if (flag==TCH_RECT)
@@ -141,6 +152,8 @@ int DlgTch::checkParameters()
 			tch_params.threshold.outside = _outside;
 		}
 	}
+	tch_params.frame.width = WIDTH;
+	tch_params.frame.height = HEIGHT;
 	return 0;
 }
 

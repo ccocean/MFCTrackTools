@@ -64,6 +64,32 @@ void DlgStu::getParameters()
 	return;
 }
 
+void DlgStu::setParams(StuITRACK_ClientParams_t* params)
+{
+	stu_params.flag_setting = params->flag_setting;
+	stu_params.height = params->height;
+	stu_params.stuTrack_debugMsg_flag = params->stuTrack_debugMsg_flag;
+	stu_params.stuTrack_direct_range = params->stuTrack_direct_range;
+	stu_params.stuTrack_direct_standard[0] = params->stuTrack_direct_standard[0];
+	stu_params.stuTrack_direct_standard[1] = params->stuTrack_direct_standard[1];
+	stu_params.stuTrack_direct_standard[2] = params->stuTrack_direct_standard[2];
+	stu_params.stuTrack_direct_standard[3] = params->stuTrack_direct_standard[3];
+	stu_params.stuTrack_Draw_flag = params->stuTrack_Draw_flag;
+	stu_params.stuTrack_move_threshold = params->stuTrack_move_threshold;
+	stu_params.stuTrack_moveDelayed_threshold = params->stuTrack_moveDelayed_threshold;
+	stu_params.stuTrack_sitdownCount_threshold = params->stuTrack_sitdownCount_threshold;
+	stu_params.stuTrack_standCount_threshold = params->stuTrack_standCount_threshold;
+	stu_params.stuTrack_stuWidth_standard[0] = params->stuTrack_stuWidth_standard[0];
+	stu_params.stuTrack_stuWidth_standard[1] = params->stuTrack_stuWidth_standard[1];
+	stu_params.stuTrack_stuWidth_standard[2] = params->stuTrack_stuWidth_standard[2];
+	stu_params.stuTrack_stuWidth_standard[3] = params->stuTrack_stuWidth_standard[3];
+	stu_params.stuTrack_vertex[0] = params->stuTrack_vertex[0];
+	stu_params.stuTrack_vertex[1] = params->stuTrack_vertex[1];
+	stu_params.stuTrack_vertex[2] = params->stuTrack_vertex[2];
+	stu_params.stuTrack_vertex[3] = params->stuTrack_vertex[3];
+	stu_params.width = params->width;
+}
+
 int DlgStu::checkParameters()
 {
 	CString standAgl, standFrm, sitFrm, moveDev, moveDly;
@@ -135,6 +161,11 @@ int DlgStu::checkParameters()
 		stu_params.stuTrack_sitdownCount_threshold = _sitFrm;
 		stu_params.stuTrack_move_threshold = _moveDev;
 		stu_params.stuTrack_moveDelayed_threshold = _moveDly;
+		stu_params.width = WIDTH;
+		stu_params.height = HEIGHT;
+		stu_params.flag_setting = TRUE;
+		stu_params.stuTrack_debugMsg_flag = 1;
+		stu_params.stuTrack_Draw_flag = TRUE;
 	}
 	return 0;
 }

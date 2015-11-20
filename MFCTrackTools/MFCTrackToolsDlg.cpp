@@ -70,7 +70,6 @@ CMFCTrackToolsDlg::CMFCTrackToolsDlg(CWnd* pParent /*=NULL*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_track_clientHandle = NULL;
-	m_streamHandle = NULL;
 	m_strSkin = "";
 }
 
@@ -207,7 +206,7 @@ BOOL CMFCTrackToolsDlg::ctrlClient_init_Stream()
 	recv_stream_handle.channel = 1;
 	recv_stream_handle.param1 = this;
 	recv_stream_handle.call_back_fun = video_call_back;
-	m_streamHandle = init_stream_recv(&recv_stream_handle);
+	init_stream_recv(&recv_stream_handle);
 	return TRUE;
 
 }
@@ -378,8 +377,6 @@ void CMFCTrackToolsDlg::OnClose()
 	if (MessageBox(_T("确定退出吗"), _T("提示"), MB_YESNO | MB_ICONWARNING)
 		== IDNO)
 		return;
-	stop_stream_stream(m_streamHandle);
-	communtication_set_handleStatus(m_track_clientHandle, STOP_STATUS);
 	skinppExitSkin();
 	CDialogEx::OnClose();
 }
@@ -561,14 +558,7 @@ void CMFCTrackToolsDlg::trackdraw()
 	}
 	else
 	{
-		pOldPen = pDC->SelectObject(&penY);
-		drawRectangle(pa, pb, pc, pd);
-		drawEndRect(pa, 10);
-		drawEndRect(pb, 10);
-		drawEndRect(pc, 10);
-		drawEndRect(pd, 10);
-		drawLines(DRAW_WIDTH);
-		drawLines(DRAW_ANGLE);
+		
 		if (mouseStatus==Mouse_LBDOWN)
 		{
 			if (pt.x > 0 && pt.y > 0)
@@ -577,14 +567,14 @@ void CMFCTrackToolsDlg::trackdraw()
 				drawRectangle(pa, pt);
 			}
 		}
-		/*else if (mouseStatus==Mouse_LBUP)
+		else if (mouseStatus == Mouse_LBUP)
 		{
 			pOldPen = pDC->SelectObject(&penY);
 			drawRectangle(pa, pb, pc, pd);
-			drawEndRect(pa,10);
-			drawEndRect(pb,10);
-			drawEndRect(pc,10);
-			drawEndRect(pd,10);
+			drawEndRect(pa, 10);
+			drawEndRect(pb, 10);
+			drawEndRect(pc, 10);
+			drawEndRect(pd, 10);
 			drawLines(DRAW_WIDTH);
 		}
 		else if (mouseStatus == Mouse_LBDRAG)
@@ -606,11 +596,11 @@ void CMFCTrackToolsDlg::trackdraw()
 			drawEndRect(pc, 10);
 			drawEndRect(pd, 10);
 			drawLines(DRAW_WIDTH);
-			
+
 		}
-		if (mouseStatus==Mouse_RBDOWN)
+		if (mouseStatus == Mouse_RBDOWN)
 		{
-			if (pt.x > 0 && pt.y > 0&&p1.x>0&&p1.y>0)
+			if (pt.x > 0 && pt.y > 0 && p1.x > 0 && p1.y > 0)
 			{
 				pOldPen = pDC->SelectObject(&penB);
 				drawLine(p1, pt);
@@ -618,20 +608,28 @@ void CMFCTrackToolsDlg::trackdraw()
 			drawLines(DRAW_ANGLE);
 			drawLines(DRAW_WIDTH);
 		}
-		else if (mouseStatus==Mouse_RBUP)
+		else if (mouseStatus == Mouse_RBUP)
 		{
 			drawLines(DRAW_ANGLE);
 			drawLines(DRAW_WIDTH);
 		}
-		else if (mouseStatus==Mouse_RBDRAG)
+		else if (mouseStatus == Mouse_RBDRAG)
 		{
 			drawLines(DRAW_ANGLE);
 			drawLines(DRAW_WIDTH);
 		}
 		else
 		{
+			//drawLines(DRAW_ANGLE);
+			pOldPen = pDC->SelectObject(&penY);
+			drawRectangle(pa, pb, pc, pd);
+			drawEndRect(pa, 10);
+			drawEndRect(pb, 10);
+			drawEndRect(pc, 10);
+			drawEndRect(pd, 10);
+			drawLines(DRAW_WIDTH);
 			drawLines(DRAW_ANGLE);
-		}*/
+		}
 	}
 }
 
@@ -759,6 +757,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				mouseStatus = Mouse_LBDOWN;
 				pA = pB = pC = pD = { 0 };
 				p1 = p2 = { 0 };
+				ln1[0] = ln1[1] = ln2[0] = ln2[1] = ln3[0] = ln3[1] = ln4[0] = ln4[1] = { 0 };
 			}
 			/*if (mouseCnt == 1)
 			{
@@ -1537,6 +1536,42 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 	dlgTch.m_editPos.SetWindowText(s);
 	s.Format("%d", params->threshold.targetArea);
 	dlgTch.m_editTargetArea.SetWindowText(s);
+
+	tmp = _T(" ,");
+	s.Format(_T("%d"), tch.x);
+	str += s;
+	str += tmp;
+	dlgTch.m_editX.SetWindowTextA(s);
+	s.Format(_T("%d"), tch.y);
+	str += s;
+	str += tmp;
+	dlgTch.m_editY.SetWindowTextA(s);
+	s.Format(_T("%d"), tch.width);
+	str += s;
+	str += tmp;
+	dlgTch.m_editW.SetWindowTextA(s);
+	s.Format(_T("%d"), tch.height);
+	str += s;
+	dlgTch.m_editH.SetWindowTextA(s);
+	dlgTch.m_txtTchArg.SetWindowTextA(str);
+	str = _T("");
+
+	s.Format(_T("%d"), blk.x);
+	str += s;
+	str += tmp;
+	s.Format(_T("%d"), blk.y);
+	str += s;
+	str += tmp;
+	s.Format(_T("%d"), blk.width);
+	str += s;
+	str += tmp;
+	s.Format(_T("%d"), blk.height);
+	str += s;
+	dlgTch.m_txtBlkArg.SetWindowTextA(str);
+	str = _T("");
+
+	dlgTch.setParams(params);
+
 	mouseCnt = 2;
 }
 
@@ -1561,39 +1596,79 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 	v1 = pb - pa; v2 = pd - pc;
 	mod1 = sqrt(v1.x*v1.x + v1.y*v1.y);
 	mod2 = sqrt(v2.x*v2.x + v2.y*v2.y);
-	v1.x = v1.x / mod1; v1.y = v1.y / mod1;
-	v2.x = v2.x / mod2; v2.y = v2.y / mod2;
 
-	ln1[0] = pa;
-	ln1[1].x = pa.x + v1.x*params->stuTrack_stuWidth_standard[0];
-	ln1[1].y = pa.y + v1.y*params->stuTrack_stuWidth_standard[0];
+	if (mod1 == 0 || mod2 == 0)
+	{
+		ln1[0] = ln1[1] = ln2[0] = ln2[1] = ln3[0] = ln3[1] = ln4[0] = ln4[1] = { 0 };
+		v1 = v2 = { 0 };
+	}
+	else
+	{
+		v1.x = v1.x / mod1; v1.y = v1.y / mod1;
+		v2.x = v2.x / mod2; v2.y = v2.y / mod2;
 
-	ln2[0] = pb;
-	ln2[1].x = pb.x - v1.x*params->stuTrack_stuWidth_standard[1];
-	ln2[1].y = pb.y - v1.y*params->stuTrack_stuWidth_standard[1];
+		ln1[0] = pa;
+		ln1[1].x = pa.x + v1.x*params->stuTrack_stuWidth_standard[0];
+		ln1[1].y = pa.y + v1.y*params->stuTrack_stuWidth_standard[0];
 
-	ln3[0] = pc;
-	ln3[1].x = pc.x + v2.x*params->stuTrack_stuWidth_standard[2];
-	ln3[1].y = pc.y + v2.y*params->stuTrack_stuWidth_standard[2];
+		ln2[0] = pb;
+		ln2[1].x = pb.x - v1.x*params->stuTrack_stuWidth_standard[1];
+		ln2[1].y = pb.y - v1.y*params->stuTrack_stuWidth_standard[1];
 
-	ln4[0] = pd;
-	ln4[1].x = pd.x - v2.x*params->stuTrack_stuWidth_standard[3];
-	ln4[1].y = pd.y - v2.y*params->stuTrack_stuWidth_standard[3];
+		ln3[0] = pc;
+		ln3[1].x = pc.x + v2.x*params->stuTrack_stuWidth_standard[2];
+		ln3[1].y = pc.y + v2.y*params->stuTrack_stuWidth_standard[2];
+
+		ln4[0] = pd;
+		ln4[1].x = pd.x - v2.x*params->stuTrack_stuWidth_standard[3];
+		ln4[1].y = pd.y - v2.y*params->stuTrack_stuWidth_standard[3];
+	}
+	
 	updateParams(PARAM_POSITION);
 	updateParams(PARAM_WIDTH);
 
 	//载入四个角度值
-	pA.x = pa.x + cos(params->stuTrack_direct_standard[0]) * 50;
-	pA.y = pa.y + sin(params->stuTrack_direct_standard[0]) * 50;
+	pA.x = pa.x + cos(params->stuTrack_direct_standard[0] * ITC_ANGLE_TO_RADIAN) * 50;
+	pA.y = pa.y + sin(params->stuTrack_direct_standard[0] * ITC_ANGLE_TO_RADIAN) * 50;
 
-	pB.x = pb.x + cos(params->stuTrack_direct_standard[1]) * 50;
-	pB.y = pb.y + sin(params->stuTrack_direct_standard[1]) * 50;
+	pB.x = pb.x + cos(params->stuTrack_direct_standard[1] * ITC_ANGLE_TO_RADIAN) * 50;
+	pB.y = pb.y + sin(params->stuTrack_direct_standard[1] * ITC_ANGLE_TO_RADIAN) * 50;
 
-	pC.x = pc.x + cos(params->stuTrack_direct_standard[2]) * 50;
-	pC.y = pc.y + sin(params->stuTrack_direct_standard[2]) * 50;
+	pC.x = pc.x + cos(params->stuTrack_direct_standard[2] * ITC_ANGLE_TO_RADIAN) * 50;
+	pC.y = pc.y + sin(params->stuTrack_direct_standard[2] * ITC_ANGLE_TO_RADIAN) * 50;
 
-	pD.x = pd.x + cos(params->stuTrack_direct_standard[3]) * 50;
-	pD.y = pd.y + sin(params->stuTrack_direct_standard[3]) * 50;
+	pD.x = pd.x + cos(params->stuTrack_direct_standard[3] * ITC_ANGLE_TO_RADIAN) * 50;
+	pD.y = pd.y + sin(params->stuTrack_direct_standard[3] * ITC_ANGLE_TO_RADIAN) * 50;
+
+	s.Format("%d", params->stuTrack_direct_standard[0]);
+	dlgStu.m_edtLeftUpAgl.SetWindowText(s);
+
+	s.Format("%d", params->stuTrack_direct_standard[1]);
+	dlgStu.m_edtRightUpAgl.SetWindowText(s);
+
+	s.Format("%d", params->stuTrack_direct_standard[2]);
+	dlgStu.m_edtRightDnAgl.SetWindowText(s);
+
+	s.Format("%d", params->stuTrack_direct_standard[3]);
+	dlgStu.m_edtLeftDnAgl.SetWindowText(s);
+
+	//载入显示参数
+	s.Format("%d", params->stuTrack_direct_range);
+	dlgStu.m_edtStandAgl.SetWindowText(s);
+
+	s.Format("%d", params->stuTrack_standCount_threshold);
+	dlgStu.m_edtStandFrm.SetWindowText(s);
+
+	s.Format("%d", params->stuTrack_sitdownCount_threshold);
+	dlgStu.m_edtSitFrm.SetWindowText(s);
+
+	s.Format("%f", params->stuTrack_move_threshold);
+	dlgStu.m_edtMoveDev.SetWindowText(s);
+
+	s.Format("%d", params->stuTrack_moveDelayed_threshold);
+	dlgStu.m_comboDly.SetWindowText(s);
+
+	dlgStu.setParams(params);
 }
 
 static  inline char *get_track_cmd_name(int cmd)

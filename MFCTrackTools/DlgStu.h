@@ -25,7 +25,7 @@ public:
 	afx_msg void OnBnClickedBtnstuapply();
 	int checkParameters();
 	void getParameters();
-	
+	void setParams(StuITRACK_ClientParams_t* params);
 	CEdit m_edtLeftUpPos;
 	CEdit m_edtLeftDnPos;
 	CEdit m_edtRightUpPos;

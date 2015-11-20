@@ -46,6 +46,7 @@
 #define PARAM_WIDTH 1
 
 #define ITC_RADIAN_TO_ANGLE	57.29577951308 //弧度转角度参数
+#define ITC_ANGLE_TO_RADIAN	0.017453292520
 
 //using namespace cv;
 
