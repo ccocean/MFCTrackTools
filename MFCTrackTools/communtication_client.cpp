@@ -13,7 +13,7 @@ int communtication_get_handleStatus(Commutication_Handle_t handle)
 		share_outputlog(NS_ERROR, "handle is NULL\n");
 		return NO_INIT_STATUS;
 	}
-
+	printf("test");
 	return handle->status;
 }
 int communtication_check_head(Communtication_Head_t *head)

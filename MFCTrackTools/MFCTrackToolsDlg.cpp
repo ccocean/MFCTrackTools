@@ -574,7 +574,7 @@ void CMFCTrackToolsDlg::trackdraw()
 				drawRectangle(pa, pt);
 			}
 		}
-		else if (mouseStatus==Mouse_LBUP)
+		/*else if (mouseStatus==Mouse_LBUP)
 		{
 			pOldPen = pDC->SelectObject(&penY);
 			drawRectangle(pa, pb, pc, pd);
@@ -628,7 +628,7 @@ void CMFCTrackToolsDlg::trackdraw()
 		else
 		{
 			drawLines(DRAW_ANGLE);
-		}
+		}*/
 	}
 }
 
@@ -1580,17 +1580,17 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 	updateParams(PARAM_WIDTH);
 
 	//载入四个角度值
-	pA.x = pa.x + cos(params->stuTrack_direct_standard[0] - 180) * 20;
-	pA.y = pa.y + sin(params->stuTrack_direct_standard[0] - 180) * 20;
+	pA.x = pa.x + cos(params->stuTrack_direct_standard[0]) * 50;
+	pA.y = pa.y + sin(params->stuTrack_direct_standard[0]) * 50;
 
-	pB.x = pb.x + cos(params->stuTrack_direct_standard[1] - 180) * 20;
-	pB.y = pb.y + sin(params->stuTrack_direct_standard[1] - 180) * 20;
+	pB.x = pb.x + cos(params->stuTrack_direct_standard[1]) * 50;
+	pB.y = pb.y + sin(params->stuTrack_direct_standard[1]) * 50;
 
-	pC.x = pc.x + cos(params->stuTrack_direct_standard[2] - 180) * 20;
-	pC.y = pc.y + sin(params->stuTrack_direct_standard[2] - 180) * 20;
+	pC.x = pc.x + cos(params->stuTrack_direct_standard[2]) * 50;
+	pC.y = pc.y + sin(params->stuTrack_direct_standard[2]) * 50;
 
-	pD.x = pd.x + cos(params->stuTrack_direct_standard[3] - 180) * 20;
-	pD.y = pd.y + sin(params->stuTrack_direct_standard[3] - 180) * 20;
+	pD.x = pd.x + cos(params->stuTrack_direct_standard[3]) * 50;
+	pD.y = pd.y + sin(params->stuTrack_direct_standard[3]) * 50;
 }
 
 static  inline char *get_track_cmd_name(int cmd)
@@ -1755,7 +1755,6 @@ int CMFCTrackToolsDlg::ctrlClient_init_trackCommuntication()
 
 	return  0;
 }
-
 void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO:  在此添加控件通知处理程序代码
@@ -1793,8 +1792,6 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 
 	*pResult = 0;
 }
-
-
 BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: Add your specialized code here and/or call the base class
