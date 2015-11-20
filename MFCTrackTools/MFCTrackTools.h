@@ -30,3 +30,5 @@ public:
 };
 
 extern CMFCTrackToolsApp theApp;
+
+CString ConvertString(CString strText);

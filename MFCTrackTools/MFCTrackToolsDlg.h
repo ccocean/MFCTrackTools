@@ -100,6 +100,8 @@ public:
 	afx_msg void OnBnClickedbtnapply();
 	afx_msg void OnBnClickedbtndefault();
 
+	
+
 	DlgTch dlgTch;
 	DlgStu dlgStu;
 	DlgCam dlgCam;
@@ -131,6 +133,7 @@ public:
 	CPoint pA = { 0 }, pB = { 0 }, pC = { 0 }, pD = { 0 };//学生跟踪参数四顶点的角度，delta值为pA-pa。
 	CPoint ln1[2],ln2[2],ln3[2],ln4[2];//表示宽度的线段
 
+	//鼠标控制变量
 	Tch_Rect_t tch, blk;
 	int mouseStatus = 0;
 	int mouseCnt = 0;
@@ -141,7 +144,7 @@ public:
 
 	int rst = -1;
 	int angle = 0;//角度
-	int dist = 0;
+	int dist = 0;//宽度
 
 	CDC *pDC ;
 	HDC hdc ;
@@ -149,18 +152,11 @@ public:
 	CPen penG;
 	CPen penR;
 	CPen penB;
-	CPen *pOldPen;
+	CPen *pOldPen;//画笔
 	CBrush *pBrush = CBrush::FromHandle((HBRUSH)
 		GetStockObject(NULL_BRUSH));
-	CBrush *pOldBrush;
-
-	
-	
-
-	
-	
-	
-	BITMAPINFO m_bmphdr;
+	CBrush *pOldBrush;//画刷
+	BITMAPINFO m_bmphdr;//bmp文件头
 private:
 	char m_trackIp[16];
 	BOOL initProgramControl();
@@ -177,6 +173,8 @@ private:
 	void updateParams(int flag);
 	void loadParamsFromTch(TeaITRACK_Params* params);
 	void loadParamsFromStu(StuITRACK_ClientParams_t* params);
+	void initCamDlg(int cx,int cy, CRect rct);
+	void connectCam();
 public:
 	int video_display(Decode_Info_t *pInfo);
 	CTabCtrl m_tabTrack;

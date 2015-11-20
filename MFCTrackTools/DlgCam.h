@@ -1,5 +1,9 @@
 #pragma once
-
+#include "afxwin.h"
+#include "./hi_type.h"
+#include "./hi_net_dev_errors.h"
+#include "./hi_net_dev_msg.h"
+#include "./hi_net_dev_sdk.h"
 
 // DlgCam 对话框
 
@@ -18,4 +22,13 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+	UINT m_uiHandle;//云台相机句柄
+	CString		m_strHost;
+	UINT		m_uiPort;
+	CString		m_strPword;
+	CString		m_strUname;
+
+	CComboBox m_comboSpeed;
+	afx_msg void OnBnClickedButtonUp();
 };

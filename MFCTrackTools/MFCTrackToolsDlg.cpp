@@ -253,16 +253,8 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgStu.ShowWindow(FALSE);
 
 
-
-	CRect rsDlgcam;
-	dlgCam.Create(IDD_CAMCONTROL, GetDlgItem(IDD_CAMCONTROL));
-	dlgCam.GetClientRect(rsDlgcam);
-	rsDlgcam.left = rectTrackClient.left;
-	cx = rectTrackClient.right - rectTrackClient.left;
-	rsDlgcam.top = rectTrackClient.bottom;
-	cy = rsDlgcam.bottom;
-	dlgCam.SetWindowPos(NULL, rsDlgcam.left, rsDlgcam.top, cx, cy, SWP_NOZORDER);
-	dlgCam.ShowWindow(TRUE);
+	initCamDlg(cx,cy,rectTrackClient);
+	
 	
 	m_tabTrack.SetCurSel(0);
 
@@ -1885,6 +1877,85 @@ BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
+
+
+void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
+{
+	CRect rsDlgcam;
+	dlgCam.Create(IDD_CAMCONTROL, GetDlgItem(IDD_CAMCONTROL));
+	dlgCam.GetClientRect(rsDlgcam);
+	rsDlgcam.left = rct.left;
+	cx = rct.right - rct.left;
+	rsDlgcam.top = rct.bottom;
+	cy = rsDlgcam.bottom;
+	dlgCam.SetWindowPos(NULL, rsDlgcam.left, rsDlgcam.top, cx, cy, SWP_NOZORDER);
+	dlgCam.ShowWindow(TRUE);
+	dlgCam.m_uiHandle = 100;
+	dlgCam.m_strHost = _T("192.168.11.166");
+	dlgCam.m_uiPort = 5556; //80
+	dlgCam.m_strPword = _T("admin");
+	dlgCam.m_strUname = _T("admin");
+	for (int i = 0; i < 64; i++)
+	{
+		str.Format("%d", i);
+		dlgCam.m_comboSpeed.InsertString(i, str);
+	}
+	dlgCam.m_comboSpeed.SetCurSel(55);
+
+	connectCam();
+}
+
+
+void CMFCTrackToolsDlg::connectCam()
+{
+	HI_S32 s32Ret = HI_SUCCESS;
+	HI_BOOL bStream = HI_TRUE;
+	static unsigned int flag = 0;
+
+	//if(m_uiHandle == -1 && flag == 0)
+	if (dlgCam.m_uiHandle == 100)
+	{
+		MessageBox(dlgCam.m_strUname + ConvertString("\n") + dlgCam.m_strPword + ConvertString("\n") + dlgCam.m_strHost);
+
+		UpdateData();
+		//s32Ret = HI_NET_DEV_Login(&m_uiHandle, (LPCTSTR)m_strUname, (LPCTSTR)m_strPword, (LPCTSTR)m_strHost, m_uiPort);
+		s32Ret = HI_NET_DEV_Login(&dlgCam.m_uiHandle, dlgCam.m_strUname.GetBuffer(), dlgCam.m_strPword.GetBuffer(), dlgCam.m_strHost.GetBuffer(), dlgCam.m_uiPort);
+
+		//HI_NET_DEV_SetEventCallBack(m_uiHandle, OnEventCallback, (HI_VOID*)this);
+		HI_NET_DEV_SetReconnect(dlgCam.m_uiHandle, 3);
+
+		if (HI_SUCCESS == s32Ret)
+		{
+			//HI_NET_DEV_SetReconnect(m_uiHandle, 5000);
+			//SetDlgItemText(IDC_BTN_CNT, ConvertString("Disconnect"));
+
+			//HI_NET_DEV_SetReconnect(m_uiHandle, 3);
+			MessageBox(_T("Login Success"), _T("msg"), MB_ICONINFORMATION);
+
+			flag = 1;
+		}
+		else
+		{
+			MessageBox(dlgCam.m_strHost + "\n" + _T("Connect Failure"), _T("msg"), MB_ICONEXCLAMATION);
+			dlgCam.m_uiHandle = 100;
+			flag = 0;
+		}
+
+		UpdateData(FALSE);
+	}
+	/*else
+	{
+	StreamStop();
+
+	s32Ret = HI_NET_DEV_Logout(dlgCam.m_uiHandle);
+	if (HI_SUCCESS == s32Ret)
+	{
+	flag = 0;
+	m_uiHandle = 100;
+	SetDlgItemText(IDC_BTN_CNT, ConvertString("Connect"));
+	}
+	}*/
+}
 
 
 
