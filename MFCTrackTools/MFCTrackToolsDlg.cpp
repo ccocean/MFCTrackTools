@@ -1919,7 +1919,7 @@ void CMFCTrackToolsDlg::connectCam()
 	//if(m_uiHandle == -1 && flag == 0)
 	if (dlgCam.m_uiHandle == 100)
 	{
-		MessageBox(dlgCam.m_strUname + ConvertString("\n") + dlgCam.m_strPword + ConvertString("\n") + dlgCam.m_strHost);
+		//MessageBox(dlgCam.m_strUname + ConvertString("\n") + dlgCam.m_strPword + ConvertString("\n") + dlgCam.m_strHost);
 
 		UpdateData();
 		//s32Ret = HI_NET_DEV_Login(&m_uiHandle, (LPCTSTR)m_strUname, (LPCTSTR)m_strPword, (LPCTSTR)m_strHost, m_uiPort);

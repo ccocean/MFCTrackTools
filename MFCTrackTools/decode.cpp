@@ -117,17 +117,12 @@ int H264_To_RGB(unsigned char *inputbuffer, int frame_size, unsigned char *&outp
 		{
 			memcpy(outputbuffer + WIDTH * 3 * i, (decoder->pFrameRGB->linesize[0])*i + decoder->pFrameRGB->data[0], WIDTH * 3);
 		}
-
-		
-
 	}
 	else
 	{
-		//MessageBox(NULL, TEXT("½âÂëÊ§°Ü¡£"), TEXT("±êÌâ"), MB_OK);
 		return -1;
 	}
 	
 
-	//av_free(buffer);
 	return 0;
 }

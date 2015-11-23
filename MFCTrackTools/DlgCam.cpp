@@ -150,7 +150,6 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 //	CDialog::OnLButtonUp(nFlags, point);
 //}
 
-
 //void DlgCam::OnBnClickedButtonUp()
 //{
 //	// TODO:  在此添加控件通知处理程序代码
@@ -184,12 +183,11 @@ void DlgCam::OnBnClickedButtonHome()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	HI_S32 s32Ret = HI_FAILURE;
-
 	if (m_uiHandle == -1)
 	{
 		MessageBox(ConvertString("No connection"), ConvertString("msg"), MB_ICONEXCLAMATION);
 		return;
 	}
-
 	HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_HOME, m_comboSpeed.GetCurSel());
+	
 }
