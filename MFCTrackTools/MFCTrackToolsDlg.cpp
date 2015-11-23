@@ -266,11 +266,11 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgTch.m_comboSlide.InsertString(1,_T("5"));
 	dlgTch.m_comboSlide.InsertString(2,_T("7"));
 	dlgTch.m_comboSlide.InsertString(3,_T("9"));
-	dlgTch.m_comboStand.InsertString(0, _T("1秒"));
-	dlgTch.m_comboStand.InsertString(1, _T("2秒"));
-	dlgTch.m_comboStand.InsertString(2, _T("3秒"));
-	dlgTch.m_comboStand.InsertString(3, _T("4秒"));
-	dlgTch.m_comboStand.InsertString(4, _T("5秒"));
+	dlgTch.m_comboStand.InsertString(0, _T("1000"));
+	dlgTch.m_comboStand.InsertString(1, _T("2000"));
+	dlgTch.m_comboStand.InsertString(2, _T("3000"));
+	dlgTch.m_comboStand.InsertString(3, _T("4000"));
+	dlgTch.m_comboStand.InsertString(4, _T("5000"));
 
 	//初始化DlgStu中的控件
 	dlgStu.m_edtStandAgl.SetWindowText(_T("0~360度"));
@@ -1521,8 +1521,10 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 	blk = params->blk;
 	s.Format("%d", params->threshold.outside);
 	dlgTch.m_editOutSide.SetWindowText(s);
-	dlgTch.m_comboStand.SetCurSel(params->threshold.stand - 1);
-	dlgTch.m_comboSlide.SetCurSel((params->numOfSlide - 3) / 2);
+	s.Format("%d", params->threshold.stand);
+	dlgTch.m_comboStand.SetWindowText(s);
+	s.Format("%d", params->numOfSlide);
+	dlgTch.m_comboSlide.SetWindowText(s);
 	s.Format("%d", int_pos);
 	dlgTch.m_editPos.SetWindowText(s);
 	s.Format("%d", params->threshold.targetArea);

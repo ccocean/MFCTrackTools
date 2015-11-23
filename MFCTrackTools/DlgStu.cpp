@@ -116,8 +116,8 @@ int DlgStu::checkParameters()
 	m_edtStandFrm.GetWindowText(standFrm);
 	m_edtSitFrm.GetWindowText(sitFrm);
 	m_edtMoveDev.GetWindowText(moveDev);
-	_moveDly = m_comboDly.GetCurSel();
-	m_comboDly.GetLBText(_moveDly, moveDly);
+	/*_moveDly = m_comboDly.GetCurSel();*/
+	m_comboDly.GetWindowText(moveDly);
 	//m_edtMoveDly.GetWindowText(moveDly);
 	if (standAgl.IsEmpty()||standFrm.IsEmpty()||sitFrm.IsEmpty()||moveDev.IsEmpty()||moveDly.IsEmpty())
 	{

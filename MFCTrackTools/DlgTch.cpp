@@ -97,9 +97,9 @@ int DlgTch::checkParameters()
 		return -1;
 	}
 	m_editPos.GetWindowText(position);
-	//m_editSlide.GetWindowText(slide);
-	int_slide = m_comboSlide.GetCurSel();
-	m_comboSlide.GetLBText(int_slide, slide);
+	m_comboSlide.GetWindowText(slide);
+	//int_slide = m_comboSlide.GetCurSel();
+	//m_comboSlide.GetLBText(int_slide, slide);
 	if (position.IsEmpty() || slide.IsEmpty())
 	{
 		MessageBox("预置位或滑框宽度为空！");
@@ -136,8 +136,7 @@ int DlgTch::checkParameters()
 	}
 	else
 	{
-		_stand = m_comboStand.GetCurSel();
-		_stand += 1;
+		_stand = _ttoi(stand);
 		_targetArea = _ttoi(targetArea);
 		_outside = _ttoi(outside);
 		if (_stand <= 0 || _targetArea <= 0 || _outside <= 0)
