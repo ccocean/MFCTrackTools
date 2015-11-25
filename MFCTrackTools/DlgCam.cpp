@@ -5,6 +5,7 @@
 #include "MFCTrackTools.h"
 #include "DlgCam.h"
 #include "afxdialogex.h"
+#include <vector>
 
 
 // DlgCam 对话框
@@ -27,13 +28,13 @@ void DlgCam::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_SPEED, m_comboSpeed);
 	DDX_Control(pDX, IDC_BUTTON_UP, m_btnUp);
 	DDX_Control(pDX, IDC_BUTTON_LEFT, m_btnLeft);
-	DDX_Control(pDX, IDC_EDIT1, m_edit1);
 }
 
 
 BEGIN_MESSAGE_MAP(DlgCam, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_HOME, &DlgCam::OnBnClickedButtonHome)
-	ON_BN_CLICKED(IDC_BUTTON2, &DlgCam::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON_LEFT_PRESET, &DlgCam::OnBnClickedButtonLeftPreset)
+	ON_BN_CLICKED(IDC_BUTTON_RIGHT_PRESET, &DlgCam::OnBnClickedButtonRightPreset)
 END_MESSAGE_MAP()
 
 
@@ -156,11 +157,117 @@ void DlgCam::OnBnClickedButtonHome()
 }
 
 
-void DlgCam::OnBnClickedButton2()
+void DlgCam::OnBnClickedButtonLeftPreset()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+	if (numPos <= 0)
+	{
+		MessageBox("没有设置预置位个数！");
+		return;
+	}
+	if (1==right)
+	{
+		m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		if (m_get_panPosit>0)
+		{
+			MessageBox("相机位置不在左端。");
+			return;
+		}
+		m_leftPreset = m_get_panPosit;
 
-	str.Format("%d,%d", m_get_panPosit, m_get_tiltPosit);
-	m_edit1.SetWindowText(str);
+		autoPreSet(m_leftPreset, m_rightPreset,LeftToRight);
+	}
+	else
+	{
+		m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		if (m_get_panPosit > 0)
+		{
+			MessageBox("相机位置不在左端。");
+			return;
+		}
+		m_leftPreset = m_get_panPosit;
+		left = 1;
+	}
+}
+
+
+void DlgCam::OnBnClickedButtonRightPreset()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	if (numPos<=0)
+	{
+		MessageBox("没有设置预置位个数！");
+		return;
+	}
+	if (1==left)
+	{
+		m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		if (m_get_panPosit < 0)
+		{
+			MessageBox("相机位置不在右端。");
+			return;
+		}
+		m_rightPreset = m_get_panPosit;
+
+		autoPreSet(m_leftPreset, m_rightPreset,RightToLeft);
+	}
+	else
+	{
+		m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		if (m_get_panPosit < 0)
+		{
+			MessageBox("相机位置不在右端。");
+			return;
+		}
+		m_rightPreset = m_get_panPosit;
+		right = 1;
+	}
+}
+
+void DlgCam::setNumOfPreset(int num)
+{
+	numPos = num;
+}
+
+void DlgCam::autoPreSet(int a, int b, int direct)
+{
+	int width = (b - a) / (numPos - 1);
+	int fix = (b - a) % (numPos - 1);
+	int num = 0;
+	int nums[10] = { 0 };
+	for (int i = a; i <= b; i += width)
+	{
+		if (num==numPos-1)
+		{
+			m_CameraControl.move(i+fix, m_get_tiltPosit,FALSE);
+			Sleep(3000);
+		}
+		else
+		{
+			if (num==0)
+			{
+				if (direct==LeftToRight)
+				{
+					m_CameraControl.move(i, m_get_tiltPosit, FALSE);
+					Sleep(3000);
+				}
+				else
+				{
+					m_CameraControl.move(i, m_get_tiltPosit, FALSE);
+					Sleep(7000);
+				}
+			}
+			else
+			{
+				m_CameraControl.move(i, m_get_tiltPosit, FALSE);
+				Sleep(3000);
+			}
+		}
+		m_CameraControl.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num);
+		nums[num] = i;
+		num++;
+	}
+	left = 0;
+	right = 0;
+	MessageBox("云台摄像机预置位设置成功！");
 }

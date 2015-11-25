@@ -2,6 +2,7 @@
 #include "afxwin.h"
 #include "tch_params.h"
 #include "track_client_commintication.h"
+#include "DlgCam.h"
 // DlgTch ¶Ô»°¿ò
 
 #define TCH_RECT 0
@@ -31,6 +32,8 @@ public:
 	CEdit m_editOutSide;
 
 	TeaITRACK_Params tch_params;
+
+	DlgCam dlgCam;
 
 	afx_msg void OnBnClickedbtnapply();
 	int checkParameters();

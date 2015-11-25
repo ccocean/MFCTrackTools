@@ -4,6 +4,12 @@
 
 // DlgCam 对话框
 
+#define LeftToRight 0
+#define RightToLeft 1
+
+#define PreSet_OK 1
+#define PreSet_NO 0
+
 class DlgCam : public CDialog
 {
 	DECLARE_DYNAMIC(DlgCam)
@@ -17,9 +23,8 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-	
-
 	DECLARE_MESSAGE_MAP()
+
 public:
 	UINT m_uiHandle;//云台相机句柄
 	CString		m_strHost;
@@ -33,6 +38,10 @@ public:
 	PanAndTiltCameraControl m_CameraControl;
 	int m_get_panPosit;
 	int m_get_tiltPosit;
+	int m_leftPreset, m_rightPreset;
+	int left = 0, right = 0;
+	int numPos;//预置位个数
+	int preset_status=-1;
 	CString str;
 
 	CComboBox m_comboSpeed;
@@ -40,6 +49,9 @@ public:
 	CButton m_btnUp;
 	CButton m_btnLeft;
 	afx_msg void OnBnClickedButtonHome();
-	afx_msg void OnBnClickedButton2();
-	CEdit m_edit1;
+	afx_msg void OnBnClickedButtonLeftPreset();
+	afx_msg void OnBnClickedButtonRightPreset();
+
+	void setNumOfPreset(int num);
+	void autoPreSet(int a, int b ,int direct);
 };

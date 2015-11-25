@@ -163,6 +163,7 @@ void DlgTch::OnBnClickedbtnapply()
 	{
 		if (m_Connect_clientHandle)
 		{
+			dlgCam.setNumOfPreset(tch_params.numOfPos);
 			ctrlClient_set_teach_params(&tch_params, m_Connect_clientHandle);
 		}
 		else

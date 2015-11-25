@@ -1884,14 +1884,14 @@ BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 {
 	CRect rsDlgcam;
-	dlgCam.Create(IDD_CAMCONTROL, GetDlgItem(IDD_CAMCONTROL));
-	dlgCam.GetClientRect(rsDlgcam);
+	dlgTch.dlgCam.Create(IDD_CAMCONTROL, GetDlgItem(IDD_CAMCONTROL));
+	dlgTch.dlgCam.GetClientRect(rsDlgcam);
 	rsDlgcam.left = rct.left;
 	cx = rct.right - rct.left;
 	rsDlgcam.top = rct.bottom;
 	cy = rsDlgcam.bottom;
-	dlgCam.SetWindowPos(NULL, rsDlgcam.left, rsDlgcam.top, cx, cy, SWP_NOZORDER);
-	dlgCam.ShowWindow(TRUE);
+	dlgTch.dlgCam.SetWindowPos(NULL, rsDlgcam.left, rsDlgcam.top, cx, cy, SWP_NOZORDER);
+	dlgTch.dlgCam.ShowWindow(TRUE);
 	//dlgCam.m_uiHandle = 100;
 	//dlgCam.m_strHost = _T("192.168.11.166");
 	//dlgCam.m_uiPort = 5556; //80
@@ -1907,14 +1907,15 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 	int iResult = 0;
 	WSADATA wsaData = { 0 };
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	dlgCam.m_CameraControl.startControl(str.GetBuffer(), 1259);
-	dlgCam.m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
+	dlgTch.dlgCam.m_CameraControl.startControl(str.GetBuffer(), 1259);
+	dlgTch.dlgCam.m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
 	for (int i = 0; i < 21; i++)
 	{
 		str.Format("%d", i);
-		dlgCam.m_comboSpeed.InsertString(i, str);
+		dlgTch.dlgCam.m_comboSpeed.InsertString(i, str);
 	}
-	dlgCam.m_comboSpeed.SetCurSel(12);
+	dlgTch.dlgCam.m_comboSpeed.SetCurSel(12);
+	dlgTch.dlgCam.setNumOfPreset(10);
 	
 	//connectCam();
 	
