@@ -27,11 +27,13 @@ void DlgCam::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_SPEED, m_comboSpeed);
 	DDX_Control(pDX, IDC_BUTTON_UP, m_btnUp);
 	DDX_Control(pDX, IDC_BUTTON_LEFT, m_btnLeft);
+	DDX_Control(pDX, IDC_EDIT1, m_edit1);
 }
 
 
 BEGIN_MESSAGE_MAP(DlgCam, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_HOME, &DlgCam::OnBnClickedButtonHome)
+	ON_BN_CLICKED(IDC_BUTTON2, &DlgCam::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -51,71 +53,38 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 	}
 	if (pMsg->message == WM_LBUTTONDOWN)
 	{
+		m_CameraControl.setMoveSpeed(m_comboSpeed.GetCurSel(), m_comboSpeed.GetCurSel());
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_UP)->m_hWnd)
 		{
-			if (m_uiHandle == 100)
-			{
-				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
-				//return;
-			}
-
-			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_UP, m_comboSpeed.GetCurSel());
+			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_UP);
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_LEFT)->m_hWnd)
 		{
-			if (m_uiHandle == 100)
-			{
-				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
-				//return;
-			}
-
-			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_LEFT, m_comboSpeed.GetCurSel());
+			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_LEFT);
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_RIGHT)->m_hWnd)
 		{
-			if (m_uiHandle == 100)
-			{
-				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
-				//return;
-			}
-
-			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_RIGHT, m_comboSpeed.GetCurSel());
+			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_RIGHT);
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_DOWN)->m_hWnd)
 		{
-			if (m_uiHandle == 100)
-			{
-				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
-				//return;
-			}
-
-			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_DOWN, m_comboSpeed.GetCurSel());
+			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_DOWN);
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMIN)->m_hWnd)
 		{
-			if (m_uiHandle == 100)
-			{
-				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
-				//return;
-			}
-
-			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_ZOOMIN, m_comboSpeed.GetCurSel());
+			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMIN);
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMOUT)->m_hWnd)
 		{
-			if (m_uiHandle == 100)
-			{
-				MessageBox(_T("No connection"), _T("msg"), MB_ICONEXCLAMATION);
-				//return;
-			}
-
-			HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_ZOOMOUT, m_comboSpeed.GetCurSel());
+			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
 		}
 		m_btnUp.SetState(TRUE);
 	}
 	if (pMsg->message == WM_LBUTTONUP)
 	{
-		HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_STOP, m_comboSpeed.GetCurSel());
+		//HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_STOP, m_comboSpeed.GetCurSel());
+		m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
+		m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
 		m_btnUp.SetState(FALSE);
 	}
 		
@@ -182,12 +151,16 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 void DlgCam::OnBnClickedButtonHome()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	HI_S32 s32Ret = HI_FAILURE;
-	if (m_uiHandle == -1)
-	{
-		MessageBox(ConvertString("No connection"), ConvertString("msg"), MB_ICONEXCLAMATION);
-		return;
-	}
-	HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_HOME, m_comboSpeed.GetCurSel());
-	
+	//HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_HOME, m_comboSpeed.GetCurSel());
+	m_CameraControl.home();
+}
+
+
+void DlgCam::OnBnClickedButton2()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+
+	str.Format("%d,%d", m_get_panPosit, m_get_tiltPosit);
+	m_edit1.SetWindowText(str);
 }

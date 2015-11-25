@@ -66,6 +66,9 @@
     <ClInclude Include="DlgCam.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="client_cameraControl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCTrackTools.cpp">
@@ -102,6 +105,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DlgCam.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="client_cameraControl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

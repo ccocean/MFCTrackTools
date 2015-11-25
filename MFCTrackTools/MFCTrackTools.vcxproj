@@ -64,6 +64,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>pthreadVC2.lib;pthreadVCE2.lib;pthreadVSE2.lib;avcodec.lib;avdevice.lib;NetLib.lib;avfilter.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\lib\</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -107,6 +111,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="client_cameraControl.h" />
     <ClInclude Include="communtication.h" />
     <ClInclude Include="connect.h" />
     <ClInclude Include="decode.h" />
@@ -125,6 +130,7 @@
     <ClInclude Include="track_client_commintication.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="client_cameraControl.cpp" />
     <ClCompile Include="communtication_client.cpp" />
     <ClCompile Include="connect.cpp" />
     <ClCompile Include="decode.cpp" />

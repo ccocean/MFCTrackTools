@@ -6,6 +6,7 @@
 #include "MFCTrackTools.h"
 #include "MFCTrackToolsDlg.h"
 #include "afxdialogex.h"
+
 //#include "track_client_commintication.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1891,65 +1892,73 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 	cy = rsDlgcam.bottom;
 	dlgCam.SetWindowPos(NULL, rsDlgcam.left, rsDlgcam.top, cx, cy, SWP_NOZORDER);
 	dlgCam.ShowWindow(TRUE);
-	dlgCam.m_uiHandle = 100;
-	dlgCam.m_strHost = _T("192.168.11.166");
-	dlgCam.m_uiPort = 5556; //80
-	dlgCam.m_strPword = _T("admin");
-	dlgCam.m_strUname = _T("admin");
-	for (int i = 0; i < 64; i++)
+	//dlgCam.m_uiHandle = 100;
+	//dlgCam.m_strHost = _T("192.168.11.166");
+	//dlgCam.m_uiPort = 5556; //80
+	//dlgCam.m_strPword = _T("admin");
+	//dlgCam.m_strUname = _T("admin");
+	BYTE nf1 = 192;
+	BYTE nf2 = 168;
+	BYTE nf3 = 11;
+	BYTE nf4 = 167;
+
+	CString str;
+	str.Format("%d.%d.%d.%d", nf1, nf2, nf3, nf4);
+	int iResult = 0;
+	WSADATA wsaData = { 0 };
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	dlgCam.m_CameraControl.startControl(str.GetBuffer(), 1259);
+	dlgCam.m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
+	for (int i = 0; i < 21; i++)
 	{
 		str.Format("%d", i);
 		dlgCam.m_comboSpeed.InsertString(i, str);
 	}
-	dlgCam.m_comboSpeed.SetCurSel(55);
-	HI_NET_DEV_Init();
-	int iResult = 0;
-	WSADATA wsaData = { 0 };
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	dlgCam.m_comboSpeed.SetCurSel(12);
 	
-	connectCam();
+	//connectCam();
 	
 }
 
 
 void CMFCTrackToolsDlg::connectCam()
 {
-	HI_S32 s32Ret = HI_SUCCESS;
-	HI_BOOL bStream = HI_TRUE;
-	static unsigned int flag = 0;
+	//HI_S32 s32Ret = HI_SUCCESS;
+	//HI_BOOL bStream = HI_TRUE;
+	//static unsigned int flag = 0;
 
-	//if(m_uiHandle == -1 && flag == 0)
-	if (dlgCam.m_uiHandle == 100)
-	{
-		//MessageBox(dlgCam.m_strUname + ConvertString("\n") + dlgCam.m_strPword + ConvertString("\n") + dlgCam.m_strHost);
+	////if(m_uiHandle == -1 && flag == 0)
+	//if (dlgCam.m_uiHandle == 100)
+	//{
+	//	//MessageBox(dlgCam.m_strUname + ConvertString("\n") + dlgCam.m_strPword + ConvertString("\n") + dlgCam.m_strHost);
 
-		UpdateData();
-		//s32Ret = HI_NET_DEV_Login(&m_uiHandle, (LPCTSTR)m_strUname, (LPCTSTR)m_strPword, (LPCTSTR)m_strHost, m_uiPort);
-		s32Ret = HI_NET_DEV_Login(&dlgCam.m_uiHandle, dlgCam.m_strUname.GetBuffer(), dlgCam.m_strPword.GetBuffer(), dlgCam.m_strHost.GetBuffer(), dlgCam.m_uiPort);
+	//	UpdateData();
+	//	//s32Ret = HI_NET_DEV_Login(&m_uiHandle, (LPCTSTR)m_strUname, (LPCTSTR)m_strPword, (LPCTSTR)m_strHost, m_uiPort);
+	//	s32Ret = HI_NET_DEV_Login(&dlgCam.m_uiHandle, dlgCam.m_strUname.GetBuffer(), dlgCam.m_strPword.GetBuffer(), dlgCam.m_strHost.GetBuffer(), dlgCam.m_uiPort);
 
-		//HI_NET_DEV_SetEventCallBack(m_uiHandle, OnEventCallback, (HI_VOID*)this);
-		HI_NET_DEV_SetReconnect(dlgCam.m_uiHandle, 3);
+	//	//HI_NET_DEV_SetEventCallBack(m_uiHandle, OnEventCallback, (HI_VOID*)this);
+	//	HI_NET_DEV_SetReconnect(dlgCam.m_uiHandle, 3);
 
-		if (HI_SUCCESS == s32Ret)
-		{
-			//HI_NET_DEV_SetReconnect(m_uiHandle, 5000);
-			//SetDlgItemText(IDC_BTN_CNT, ConvertString("Disconnect"));
+	//	if (HI_SUCCESS == s32Ret)
+	//	{
+	//		//HI_NET_DEV_SetReconnect(m_uiHandle, 5000);
+	//		//SetDlgItemText(IDC_BTN_CNT, ConvertString("Disconnect"));
 
-			//HI_NET_DEV_SetReconnect(m_uiHandle, 3);
-			HI_NET_DEV_PTZ_Ctrl_Standard(dlgCam.m_uiHandle, HI_NET_DEV_CTRL_PTZ_FOCUS_AUTO, dlgCam.m_comboSpeed.GetCurSel());
-			MessageBox(ConvertString("Login Success"), ConvertString("msg"), MB_ICONINFORMATION);
+	//		//HI_NET_DEV_SetReconnect(m_uiHandle, 3);
+	//		HI_NET_DEV_PTZ_Ctrl_Standard(dlgCam.m_uiHandle, HI_NET_DEV_CTRL_PTZ_FOCUS_AUTO, dlgCam.m_comboSpeed.GetCurSel());
+	//		MessageBox(ConvertString("Login Success"), ConvertString("msg"), MB_ICONINFORMATION);
 
-			flag = 1;
-		}
-		else
-		{
-			MessageBox(dlgCam.m_strHost + "\n" + ConvertString("Connect Failure"), ConvertString("msg"), MB_ICONEXCLAMATION);
-			dlgCam.m_uiHandle = 100;
-			flag = 0;
-		}
+	//		flag = 1;
+	//	}
+	//	else
+	//	{
+	//		MessageBox(dlgCam.m_strHost + "\n" + ConvertString("Connect Failure"), ConvertString("msg"), MB_ICONEXCLAMATION);
+	//		dlgCam.m_uiHandle = 100;
+	//		flag = 0;
+	//	}
 
-		UpdateData(FALSE);
-	}
+	//	UpdateData(FALSE);
+	//}
 	/*else
 	{
 	StreamStop();

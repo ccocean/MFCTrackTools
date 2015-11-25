@@ -179,6 +179,7 @@ public:
 	int video_display(Decode_Info_t *pInfo);
 	CTabCtrl m_tabTrack;
 public:
+	CIPAddressCtrl m_ipAddr;
 	int ctrlClient_init_trackCommuntication();
 	
 	int ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle);
