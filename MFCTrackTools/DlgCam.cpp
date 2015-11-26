@@ -5,7 +5,6 @@
 #include "MFCTrackTools.h"
 #include "DlgCam.h"
 #include "afxdialogex.h"
-#include <vector>
 
 
 // DlgCam 对话框
@@ -20,6 +19,7 @@ DlgCam::DlgCam(CWnd* pParent /*=NULL*/)
 
 DlgCam::~DlgCam()
 {
+
 }
 
 void DlgCam::DoDataExchange(CDataExchange* pDX)
@@ -28,6 +28,8 @@ void DlgCam::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_SPEED, m_comboSpeed);
 	DDX_Control(pDX, IDC_BUTTON_UP, m_btnUp);
 	DDX_Control(pDX, IDC_BUTTON_LEFT, m_btnLeft);
+	DDX_Control(pDX, IDC_grpBoxCam, m_grpBoxCam);
+	DDX_Control(pDX, IDC_txtPreset, m_txtPreset);
 }
 
 
@@ -79,14 +81,14 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 		{
 			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
 		}
-		m_btnUp.SetState(TRUE);
+		//m_btnUp.SetState(TRUE);
 	}
 	if (pMsg->message == WM_LBUTTONUP)
 	{
 		//HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_STOP, m_comboSpeed.GetCurSel());
 		m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
 		m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
-		m_btnUp.SetState(FALSE);
+		//m_btnUp.SetState(FALSE);
 	}
 		
 	return CDialog::PreTranslateMessage(pMsg);
@@ -231,12 +233,15 @@ void DlgCam::setNumOfPreset(int num)
 
 void DlgCam::autoPreSet(int a, int b, int direct)
 {
+	m_CameraControl.setMoveSpeed(m_comboSpeed.GetCurSel(), m_comboSpeed.GetCurSel());
 	int width = (b - a) / (numPos - 1);
 	int fix = (b - a) % (numPos - 1);
 	int num = 0;
-	int nums[10] = { 0 };
+	CString s;
 	for (int i = a; i <= b; i += width)
 	{
+		s.Format("正在设置第%d号预置位...", num);
+		m_txtPreset.SetWindowText(s);
 		if (num==numPos-1)
 		{
 			m_CameraControl.move(i+fix, m_get_tiltPosit,FALSE);
@@ -264,10 +269,10 @@ void DlgCam::autoPreSet(int a, int b, int direct)
 			}
 		}
 		m_CameraControl.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num);
-		nums[num] = i;
 		num++;
 	}
 	left = 0;
 	right = 0;
 	MessageBox("云台摄像机预置位设置成功！");
+	m_txtPreset.SetWindowText(_T(""));
 }

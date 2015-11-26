@@ -54,4 +54,6 @@ public:
 
 	void setNumOfPreset(int num);
 	void autoPreSet(int a, int b ,int direct);
+	CStatic m_grpBoxCam;
+	CStatic m_txtPreset;
 };

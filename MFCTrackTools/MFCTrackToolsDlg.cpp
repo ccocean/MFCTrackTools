@@ -1437,7 +1437,6 @@ void CMFCTrackToolsDlg::updateLines()
 	ln4[1].x = pd.x + (pc.x - pd.x)*0.2;
 	ln4[1].y = pd.y + (pc.y - pd.y)*0.2;
 }
-
 void CMFCTrackToolsDlg::updateParams(int flag)
 {
 	if (PARAM_POSITION == flag)
@@ -1513,7 +1512,6 @@ void CMFCTrackToolsDlg::updateParams(int flag)
 		dlgStu.stu_params.stuTrack_stuWidth_standard[3] = dist;
 	}
 }
-
 void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 {
 	int_pos = params->numOfPos;
@@ -1568,7 +1566,6 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 
 	mouseCnt = 2;
 }
-
 void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 {
 	//先载入四个顶角位置
@@ -1664,7 +1661,6 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 
 	dlgStu.setParams(params);
 }
-
 static  inline char *get_track_cmd_name(int cmd)
 {
 	int i = 0;
@@ -1878,9 +1874,6 @@ BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
-
-
-
 void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 {
 	CRect rsDlgcam;
@@ -1920,8 +1913,6 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 	//connectCam();
 	
 }
-
-
 void CMFCTrackToolsDlg::connectCam()
 {
 	//HI_S32 s32Ret = HI_SUCCESS;
@@ -1973,16 +1964,3 @@ void CMFCTrackToolsDlg::connectCam()
 	}
 	}*/
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
