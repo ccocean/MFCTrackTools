@@ -240,12 +240,16 @@ void DlgCam::autoPreSet(int a, int b, int direct)
 	CString s;
 	for (int i = a; i <= b; i += width)
 	{
-		s.Format("正在设置第%d号预置位...", num);
+		s.Format("正在设置%d号预置位...", num);
 		m_txtPreset.SetWindowText(s);
+		//Sleep(500);
 		if (num==numPos-1)
 		{
-			m_CameraControl.move(i+fix, m_get_tiltPosit,FALSE);
-			Sleep(3000);
+			while (m_get_panPosit != i)
+			{
+				m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+				m_CameraControl.move(i, m_get_tiltPosit, FALSE);
+			}
 		}
 		else
 		{
@@ -253,22 +257,35 @@ void DlgCam::autoPreSet(int a, int b, int direct)
 			{
 				if (direct==LeftToRight)
 				{
-					m_CameraControl.move(i, m_get_tiltPosit, FALSE);
-					Sleep(3000);
+					while (m_get_panPosit != i)
+					{
+						m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+						m_CameraControl.move(i, m_get_tiltPosit, FALSE);
+					}
 				}
 				else
 				{
-					m_CameraControl.move(i, m_get_tiltPosit, FALSE);
-					Sleep(7000);
+					while (m_get_panPosit!=i)
+					{
+						m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+						m_CameraControl.move(i, m_get_tiltPosit, FALSE);
+					}
 				}
 			}
 			else
 			{
-				m_CameraControl.move(i, m_get_tiltPosit, FALSE);
-				Sleep(3000);
+				while (m_get_panPosit != i)
+				{
+					m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+					m_CameraControl.move(i, m_get_tiltPosit, FALSE);
+				}
 			}
 		}
+		Sleep(500);
 		m_CameraControl.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num);
+		s.Format("%d号预置位设置成功...", num);
+		m_txtPreset.SetWindowText(s);
+		Sleep(500);
 		num++;
 	}
 	left = 0;
