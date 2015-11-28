@@ -43,7 +43,7 @@ public:
 	int numPos;//Ô¤ÖÃÎ»¸öÊı
 	int preset_status=-1;
 	CString str;
-
+	int speed;
 	CComboBox m_comboSpeed;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CButton m_btnUp;

@@ -56,7 +56,9 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 	}
 	if (pMsg->message == WM_LBUTTONDOWN)
 	{
-		m_CameraControl.setMoveSpeed(m_comboSpeed.GetCurSel(), m_comboSpeed.GetCurSel());
+		m_comboSpeed.GetWindowText(str);
+		speed = _ttoi(str);
+		m_CameraControl.setMoveSpeed(speed, speed);
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_UP)->m_hWnd)
 		{
 			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_UP);
@@ -155,6 +157,9 @@ void DlgCam::OnBnClickedButtonHome()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	//HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_HOME, m_comboSpeed.GetCurSel());
+	m_comboSpeed.GetWindowText(str);
+	speed = _ttoi(str);
+	m_CameraControl.setMoveSpeed(speed, speed);
 	m_CameraControl.home();
 }
 
@@ -233,7 +238,13 @@ void DlgCam::setNumOfPreset(int num)
 
 void DlgCam::autoPreSet(int a, int b, int direct)
 {
-	m_CameraControl.setMoveSpeed(m_comboSpeed.GetCurSel(), m_comboSpeed.GetCurSel());
+	if (a==b)
+	{
+		MessageBox("左右位置都为原点位置！");
+		left = right = 0;
+		return;
+	}
+	m_CameraControl.setMoveSpeed(20, 20);
 	int width = (b - a) / (numPos - 1);
 	int fix = (b - a) % (numPos - 1);
 	int num = 0;
@@ -243,7 +254,7 @@ void DlgCam::autoPreSet(int a, int b, int direct)
 		s.Format("正在设置%d号预置位...", num);
 		m_txtPreset.SetWindowText(s);
 		//Sleep(500);
-		if (num==numPos-1)
+		/*if (num==numPos-1)
 		{
 			while (m_get_panPosit != i)
 			{
@@ -280,9 +291,28 @@ void DlgCam::autoPreSet(int a, int b, int direct)
 					m_CameraControl.move(i, m_get_tiltPosit, FALSE);
 				}
 			}
+		}*/
+		
+		if (num==numPos-1)
+		{
+			while (m_get_panPosit != i + fix)
+			{
+				m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+				m_CameraControl.move(i + fix, m_get_tiltPosit, FALSE);
+			}
 		}
-		Sleep(500);
+		else
+		{
+			while (m_get_panPosit != i)
+			{
+				m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+				m_CameraControl.move(i, m_get_tiltPosit, FALSE);
+			}
+		}
+		
+
 		m_CameraControl.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num);
+		Sleep(500);
 		s.Format("%d号预置位设置成功...", num);
 		m_txtPreset.SetWindowText(s);
 		Sleep(500);

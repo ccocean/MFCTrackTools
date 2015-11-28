@@ -1841,6 +1841,18 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		p1.x = 0; p1.y = 0;
 		p2.x = 0; p2.y = 0;
 		mouseCnt = 0;
+
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(TRUE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_LEFT)->EnableWindow(TRUE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_RIGHT)->EnableWindow(TRUE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(TRUE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(TRUE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(TRUE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(TRUE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(TRUE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(TRUE);
+		dlgTch.dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(TRUE);
+
 		ctrlClient_get_teach_params(m_track_clientHandle);
 		break;
 	case 1:
@@ -1852,6 +1864,18 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		blk.width = 0; blk.height = 0;
 		pt.x = 0; pt.y = 0;
 		mouseCnt = 0;
+
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(FALSE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_LEFT)->EnableWindow(FALSE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_RIGHT)->EnableWindow(FALSE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(FALSE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(FALSE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(FALSE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(FALSE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(FALSE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(FALSE);
+		dlgTch.dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(FALSE);
+
 		ctrlClient_get_stu_params(m_track_clientHandle);
 		break;
 	default:
@@ -1902,12 +1926,12 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	dlgTch.dlgCam.m_CameraControl.startControl(str.GetBuffer(), 1259);
 	dlgTch.dlgCam.m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
-	for (int i = 0; i < 21; i++)
-	{
-		str.Format("%d", i);
-		dlgTch.dlgCam.m_comboSpeed.InsertString(i, str);
-	}
-	dlgTch.dlgCam.m_comboSpeed.SetCurSel(12);
+
+	dlgTch.dlgCam.m_comboSpeed.InsertString(0, "5");
+	dlgTch.dlgCam.m_comboSpeed.InsertString(1, "12");
+	dlgTch.dlgCam.m_comboSpeed.InsertString(2, "20");
+
+	dlgTch.dlgCam.m_comboSpeed.SetCurSel(1);
 	dlgTch.dlgCam.setNumOfPreset(10);
 	
 	//connectCam();
