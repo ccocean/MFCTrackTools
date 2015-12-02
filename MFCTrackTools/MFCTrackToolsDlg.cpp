@@ -1865,16 +1865,16 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		pt.x = 0; pt.y = 0;
 		mouseCnt = 0;
 
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(FALSE);
+		/*dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(FALSE);
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_LEFT)->EnableWindow(FALSE);
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_RIGHT)->EnableWindow(FALSE);
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(FALSE);
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(FALSE);
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(FALSE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(FALSE);
+		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(FALSE);*/
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(FALSE);
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(FALSE);
-		dlgTch.dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(FALSE);
+		//dlgTch.dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(FALSE);
 
 		ctrlClient_get_stu_params(m_track_clientHandle);
 		break;
