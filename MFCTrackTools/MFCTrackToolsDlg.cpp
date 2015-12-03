@@ -1842,16 +1842,16 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		p2.x = 0; p2.y = 0;
 		mouseCnt = 0;
 
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(TRUE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_LEFT)->EnableWindow(TRUE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_RIGHT)->EnableWindow(TRUE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(TRUE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(TRUE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(TRUE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(TRUE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(TRUE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(TRUE);
-		dlgTch.dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_LEFT)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(TRUE);
 
 		ctrlClient_get_teach_params(m_track_clientHandle);
 		break;
@@ -1872,8 +1872,8 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(FALSE);
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(FALSE);
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(FALSE);*/
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(FALSE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(FALSE);
 		//dlgTch.dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(FALSE);
 
 		ctrlClient_get_stu_params(m_track_clientHandle);
@@ -1901,14 +1901,14 @@ BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 {
 	CRect rsDlgcam;
-	dlgTch.dlgCam.Create(IDD_CAMCONTROL, GetDlgItem(IDD_CAMCONTROL));
-	dlgTch.dlgCam.GetClientRect(rsDlgcam);
+	dlgCam.Create(IDD_CAMCONTROL, GetDlgItem(IDD_CAMCONTROL));
+	dlgCam.GetClientRect(rsDlgcam);
 	rsDlgcam.left = rct.left;
 	cx = rct.right - rct.left;
 	rsDlgcam.top = rct.bottom;
 	cy = rsDlgcam.bottom;
-	dlgTch.dlgCam.SetWindowPos(NULL, rsDlgcam.left, rsDlgcam.top, cx, cy, SWP_NOZORDER);
-	dlgTch.dlgCam.ShowWindow(TRUE);
+	dlgCam.SetWindowPos(NULL, rsDlgcam.left, rsDlgcam.top, cx, cy, SWP_NOZORDER);
+	dlgCam.ShowWindow(TRUE);
 	//dlgCam.m_uiHandle = 100;
 	//dlgCam.m_strHost = _T("192.168.11.166");
 	//dlgCam.m_uiPort = 5556; //80
@@ -1924,15 +1924,15 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 	int iResult = 0;
 	WSADATA wsaData = { 0 };
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	dlgTch.dlgCam.m_CameraControl.startControl(str.GetBuffer(), 1259);
-	dlgTch.dlgCam.m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
+	dlgCam.m_CameraControl.startControl(str.GetBuffer(), 1259);
+	dlgCam.m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
 
-	dlgTch.dlgCam.m_comboSpeed.InsertString(0, "5");
-	dlgTch.dlgCam.m_comboSpeed.InsertString(1, "12");
-	dlgTch.dlgCam.m_comboSpeed.InsertString(2, "20");
+	dlgCam.m_comboSpeed.InsertString(0, "5");
+	dlgCam.m_comboSpeed.InsertString(1, "12");
+	dlgCam.m_comboSpeed.InsertString(2, "20");
 
-	dlgTch.dlgCam.m_comboSpeed.SetCurSel(1);
-	dlgTch.dlgCam.setNumOfPreset(10);
+	dlgCam.m_comboSpeed.SetCurSel(1);
+	dlgCam.setNumOfPreset(10);
 	
 	//connectCam();
 	

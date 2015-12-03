@@ -33,7 +33,7 @@ public:
 
 	TeaITRACK_Params tch_params;
 
-	DlgCam dlgCam;
+	
 
 	afx_msg void OnBnClickedbtnapply();
 	int checkParameters();

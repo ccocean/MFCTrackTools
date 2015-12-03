@@ -34,6 +34,8 @@ public:
 	CRect rc;
 	int whichBtn = -1;
 
+
+
 	//云台相机控制
 	PanAndTiltCameraControl m_CameraControl;
 	int m_get_panPosit;
