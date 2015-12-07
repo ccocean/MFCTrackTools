@@ -101,6 +101,7 @@ BEGIN_MESSAGE_MAP(CMFCTrackToolsDlg, CDialogEx)
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDBLCLK()
 	ON_WM_RBUTTONDOWN()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -299,6 +300,15 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	penR.CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 	penB.CreatePen(PS_SOLID, 1, RGB(0, 255, 255));
 	pOldBrush = pDC->SelectObject(pBrush);
+
+	//用于画标定特写镜头时的中心标志
+	pDC2 = GetDlgItem(IDC_picFeature)->GetDC();
+	CRect showRect;
+	GetDlgItem(IDC_picFeature)->GetClientRect(&showRect);
+	centre_pt.x = showRect.left + showRect.Width() / 2;
+	centre_pt.y = showRect.top + showRect.Height() / 2;
+	SetTimer(1, 100, NULL);
+
 	GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
 	CString str(m_pExeDir);
 	int n = str.ReverseFind('\\');
@@ -469,6 +479,12 @@ void CMFCTrackToolsDlg::drawEndRect(CPoint center, int size)
 
 void CMFCTrackToolsDlg::trackdraw()
 {
+	//绘制特写镜头的十字光标
+	pOldPen = pDC2->SelectObject(&penR);
+	CRect rct = CRect(centre_pt.x - 10, centre_pt.y - 10, centre_pt.x + 10, centre_pt.y + 10);
+	pDC2->Rectangle(&rct);
+	pDC2->SelectObject(&pOldPen);
+
 	if (CurSel == TCH_TAB)
 	{
 		if (g_drawPS == 1)
@@ -550,7 +566,6 @@ void CMFCTrackToolsDlg::trackdraw()
 	}
 	else
 	{
-		
 		if (mouseStatus==Mouse_LBDOWN)
 		{
 			if (pt.x > 0 && pt.y > 0)
@@ -1849,10 +1864,12 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(TRUE);
 		dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(TRUE);
 		dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(TRUE);
-		dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(TRUE);
-		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->ShowWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->ShowWindow(TRUE);
 		dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(TRUE);
 
+		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(FALSE);
 		ctrlClient_get_teach_params(m_track_clientHandle);
 		break;
 	case 1:
@@ -1872,10 +1889,12 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(FALSE);
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(FALSE);
 		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(FALSE);*/
-		dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(FALSE);
-		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->ShowWindow(FALSE);
 		//dlgTch.dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(FALSE);
 
+		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(TRUE);
 		ctrlClient_get_stu_params(m_track_clientHandle);
 		break;
 	default:
@@ -1987,4 +2006,14 @@ void CMFCTrackToolsDlg::connectCam()
 	SetDlgItemText(IDC_BTN_CNT, ConvertString("Connect"));
 	}
 	}*/
+}
+
+void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	if (nIDEvent==1)
+	{
+		trackdraw();
+	}
+	CDialogEx::OnTimer(nIDEvent);
 }

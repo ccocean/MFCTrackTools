@@ -129,6 +129,7 @@ public:
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
 
+	CPoint centre_pt;
 	CPoint p1 = { 0 }, p2 = { 0 }, pt = { 0 };//教师区域跟踪框的点
 	CPoint pa = { 0 }, pb = { 0 }, pc = { 0 }, pd = { 0 };//学生跟踪参数四顶点的坐标
 	CPoint pA = { 0 }, pB = { 0 }, pC = { 0 }, pD = { 0 };//学生跟踪参数四顶点的角度，delta值为pA-pa。
@@ -148,6 +149,7 @@ public:
 	int dist = 0;//宽度
 
 	CDC *pDC ;
+	CDC *pDC2;
 	HDC hdc ;
 	CPen penY;
 	CPen penG;
@@ -203,4 +205,5 @@ public:
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 	
 	afx_msg void OnBnClickedButton1();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

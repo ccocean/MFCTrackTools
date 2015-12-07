@@ -5,6 +5,7 @@
 #include "MFCTrackTools.h"
 #include "DlgCam.h"
 #include "afxdialogex.h"
+#include "DlgStu.h"
 
 
 // DlgCam 对话框
@@ -37,6 +38,8 @@ BEGIN_MESSAGE_MAP(DlgCam, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_HOME, &DlgCam::OnBnClickedButtonHome)
 	ON_BN_CLICKED(IDC_BUTTON_LEFT_PRESET, &DlgCam::OnBnClickedButtonLeftPreset)
 	ON_BN_CLICKED(IDC_BUTTON_RIGHT_PRESET, &DlgCam::OnBnClickedButtonRightPreset)
+	ON_BN_CLICKED(IDC_BUT_CALIBRATION, &DlgCam::OnBnClickedButCalibration)
+	ON_BN_CLICKED(IDC_BUT_AGAINCALIB, &DlgCam::OnBnClickedButAgaincalib)
 END_MESSAGE_MAP()
 
 
@@ -322,4 +325,107 @@ void DlgCam::autoPreSet(int a, int b, int direct)
 	right = 0;
 	MessageBox("云台摄像机预置位设置成功！");
 	m_txtPreset.SetWindowText(_T(""));
+}
+
+#include "opencv2/opencv.hpp"
+#ifdef _DEBUG
+#pragma comment(lib,"opencv/opencv_core249d.lib")
+#pragma comment(lib,"opencv/opencv_imgproc249d.lib")
+#endif
+#ifndef _DEBUG
+#pragma comment(lib,"opencv/opencv_core249.lib")
+#pragma comment(lib,"opencv/opencv_imgproc249.lib")
+#endif
+static int countCalib = 0;
+void DlgCam::OnBnClickedButCalibration()
+{
+	//采集标定点
+	if (countCalib < 4)
+	{
+		m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_calibPt[countCalib].x = m_get_panPosit;
+		m_calibPt[countCalib].y = m_get_tiltPosit;
+		m_CameraControl.getZoom(&m_get_zoomValue, 500);
+		m_zoom[countCalib] = m_get_zoomValue;
+		countCalib++;
+		CString str;
+		if (countCalib == 1)
+		{
+			str.Format(_T("标定右上角"));
+		}
+		else if (countCalib == 2)
+		{
+			str.Format(_T("标定右下角"));
+		}
+		else if (countCalib == 3)
+		{
+			str.Format(_T("标定左下角"));
+		}
+		else if (countCalib == 4)
+		{
+			str.Format(_T("计算标定参数"));
+		}
+		this->SetDlgItemText(IDC_BUT_AGAINCALIB, str);
+	}
+	else
+	{
+		//计算标定参数
+		StuITRACK_ClientParams_t &stu_params = ((DlgStu*)GetDlgItem(IDC_BTNSTUAPPLY))->stu_params;
+		cv::Point2f ptSrc[4];
+		ptSrc[0].x = stu_params.stuTrack_vertex[0].x;
+		ptSrc[0].y = stu_params.stuTrack_vertex[0].y;
+		ptSrc[1].x = stu_params.stuTrack_vertex[1].x;
+		ptSrc[1].y = stu_params.stuTrack_vertex[1].y;
+		ptSrc[2].x = stu_params.stuTrack_vertex[2].x;
+		ptSrc[2].y = stu_params.stuTrack_vertex[2].y;
+		ptSrc[3].x = stu_params.stuTrack_vertex[3].x;
+		ptSrc[3].y = stu_params.stuTrack_vertex[3].y;
+
+		cv::Point2f m_ptDst[4];
+		m_ptDst[0].x = m_calibPt[0].x;
+		m_ptDst[0].y = m_calibPt[0].y;
+		m_ptDst[1].x = m_calibPt[1].x;
+		m_ptDst[1].y = m_calibPt[1].y;
+		m_ptDst[2].x = m_calibPt[2].x;
+		m_ptDst[2].y = m_calibPt[2].y;
+		m_ptDst[3].x = m_calibPt[3].x;
+		m_ptDst[3].y = m_calibPt[3].y;
+		cv::Mat transM;
+		transM.create(3, 3, CV_64FC1);
+		transM = getPerspectiveTransform(ptSrc, m_ptDst);
+		stu_params.transformationMatrix[0] = transM.at<double>(0, 0);
+		stu_params.transformationMatrix[1] = transM.at<double>(0, 1);
+		stu_params.transformationMatrix[2] = transM.at<double>(0, 2);
+		stu_params.transformationMatrix[3] = transM.at<double>(1, 0);
+		stu_params.transformationMatrix[4] = transM.at<double>(1, 1);
+		stu_params.transformationMatrix[5] = transM.at<double>(1, 2);
+		stu_params.transformationMatrix[6] = transM.at<double>(2, 0);
+		stu_params.transformationMatrix[7] = transM.at<double>(2, 1);
+		stu_params.transformationMatrix[8] = transM.at<double>(2, 2);
+
+		int zoom1 = (m_zoom[0] + m_zoom[1]) / 2;
+		int zoom2 = (m_zoom[2] + m_zoom[3]) / 2;
+		int width1 = (stu_params.stuTrack_stuWidth_standard[0] + stu_params.stuTrack_stuWidth_standard[1]) / 2;
+		int width2 = (stu_params.stuTrack_stuWidth_standard[2] + stu_params.stuTrack_stuWidth_standard[3]) / 2;
+		if (width1 != width2)
+		{
+			stu_params.stretchingAB[0] = ((double)(zoom1 - zoom2)) / (width1 - width2);
+			stu_params.stretchingAB[1] = zoom1 - stu_params.stretchingAB[0] * width1;
+		}
+		else
+		{
+			stu_params.stretchingAB[0] = 0;
+			stu_params.stretchingAB[1] = MIN(zoom1, zoom2);
+		}
+	}
+}
+
+
+void DlgCam::OnBnClickedButAgaincalib()
+{
+	//重新标定
+	countCalib = 0;
+	CString str;
+	str.Format(_T("标定左上角"));
+	this->SetDlgItemText(IDC_BUT_AGAINCALIB, str);
 }

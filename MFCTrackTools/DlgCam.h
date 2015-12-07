@@ -34,12 +34,14 @@ public:
 	CRect rc;
 	int whichBtn = -1;
 
-
+	CPoint m_calibPt[4];
+	int m_zoom[4];
 
 	//云台相机控制
 	PanAndTiltCameraControl m_CameraControl;
 	int m_get_panPosit;
 	int m_get_tiltPosit;
+	int m_get_zoomValue;
 	int m_leftPreset, m_rightPreset;
 	int left = 0, right = 0;
 	int numPos;//预置位个数
@@ -58,4 +60,6 @@ public:
 	void autoPreSet(int a, int b ,int direct);
 	CStatic m_grpBoxCam;
 	CStatic m_txtPreset;
+	afx_msg void OnBnClickedButCalibration();
+	afx_msg void OnBnClickedButAgaincalib();
 };
