@@ -180,7 +180,6 @@ private:
 	void loadParamsFromTch(TeaITRACK_Params* params);
 	void loadParamsFromStu(StuITRACK_ClientParams_t* params);
 	void initCamDlg(int cx, int cy, CRect rct);
-	void connectCam();
 public:
 	int video_display(Decode_Info_t *pInfo);
 	CTabCtrl m_tabTrack;

@@ -38,7 +38,8 @@ public:
 	int m_zoom[4];
 
 	//云台相机控制
-	PanAndTiltCameraControl m_CameraControl;
+	PanAndTiltCameraControl m_CameraControl_tch;
+	PanAndTiltCameraControl m_CameraControl_stu;
 	int m_get_panPosit;
 	int m_get_tiltPosit;
 	int m_get_zoomValue;

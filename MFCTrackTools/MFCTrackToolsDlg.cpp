@@ -510,63 +510,14 @@ void CMFCTrackToolsDlg::trackdraw()
 				pOldPen = pDC->SelectObject(&penR);
 				drawRectangle(p1, pt);
 			}
-			/*if (mouseCnt == 1)
-			{
-				pOldPen = pDC->SelectObject(&penY);
-				drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-			}
-			if (mouseCnt == 2)
-			{
-				pOldPen = pDC->SelectObject(&penY);
-				drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-				pOldPen = pDC->SelectObject(&penG);
-				drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
-			}*/
 		}
 		else if (mouseStatus == Mouse_LBUP)
 		{
-
-			////drawRectangle(p1, p2);
-			//if (mouseCnt == 1)
-			//{
-			//	pOldPen = pDC->SelectObject(&penY);
-			//	drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-			//}
-			//if (mouseCnt == 2)
-			//{
-			//	pOldPen = pDC->SelectObject(&penY);
-			//	drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-			//	pOldPen = pDC->SelectObject(&penG);
-			//	drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
-			//}
 			SetDlgItemInt(IDC_editX, p1.x);
 			SetDlgItemInt(IDC_editY, p1.y);
 			SetDlgItemInt(IDC_editW, p2.x - p1.x);
 			SetDlgItemInt(IDC_editH, p2.y - p1.y);
 		}
-		//else if (mouseStatus == Mouse_LBDRAG)
-		//{
-		//	//drawRectangle(p1, p2);
-		//	if (mouseCnt == 1)
-		//	{
-		//		pOldPen = pDC->SelectObject(&penY);
-		//		drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-		//	}
-		//	if (mouseCnt == 2)
-		//	{
-		//		pOldPen = pDC->SelectObject(&penY);
-		//		drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-		//		pOldPen = pDC->SelectObject(&penG);
-		//		drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
-		//	}
-		//}
-		/*else
-		{
-		pOldPen = pDC->SelectObject(&penY);
-		drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
-		pOldPen = pDC->SelectObject(&penG);
-		drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
-		}*/
 	}
 	else
 	{
@@ -770,33 +721,6 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				p1 = p2 = { 0 };
 				ln1[0] = ln1[1] = ln2[0] = ln2[1] = ln3[0] = ln3[1] = ln4[0] = ln4[1] = { 0 };
 			}
-			/*if (mouseCnt == 1)
-			{
-				if (pa.x - 10 <= point.x - 40 && point.x - 40 <= pa.x + 10 && pa.y - 10 <= point.y - pic_top&&point.y - pic_top <= pa.y + 10)
-				{
-					pt.x = point.x;
-					pt.y = point.y;
-					mouseStatus = Mouse_ADJUST_A;
-				}
-				else if (pb.x - 10 <= point.x - 40 && point.x - 40 <= pb.x + 10 && pb.y - 10 <= point.y - pic_top&&point.y - pic_top <= pb.y + 10)
-				{
-					pt.x = point.x;
-					pt.y = point.y;
-					mouseStatus = Mouse_ADJUST_B;
-				}
-				else if (pc.x - 10 <= point.x - 40 && point.x - 40 <= pc.x + 10 && pc.y - 10 <= point.y - pic_top&&point.y - pic_top <= pc.y + 10)
-				{
-					pt.x = point.x;
-					pt.y = point.y;
-					mouseStatus = Mouse_ADJUST_C;
-				}
-				else if (pd.x - 10 <= point.x - 40 && point.x - 40 <= pd.x + 10 && pd.y - 10 <= point.y - pic_top&&point.y - pic_top <= pd.y + 10)
-				{
-					pt.x = point.x;
-					pt.y = point.y;
-					mouseStatus = Mouse_ADJUST_D;
-				}
-			}*/
 		}
 	}
 	
@@ -1440,7 +1364,6 @@ void CMFCTrackToolsDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 	}
 	CDialogEx::OnLButtonDblClk(nFlags, point);
 }
-
 void CMFCTrackToolsDlg::updateLines()
 {
 	ln1[0] = pa;
@@ -1957,81 +1880,29 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 	//dlgCam.m_uiPort = 5556; //80
 	//dlgCam.m_strPword = _T("admin");
 	//dlgCam.m_strUname = _T("admin");
-	BYTE nf1 = 192;
-	BYTE nf2 = 168;
-	BYTE nf3 = 11;
-	BYTE nf4 = 167;
+	//BYTE nf1 = 192;
+	//BYTE nf2 = 168;
+	//BYTE nf3 = 11;
+	//BYTE nf4 = 167;
 
-	CString str;
-	str.Format("%d.%d.%d.%d", nf1, nf2, nf3, nf4);
-	int iResult = 0;
-	WSADATA wsaData = { 0 };
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	dlgCam.m_CameraControl.startControl(str.GetBuffer(), 1259);
-	dlgCam.m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
+	//CString str;
+	//str.Format("%d.%d.%d.%d", nf1, nf2, nf3, nf4);
+	//int iResult = 0;
+	//WSADATA wsaData = { 0 };
+	//iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	//dlgCam.m_CameraControl.startControl(str.GetBuffer(), 1259);
+	//dlgCam.m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
 
-	dlgCam.m_comboSpeed.InsertString(0, "5");
-	dlgCam.m_comboSpeed.InsertString(1, "12");
-	dlgCam.m_comboSpeed.InsertString(2, "20");
+	//dlgCam.m_comboSpeed.InsertString(0, "5");
+	//dlgCam.m_comboSpeed.InsertString(1, "12");
+	//dlgCam.m_comboSpeed.InsertString(2, "20");
 
-	dlgCam.m_comboSpeed.SetCurSel(1);
-	dlgCam.setNumOfPreset(10);
+	//dlgCam.m_comboSpeed.SetCurSel(1);
+	//dlgCam.setNumOfPreset(10);
 	
 	//connectCam();
 	
 }
-void CMFCTrackToolsDlg::connectCam()
-{
-	//HI_S32 s32Ret = HI_SUCCESS;
-	//HI_BOOL bStream = HI_TRUE;
-	//static unsigned int flag = 0;
-
-	////if(m_uiHandle == -1 && flag == 0)
-	//if (dlgCam.m_uiHandle == 100)
-	//{
-	//	//MessageBox(dlgCam.m_strUname + ConvertString("\n") + dlgCam.m_strPword + ConvertString("\n") + dlgCam.m_strHost);
-
-	//	UpdateData();
-	//	//s32Ret = HI_NET_DEV_Login(&m_uiHandle, (LPCTSTR)m_strUname, (LPCTSTR)m_strPword, (LPCTSTR)m_strHost, m_uiPort);
-	//	s32Ret = HI_NET_DEV_Login(&dlgCam.m_uiHandle, dlgCam.m_strUname.GetBuffer(), dlgCam.m_strPword.GetBuffer(), dlgCam.m_strHost.GetBuffer(), dlgCam.m_uiPort);
-
-	//	//HI_NET_DEV_SetEventCallBack(m_uiHandle, OnEventCallback, (HI_VOID*)this);
-	//	HI_NET_DEV_SetReconnect(dlgCam.m_uiHandle, 3);
-
-	//	if (HI_SUCCESS == s32Ret)
-	//	{
-	//		//HI_NET_DEV_SetReconnect(m_uiHandle, 5000);
-	//		//SetDlgItemText(IDC_BTN_CNT, ConvertString("Disconnect"));
-
-	//		//HI_NET_DEV_SetReconnect(m_uiHandle, 3);
-	//		HI_NET_DEV_PTZ_Ctrl_Standard(dlgCam.m_uiHandle, HI_NET_DEV_CTRL_PTZ_FOCUS_AUTO, dlgCam.m_comboSpeed.GetCurSel());
-	//		MessageBox(ConvertString("Login Success"), ConvertString("msg"), MB_ICONINFORMATION);
-
-	//		flag = 1;
-	//	}
-	//	else
-	//	{
-	//		MessageBox(dlgCam.m_strHost + "\n" + ConvertString("Connect Failure"), ConvertString("msg"), MB_ICONEXCLAMATION);
-	//		dlgCam.m_uiHandle = 100;
-	//		flag = 0;
-	//	}
-
-	//	UpdateData(FALSE);
-	//}
-	/*else
-	{
-	StreamStop();
-
-	s32Ret = HI_NET_DEV_Logout(dlgCam.m_uiHandle);
-	if (HI_SUCCESS == s32Ret)
-	{
-	flag = 0;
-	m_uiHandle = 100;
-	SetDlgItemText(IDC_BTN_CNT, ConvertString("Connect"));
-	}
-	}*/
-}
-
 void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
