@@ -131,6 +131,7 @@ public:
 	
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
+	Panoramic_Camera_Info m_cameraInfo;
 
 	CPoint centre_pt;
 	CPoint p1 = { 0 }, p2 = { 0 }, pt = { 0 };//教师区域跟踪框的点

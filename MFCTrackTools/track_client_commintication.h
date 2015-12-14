@@ -33,6 +33,7 @@ typedef struct
 	int  nControPort[CAMENUM];
 	char streamName[CAMENUM][LIVE_STREAM_NAME_MAX];
 }Panoramic_Camera_Info;
+//第2路老师特写，第3路学生特写，0路和1路为全景 留着扩展
 typedef enum
 {
 	STREAMCLINT_START = 0,
