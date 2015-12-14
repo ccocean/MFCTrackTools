@@ -15,6 +15,7 @@
 #include "DlgTch.h"
 #include "DlgStu.h"
 #include "DlgCam.h"
+#include "GlobalContrl.h"
 #include"connect.h"
 #include <cmath>
 #include "decode.h"
@@ -38,6 +39,7 @@
 
 #define TCH_TAB 0
 #define STU_TAB 1
+#define CTRL_TAB 2
 
 #define DRAW_ANGLE 0
 #define DRAW_WIDTH 1
@@ -105,6 +107,7 @@ public:
 	DlgTch dlgTch;
 	DlgStu dlgStu;
 	DlgCam dlgCam;
+	GlobalContrl dlgCtrl;
 	
 	int CurSel;//标签的标志
 	int pic_top = 0;

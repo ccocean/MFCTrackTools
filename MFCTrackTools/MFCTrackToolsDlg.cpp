@@ -238,10 +238,12 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 
 	m_tabTrack.InsertItem(TCH_TAB, "教师");
 	m_tabTrack.InsertItem(STU_TAB, "学生");
+	m_tabTrack.InsertItem(CTRL_TAB, "设置");
 	
 	//绑定dlgTch到Tab控件
 	dlgTch.Create(IDD_DlgTch, GetDlgItem(IDC_tabTrack));
 	dlgStu.Create(IDD_DlgStu, GetDlgItem(IDC_tabTrack));
+	dlgCtrl.Create(IDD_DLGGLOBAL, GetDlgItem(IDC_tabTrack));
 
 	initCamDlg(cx, cx, rectTrackClient);
 	
@@ -255,6 +257,8 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgTch.ShowWindow(TRUE);
 	dlgStu.MoveWindow(rs);
 	dlgStu.ShowWindow(FALSE);
+	dlgCtrl.MoveWindow(rs);
+	dlgCtrl.ShowWindow(FALSE);
 	
 	
 	m_tabTrack.SetCurSel(0);
@@ -307,7 +311,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	GetDlgItem(IDC_picFeature)->GetClientRect(&showRect);
 	centre_pt.x = showRect.left + showRect.Width() / 2;
 	centre_pt.y = showRect.top + showRect.Height() / 2;
-	SetTimer(1, 100, NULL);
+	//SetTimer(1, 100, NULL);
 
 	GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
 	CString str(m_pExeDir);
@@ -1848,6 +1852,7 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 	case 0:
 		dlgTch.ShowWindow(TRUE);
 		dlgStu.ShowWindow(FALSE);
+		dlgCtrl.ShowWindow(FALSE);
 		pa.x = 0; pa.y = 0;
 		pb.x = 0; pb.y = 0;
 		pc.x = 0; pc.y = 0;
@@ -1875,6 +1880,7 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 	case 1:
 		dlgTch.ShowWindow(FALSE);
 		dlgStu.ShowWindow(TRUE);
+		dlgCtrl.ShowWindow(FALSE);
 		tch.x = 0; tch.y = 0;
 		tch.width = 0; tch.height = 0;
 		blk.x = 0; blk.y = 0;
@@ -1897,6 +1903,24 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(TRUE);
 		ctrlClient_get_stu_params(m_track_clientHandle);
 		break;
+	case 2:
+		dlgTch.ShowWindow(FALSE);
+		dlgStu.ShowWindow(FALSE);
+		dlgCtrl.ShowWindow(TRUE);
+
+		dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_LEFT)->EnableWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT)->EnableWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(FALSE);
+
+		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(FALSE);
 	default:
 		;
 	}
@@ -2014,6 +2038,7 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent==1)
 	{
 		trackdraw();
+		GetDlgItem(IDC_picSrc)->Invalidate(FALSE);
 	}
 	CDialogEx::OnTimer(nIDEvent);
 }

@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "MFCTrackTools.h"
+#include "MFCTrackToolsDlg.h"
 #include "DlgCam.h"
 #include "afxdialogex.h"
 #include "DlgStu.h"
@@ -370,7 +371,7 @@ void DlgCam::OnBnClickedButCalibration()
 	else
 	{
 		//计算标定参数
-		StuITRACK_ClientParams_t &stu_params = ((DlgStu*)GetDlgItem(IDC_BTNSTUAPPLY))->stu_params;
+		StuITRACK_ClientParams_t &stu_params = ((CMFCTrackToolsDlg*)GetDlgItem(IDD_MFCTRACKTOOLS_DIALOG))->dlgStu.stu_params;
 		cv::Point2f ptSrc[4];
 		ptSrc[0].x = stu_params.stuTrack_vertex[0].x;
 		ptSrc[0].y = stu_params.stuTrack_vertex[0].y;
