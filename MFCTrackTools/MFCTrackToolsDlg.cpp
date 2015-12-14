@@ -1753,7 +1753,7 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	}
 	}
 	sprintf_s(errMsg, sizeof(errMsg), "%s³É¹¦", get_track_cmd_name(head->cmd));
-	AfxMessageBox(_T(errMsg));
+	//AfxMessageBox(_T(errMsg));
 	return 0;
 }
 int CMFCTrackToolsDlg::ctrlClient_init_trackCommunticationEx(void*param, Net_Info * pnetInfo)
