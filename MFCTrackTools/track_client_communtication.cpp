@@ -54,6 +54,19 @@ int ctrlClient_get_stu_params(Commutication_Handle_t ptrack_clientHandle)
 	communtication_send_clientMsg(&head, (char *)(&stu_param), sizeof(StuITRACK_ClientParams_t), ptrack_clientHandle);
 	return 0;
 }
+int ctrlClient_get_camera_params(Commutication_Handle_t ptrack_clientHandle)
+{
+	Panoramic_Camera_Info camera_param = { 0 };
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
+		return -1;
+	}
+	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
+	head.cmd = GET_CAMERA_INFO;
+	communtication_send_clientMsg(&head, (char *)(&camera_param), sizeof(Panoramic_Camera_Info), ptrack_clientHandle);
+	return 0;
+}
 
 //netstream==================================================================================================================
 
@@ -238,7 +251,7 @@ static void* stream_pop_thread(void* arg)
 			pStream_messgage = pClient_handle->list_Handle.front();
 			pClient_handle->list_Handle.pop_front();
 
-			
+			OutputDebugString("stream============\n");
 			H264_To_RGB((unsigned char*)(pStream_messgage->stream_data), pStream_messgage->fh.nFrameLength,
 				pClient_handle->streamDecode.data, &(pClient_handle->decoder));
 			pClient_handle->streamDecode.height = pStream_messgage->fh.nHight;

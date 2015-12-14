@@ -12,9 +12,10 @@ using namespace std;
 #define TEA_SETTRACK_CMD  0x101
 #define STU_GETTRACK_CMD  0x102
 #define TEA_GETTRACK_CMD  0x103
+#define GET_CAMERA_INFO   0x104
 #define TIMEOUT 500
 
-#define TEACH_STREAM_PORT 21303
+#define TEACH_STREAM_PORT 21301
 #define STUDENT_STREAM_PORT  21302
 #define STU_CHANNL 0
 #define TEACH_CHANNL 1
@@ -23,6 +24,15 @@ using namespace std;
 #define MAX_STEAM_HEIGHT 720
 
 #define C_CONTROL_TRACK 15200
+#define LIVE_STREAM_NAME_MAX 64
+#define CAMENUM 4
+typedef struct
+{
+	char ip[CAMENUM][IP_LEN];
+	int  nPort[CAMENUM];
+	int  nControPort[CAMENUM];
+	char streamName[CAMENUM][LIVE_STREAM_NAME_MAX];
+}Panoramic_Camera_Info;
 typedef enum
 {
 	STREAMCLINT_START = 0,
@@ -79,6 +89,6 @@ int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param, Commutication_Hand
 int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param, Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_get_teach_params(Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_get_stu_params(Commutication_Handle_t ptrack_clientHandle);
-
+int ctrlClient_get_camera_params(Commutication_Handle_t ptrack_clientHandle);
 
 #endif

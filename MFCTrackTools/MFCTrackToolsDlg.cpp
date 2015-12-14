@@ -1657,6 +1657,7 @@ static int ctrl_connect_status(Connect_Status status, void * param)
 	{
 		pTrackDlg->ctrlClient_init_Stream();
 		ctrlClient_get_teach_params(pTrackDlg->m_track_clientHandle);
+		ctrlClient_get_camera_params(pTrackDlg->m_track_clientHandle);
 		PostMessage(pTrackDlg->m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 	}
 	pTrackDlg->dlgTch.setConnectHandle(pTrackDlg->m_track_clientHandle);
@@ -1702,33 +1703,46 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	}
 	case STU_GETTRACK_CMD:
 	{
-							 if (head->total_len != sizeof(StuITRACK_ClientParams_t))
-							 {
+			if (head->total_len != sizeof(StuITRACK_ClientParams_t))
+			{
 
-							 }
-							 else
-							 {
-								 StuITRACK_ClientParams_t * stu_params = (StuITRACK_ClientParams_t *)msg;
-								 loadParamsFromStu(stu_params);
+			}
+			else
+			{
+				StuITRACK_ClientParams_t * stu_params = (StuITRACK_ClientParams_t *)msg;
+				loadParamsFromStu(stu_params);
 
-							 }
-							 break;
+			}
+			break;
 	}
 	case TEA_GETTRACK_CMD:
 	{
-							 if (head->total_len != sizeof(TeaITRACK_Params))
-							 {
+			if (head->total_len != sizeof(TeaITRACK_Params))
+			{
 
-							 }
-							 else
-							 {
-								 TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
-								 loadParamsFromTch(tea_params);
+			}
+			else
+			{
+				TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
+				loadParamsFromTch(tea_params);
 		
 
-							 }
+			}
 
-							 break;
+			break;
+	}
+	case GET_CAMERA_INFO:
+	{
+			if (head->total_len != sizeof(Panoramic_Camera_Info))
+			{
+
+			}
+			else
+			{
+				Panoramic_Camera_Info * cameras_params = (Panoramic_Camera_Info *)msg;
+				memcpy(&m_cameraInfo, cameras_params, sizeof(Panoramic_Camera_Info));
+
+			}
 	}
 	}
 	sprintf_s(errMsg, sizeof(errMsg), "%s³É¹¦", get_track_cmd_name(head->cmd));
