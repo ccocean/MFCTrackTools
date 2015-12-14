@@ -25,6 +25,7 @@ static Track_cmd_info_t g_track_cmd[] =
 	{ TEA_SETTRACK_CMD, "设置老师参数" },
 	{ STU_GETTRACK_CMD, "获取学生参数" },
 	{ TEA_GETTRACK_CMD, "获取老师参数" },
+	{ GET_CAMERA_INFO, "获取相机参数" },
 };
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
@@ -72,6 +73,8 @@ CMFCTrackToolsDlg::CMFCTrackToolsDlg(CWnd* pParent /*=NULL*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_track_clientHandle = NULL;
 	m_strSkin = "";
+	m_streamTeaHandle = NULL;
+	m_streamStuHandle = NULL;
 }
 
 void CMFCTrackToolsDlg::DoDataExchange(CDataExchange* pDX)
@@ -208,7 +211,9 @@ BOOL CMFCTrackToolsDlg::ctrlClient_init_Stream()
 	recv_stream_handle.channel = 1;
 	recv_stream_handle.param1 = this;
 	recv_stream_handle.call_back_fun = video_call_back;
-	init_stream_recv(&recv_stream_handle);
+	m_streamTeaHandle = init_stream_recv(&recv_stream_handle);
+	recv_stream_handle.port = STUDENT_STREAM_PORT;
+	m_streamStuHandle = init_stream_recv(&recv_stream_handle);
 	return TRUE;
 
 }
@@ -1711,6 +1716,7 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			{
 				StuITRACK_ClientParams_t * stu_params = (StuITRACK_ClientParams_t *)msg;
 				loadParamsFromStu(stu_params);
+				ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, STU_CHANNL);
 
 			}
 			break;
@@ -1725,7 +1731,7 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			{
 				TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
 				loadParamsFromTch(tea_params);
-		
+				ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, TEACH_CHANNL);
 
 			}
 
@@ -1743,6 +1749,7 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 				memcpy(&m_cameraInfo, cameras_params, sizeof(Panoramic_Camera_Info));
 
 			}
+			break;
 	}
 	}
 	sprintf_s(errMsg, sizeof(errMsg), "%s成功", get_track_cmd_name(head->cmd));

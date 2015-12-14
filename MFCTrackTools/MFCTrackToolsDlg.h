@@ -132,7 +132,8 @@ public:
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
 	Panoramic_Camera_Info m_cameraInfo;
-
+	void* m_streamTeaHandle;
+	void* m_streamStuHandle;
 	CPoint centre_pt;
 	CPoint p1 = { 0 }, p2 = { 0 }, pt = { 0 };//教师区域跟踪框的点
 	CPoint pa = { 0 }, pb = { 0 }, pc = { 0 }, pd = { 0 };//学生跟踪参数四顶点的坐标

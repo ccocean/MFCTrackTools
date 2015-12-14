@@ -70,6 +70,7 @@ typedef struct _Client_Handle
 	Tools_decoder_t decoder;
 	int first_frame;
 	int nChannel;
+	int callstatus;
 	pthread_mutex_t lock;
 
 }Client_Handle_t;
@@ -92,4 +93,5 @@ int ctrlClient_get_teach_params(Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_get_stu_params(Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_get_camera_params(Commutication_Handle_t ptrack_clientHandle);
 
+int ctrlClient_set_stream_display(void* pStream_StuclientHandle, void* pStream_TeaclientHandle, int chanenel);
 #endif

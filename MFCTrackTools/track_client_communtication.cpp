@@ -3,6 +3,8 @@
 #include<tchar.h>
 #include<stdlib.h>
 #include "track_client_commintication.h"
+static int stream_getcall_status(Client_Handle_t* pStream_ClientHandle);
+static int stream_setcall_status(Client_Handle_t* pStream_ClientHandle, int status);
 int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param, Commutication_Handle_t ptrack_clientHandle)
 {
 	if (ptrack_clientHandle == NULL) {
@@ -67,6 +69,7 @@ int ctrlClient_get_camera_params(Commutication_Handle_t ptrack_clientHandle)
 	communtication_send_clientMsg(&head, (char *)(&camera_param), sizeof(Panoramic_Camera_Info), ptrack_clientHandle);
 	return 0;
 }
+
 
 //netstream==================================================================================================================
 
@@ -139,6 +142,15 @@ static int  track_process_data(RH_FRAMEHEAD_t *fh, void *pEmptyBufInfo, void *ar
 		}
 		return -1;
 	}
+	if (stream_getcall_status(pClient_handle) != 1)
+	{
+		if (data)
+		{
+			free(data);
+		}
+		OutputDebugString("helllo \n");
+		return 0;
+	}
 	Stream_Message_t* pStream_message = (Stream_Message_t*)malloc(sizeof(*pStream_message));
 	if (pStream_message == NULL)
 	{
@@ -158,7 +170,7 @@ static int  track_process_data(RH_FRAMEHEAD_t *fh, void *pEmptyBufInfo, void *ar
 //	if (fh->nIframe == 1 && pClient_handle->first_frame == 0)
 	{
 		pClient_handle->first_frame = 1;
-		//upEnc_firstData_set(pClient_handle);
+		
 	}
 	pthread_mutex_lock(&(pClient_handle->lock));
 	if ((pClient_handle->first_frame == 1) && (pClient_handle->list_Handle).size() < 15)
@@ -286,6 +298,57 @@ int stop_stream_stream(void* param)
 	}
 	return 0;
 }
+static int stream_setcall_status(Client_Handle_t* pClient_handle, int status)
+{
+
+	if (pClient_handle == NULL)
+	{
+		OutputDebugString("stream_setcall_status fail\n");
+		return -1;
+	}
+	pthread_mutex_lock(&(pClient_handle->lock));
+	pClient_handle->callstatus = status;
+	pthread_mutex_unlock(&(pClient_handle->lock));
+	return 0;
+}
+static int stream_getcall_status(Client_Handle_t* pClient_handle)
+{
+	int status = 0;
+	if (pClient_handle == NULL)
+	{
+		OutputDebugString("stream_getcall_status is fail\n");
+		return -1;
+	}
+	pthread_mutex_lock(&(pClient_handle->lock));
+	status = pClient_handle->callstatus;
+	pthread_mutex_unlock(&(pClient_handle->lock));
+	return status;
+}
+int ctrlClient_set_stream_display(void* pStream_StuclientHandle, void* pStream_TeaclientHandle, int chanenel)
+{
+	RecvStream_Handle_t* pRecv_streamStu_handle = (RecvStream_Handle_t*)pStream_StuclientHandle;
+	RecvStream_Handle_t* pRecv_streamTea_handle = (RecvStream_Handle_t*)pStream_TeaclientHandle;
+	Client_Handle_t* pClient_Stuhandle = NULL;
+	Client_Handle_t* pClient_Teahandle = NULL;
+	if (pRecv_streamStu_handle == NULL || pRecv_streamTea_handle == NULL)
+	{
+		OutputDebugString("stream_setcall_status is fial\n");
+		return -1;
+	}
+	pClient_Stuhandle = (Client_Handle_t*)pRecv_streamStu_handle->outParm;
+	pClient_Teahandle = (Client_Handle_t*)pRecv_streamTea_handle->outParm;
+	if (chanenel == STU_CHANNL)
+	{
+		stream_setcall_status(pClient_Teahandle, 0);
+		stream_setcall_status(pClient_Stuhandle, 1);
+	}
+	else
+	{
+		stream_setcall_status(pClient_Stuhandle, 0);
+		stream_setcall_status(pClient_Teahandle, 1);
+	}
+	return 0;
+}
 void* init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 {
 	int ret = 0;
@@ -338,6 +401,7 @@ void* init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 
 
 	pthread_mutex_init(&(pClient_handle->lock), NULL);
+	pClient_handle->callstatus = 0;
 	if (pStream_handle->streamConnectHanlde = Stream_init_client(&(data_prm)))
 	{
 		set_streamClient_status(pClient_handle, STREAMCLINT_START);
