@@ -62,38 +62,38 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 	{
 		m_comboSpeed.GetWindowText(str);
 		speed = _ttoi(str);
-		m_CameraControl.setMoveSpeed(speed, speed);
+		m_CameraControl_tch.setMoveSpeed(speed, speed);
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_UP)->m_hWnd)
 		{
-			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_UP);
+			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_UP);
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_LEFT)->m_hWnd)
 		{
-			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_LEFT);
+			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_LEFT);
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_RIGHT)->m_hWnd)
 		{
-			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_RIGHT);
+			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_RIGHT);
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_DOWN)->m_hWnd)
 		{
-			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_DOWN);
+			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_DOWN);
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMIN)->m_hWnd)
 		{
-			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMIN);
+			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMIN);
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMOUT)->m_hWnd)
 		{
-			m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
+			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
 		}
 		//m_btnUp.SetState(TRUE);
 	}
 	if (pMsg->message == WM_LBUTTONUP)
 	{
 		//HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_STOP, m_comboSpeed.GetCurSel());
-		m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
-		m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
+		m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
+		m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
 		//m_btnUp.SetState(FALSE);
 	}
 		
@@ -163,8 +163,8 @@ void DlgCam::OnBnClickedButtonHome()
 	//HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_HOME, m_comboSpeed.GetCurSel());
 	m_comboSpeed.GetWindowText(str);
 	speed = _ttoi(str);
-	m_CameraControl.setMoveSpeed(speed, speed);
-	m_CameraControl.home();
+	m_CameraControl_tch.setMoveSpeed(speed, speed);
+	m_CameraControl_tch.home();
 }
 
 
@@ -178,7 +178,7 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 	}
 	if (1==right)
 	{
-		m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		if (m_get_panPosit>0)
 		{
 			MessageBox("相机位置不在左端。");
@@ -190,7 +190,7 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 	}
 	else
 	{
-		m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		if (m_get_panPosit > 0)
 		{
 			MessageBox("相机位置不在左端。");
@@ -212,7 +212,7 @@ void DlgCam::OnBnClickedButtonRightPreset()
 	}
 	if (1==left)
 	{
-		m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		if (m_get_panPosit < 0)
 		{
 			MessageBox("相机位置不在右端。");
@@ -224,7 +224,7 @@ void DlgCam::OnBnClickedButtonRightPreset()
 	}
 	else
 	{
-		m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		if (m_get_panPosit < 0)
 		{
 			MessageBox("相机位置不在右端。");
@@ -248,7 +248,7 @@ void DlgCam::autoPreSet(int a, int b, int direct)
 		left = right = 0;
 		return;
 	}
-	m_CameraControl.setMoveSpeed(20, 20);
+	m_CameraControl_tch.setMoveSpeed(20, 20);
 	int width = (b - a) / (numPos - 1);
 	int fix = (b - a) % (numPos - 1);
 	int num = 0;
@@ -301,21 +301,21 @@ void DlgCam::autoPreSet(int a, int b, int direct)
 		{
 			while (m_get_panPosit != i + fix)
 			{
-				m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
-				m_CameraControl.move(i + fix, m_get_tiltPosit, FALSE);
+				m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+				m_CameraControl_tch.move(i + fix, m_get_tiltPosit, FALSE);
 			}
 		}
 		else
 		{
 			while (m_get_panPosit != i)
 			{
-				m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
-				m_CameraControl.move(i, m_get_tiltPosit, FALSE);
+				m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+				m_CameraControl_tch.move(i, m_get_tiltPosit, FALSE);
 			}
 		}
 		
 
-		m_CameraControl.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num);
+		m_CameraControl_tch.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num);
 		Sleep(500);
 		s.Format("%d号预置位设置成功...", num);
 		m_txtPreset.SetWindowText(s);
@@ -343,10 +343,10 @@ void DlgCam::OnBnClickedButCalibration()
 	//采集标定点
 	if (countCalib < 4)
 	{
-		m_CameraControl.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		m_calibPt[countCalib].x = m_get_panPosit;
 		m_calibPt[countCalib].y = m_get_tiltPosit;
-		m_CameraControl.getZoom(&m_get_zoomValue, 500);
+		m_CameraControl_tch.getZoom(&m_get_zoomValue, 500);
 		m_zoom[countCalib] = m_get_zoomValue;
 		countCalib++;
 		CString str;
