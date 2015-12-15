@@ -56,7 +56,7 @@ PanAndTiltCameraControl::PanAndTiltCameraControl()
 {
 	m_flag_start = FALSE;
 	memset(&m_addr, 0, sizeof(m_addr));
-	memset(&m_buffer, 0, sizeof(m_buffer));
+	memset(m_buffer, 0, sizeof(m_buffer));
 	m_addr_len = sizeof(struct sockaddr_in);
 	m_send_socket = INVALID_SOCKET;
 
