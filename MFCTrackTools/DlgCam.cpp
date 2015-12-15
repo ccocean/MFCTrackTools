@@ -371,16 +371,19 @@ void DlgCam::OnBnClickedButCalibration()
 	else
 	{
 		//计算标定参数
-		StuITRACK_ClientParams_t &stu_params = ((CMFCTrackToolsDlg*)GetDlgItem(IDD_MFCTRACKTOOLS_DIALOG))->dlgStu.stu_params;
+		HWND hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
+		
+		//StuITRACK_ClientParams_t &stu_params = ((CMFCTrackToolsDlg*)GetDlgItem(IDD_MFCTRACKTOOLS_DIALOG))->dlgStu.stu_params;
 		cv::Point2f ptSrc[4];
-		ptSrc[0].x = stu_params.stuTrack_vertex[0].x;
-		ptSrc[0].y = stu_params.stuTrack_vertex[0].y;
-		ptSrc[1].x = stu_params.stuTrack_vertex[1].x;
-		ptSrc[1].y = stu_params.stuTrack_vertex[1].y;
-		ptSrc[2].x = stu_params.stuTrack_vertex[2].x;
-		ptSrc[2].y = stu_params.stuTrack_vertex[2].y;
-		ptSrc[3].x = stu_params.stuTrack_vertex[3].x;
-		ptSrc[3].y = stu_params.stuTrack_vertex[3].y;
+		ptSrc[0].x = pWnd->dlgStu.stu_params.stuTrack_vertex[0].x;
+		ptSrc[0].y = pWnd->dlgStu.stu_params.stuTrack_vertex[0].y;
+		ptSrc[1].x = pWnd->dlgStu.stu_params.stuTrack_vertex[1].x;
+		ptSrc[1].y = pWnd->dlgStu.stu_params.stuTrack_vertex[1].y;
+		ptSrc[2].x = pWnd->dlgStu.stu_params.stuTrack_vertex[2].x;
+		ptSrc[2].y = pWnd->dlgStu.stu_params.stuTrack_vertex[2].y;
+		ptSrc[3].x = pWnd->dlgStu.stu_params.stuTrack_vertex[3].x;
+		ptSrc[3].y = pWnd->dlgStu.stu_params.stuTrack_vertex[3].y;
 
 		cv::Point2f m_ptDst[4];
 		m_ptDst[0].x = m_calibPt[0].x;
@@ -394,29 +397,29 @@ void DlgCam::OnBnClickedButCalibration()
 		cv::Mat transM;
 		transM.create(3, 3, CV_64FC1);
 		transM = getPerspectiveTransform(ptSrc, m_ptDst);
-		stu_params.transformationMatrix[0] = transM.at<double>(0, 0);
-		stu_params.transformationMatrix[1] = transM.at<double>(0, 1);
-		stu_params.transformationMatrix[2] = transM.at<double>(0, 2);
-		stu_params.transformationMatrix[3] = transM.at<double>(1, 0);
-		stu_params.transformationMatrix[4] = transM.at<double>(1, 1);
-		stu_params.transformationMatrix[5] = transM.at<double>(1, 2);
-		stu_params.transformationMatrix[6] = transM.at<double>(2, 0);
-		stu_params.transformationMatrix[7] = transM.at<double>(2, 1);
-		stu_params.transformationMatrix[8] = transM.at<double>(2, 2);
+		pWnd->dlgStu.stu_params.transformationMatrix[0] = transM.at<double>(0, 0);
+		pWnd->dlgStu.stu_params.transformationMatrix[1] = transM.at<double>(0, 1);
+		pWnd->dlgStu.stu_params.transformationMatrix[2] = transM.at<double>(0, 2);
+		pWnd->dlgStu.stu_params.transformationMatrix[3] = transM.at<double>(1, 0);
+		pWnd->dlgStu.stu_params.transformationMatrix[4] = transM.at<double>(1, 1);
+		pWnd->dlgStu.stu_params.transformationMatrix[5] = transM.at<double>(1, 2);
+		pWnd->dlgStu.stu_params.transformationMatrix[6] = transM.at<double>(2, 0);
+		pWnd->dlgStu.stu_params.transformationMatrix[7] = transM.at<double>(2, 1);
+		pWnd->dlgStu.stu_params.transformationMatrix[8] = transM.at<double>(2, 2);
 
 		int zoom1 = (m_zoom[0] + m_zoom[1]) / 2;
 		int zoom2 = (m_zoom[2] + m_zoom[3]) / 2;
-		int width1 = (stu_params.stuTrack_stuWidth_standard[0] + stu_params.stuTrack_stuWidth_standard[1]) / 2;
-		int width2 = (stu_params.stuTrack_stuWidth_standard[2] + stu_params.stuTrack_stuWidth_standard[3]) / 2;
+		int width1 = (pWnd->dlgStu.stu_params.stuTrack_stuWidth_standard[0] + pWnd->dlgStu.stu_params.stuTrack_stuWidth_standard[1]) / 2;
+		int width2 = (pWnd->dlgStu.stu_params.stuTrack_stuWidth_standard[2] + pWnd->dlgStu.stu_params.stuTrack_stuWidth_standard[3]) / 2;
 		if (width1 != width2)
 		{
-			stu_params.stretchingAB[0] = ((double)(zoom1 - zoom2)) / (width1 - width2);
-			stu_params.stretchingAB[1] = zoom1 - stu_params.stretchingAB[0] * width1;
+			pWnd->dlgStu.stu_params.stretchingAB[0] = ((double)(zoom1 - zoom2)) / (width1 - width2);
+			pWnd->dlgStu.stu_params.stretchingAB[1] = zoom1 - pWnd->dlgStu.stu_params.stretchingAB[0] * width1;
 		}
 		else
 		{
-			stu_params.stretchingAB[0] = 0;
-			stu_params.stretchingAB[1] = MIN(zoom1, zoom2);
+			pWnd->dlgStu.stu_params.stretchingAB[0] = 0;
+			pWnd->dlgStu.stu_params.stretchingAB[1] = MIN(zoom1, zoom2);
 		}
 	}
 }

@@ -164,7 +164,9 @@ void DlgTch::OnBnClickedbtnapply()
 	{
 		if (m_Connect_clientHandle)
 		{
-			//((CMFCTrackToolsDlg*)GetDlgItem(IDD_MFCTRACKTOOLS_DIALOG))->dlgCam.setNumOfPreset(tch_params.numOfPos);
+			HWND hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+			CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
+			pWnd->dlgCam.setNumOfPreset(tch_params.numOfPos);
 			ctrlClient_set_teach_params(&tch_params, m_Connect_clientHandle);
 		}
 		else
