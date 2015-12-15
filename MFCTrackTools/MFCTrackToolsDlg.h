@@ -217,4 +217,5 @@ public:
 	
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnRButtonDblClk(UINT nFlags, CPoint point);
 };

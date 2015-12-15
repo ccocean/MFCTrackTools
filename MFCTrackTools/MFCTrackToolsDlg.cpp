@@ -105,6 +105,7 @@ BEGIN_MESSAGE_MAP(CMFCTrackToolsDlg, CDialogEx)
 	ON_WM_LBUTTONDBLCLK()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_TIMER()
+	ON_WM_RBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 
@@ -510,8 +511,11 @@ void CMFCTrackToolsDlg::trackdraw()
 		drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
 		pOldPen = pDC->SelectObject(&penG);
 		drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
-		pOldPen = pDC->SelectObject(&penPink);
-		drawRectangle(p3, p4);
+		if (p4.x>0&&p4.y>0)
+		{
+			pOldPen = pDC->SelectObject(&penPink);
+			drawRectangle(p3, p4);
+		}
 		pOldPen = pDC->SelectObject(&penPurple);
 		drawLine(pl, pr);
 		if (mouseStatus == Mouse_LBDOWN)
@@ -520,8 +524,6 @@ void CMFCTrackToolsDlg::trackdraw()
 			{
 				pOldPen = pDC->SelectObject(&penR);
 				drawRectangle(p1, pt);
-				pOldPen = pDC->SelectObject(&penPink);
-				drawRectangle(p3, pt);
 			}
 		}
 		else if (mouseStatus == Mouse_LBUP)
@@ -531,10 +533,18 @@ void CMFCTrackToolsDlg::trackdraw()
 			SetDlgItemInt(IDC_editW, p2.x - p1.x);
 			SetDlgItemInt(IDC_editH, p2.y - p1.y);
 		}
+		if (mouseStatus == Mouse_RBDOWN)
+		{
+			if (pt.x > 0 && pt.y > 0)
+			{
+				pOldPen = pDC->SelectObject(&penPink);
+				drawRectangle(p3, pt);
+			}
+		}
 	}
 	else
 	{
-		if (mouseStatus==Mouse_LBDOWN)
+		if (mouseStatus == Mouse_LBDOWN)
 		{
 			if (pt.x > 0 && pt.y > 0)
 			{
@@ -542,14 +552,18 @@ void CMFCTrackToolsDlg::trackdraw()
 				drawRectangle(pa, pt);
 			}
 		}
-		else if (mouseStatus == Mouse_LBUP)
+		if (mouseStatus == Mouse_LBUP)
 		{
 			pOldPen = pDC->SelectObject(&penY);
-			drawRectangle(pa, pb, pc, pd);
-			drawEndRect(pa, 10);
-			drawEndRect(pb, 10);
-			drawEndRect(pc, 10);
-			drawEndRect(pd, 10);
+			if (pa.x > 0 && pa.y > 0 && pc.x > 0 && pc.y > 0)
+			{
+				drawRectangle(pa, pb, pc, pd);
+				drawEndRect(pa, 10);
+				drawEndRect(pb, 10);
+				drawEndRect(pc, 10);
+				drawEndRect(pd, 10);
+				
+			}
 			drawLines(DRAW_WIDTH);
 		}
 		else if (mouseStatus == Mouse_LBDRAG)
@@ -565,13 +579,16 @@ void CMFCTrackToolsDlg::trackdraw()
 		else
 		{
 			pOldPen = pDC->SelectObject(&penY);
-			drawRectangle(pa, pb, pc, pd);
-			drawEndRect(pa, 10);
-			drawEndRect(pb, 10);
-			drawEndRect(pc, 10);
-			drawEndRect(pd, 10);
+			if (pa.x > 0 && pa.y > 0 && pc.x > 0 && pc.y > 0)
+			{
+				drawRectangle(pa, pb, pc, pd);
+				drawEndRect(pa, 10);
+				drawEndRect(pb, 10);
+				drawEndRect(pc, 10);
+				drawEndRect(pd, 10);
+				
+			}
 			drawLines(DRAW_WIDTH);
-
 		}
 		if (mouseStatus == Mouse_RBDOWN)
 		{
@@ -597,11 +614,15 @@ void CMFCTrackToolsDlg::trackdraw()
 		{
 			//drawLines(DRAW_ANGLE);
 			pOldPen = pDC->SelectObject(&penY);
-			drawRectangle(pa, pb, pc, pd);
-			drawEndRect(pa, 10);
-			drawEndRect(pb, 10);
-			drawEndRect(pc, 10);
-			drawEndRect(pd, 10);
+			if (pa.x > 0 && pa.y > 0 && pc.x > 0 && pc.y > 0)
+			{
+				drawRectangle(pa, pb, pc, pd);
+				drawEndRect(pa, 10);
+				drawEndRect(pb, 10);
+				drawEndRect(pc, 10);
+				drawEndRect(pd, 10);
+				
+			}
 			drawLines(DRAW_WIDTH);
 			drawLines(DRAW_ANGLE);
 		}
@@ -725,7 +746,9 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			else
 			{
-				mouseCnt--;
+				//mouseCnt--;
+				pa = pb = pc = pd = { 0 };
+				pA = pB = pC = pD = { 0 };
 				pt.x = 0, pt.y = 0;
 				pa.x = point.x - 40;
 				pa.y = point.y - pic_top;
@@ -749,10 +772,9 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			if (mouseStatus != Mouse_LBDRAG)
 			{
-				//p2.x = point.x - 40;
-				
 				p1.x = 0;
 				p2.x = Frame_Width;
+				//p2.x = point.x - 40;
 				p2.y = point.y - pic_top;
 				mouseStatus = Mouse_LBUP;
 				pt.x = -1;
@@ -879,6 +901,7 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				dlgTch.setTrackRects(blk, BLK_RECT);
 				mouseStatus = Mouse_LBUP;
 			}
+			pt = { 0 };
 		}
 		//学生界面的左键抬起操作
 		else
@@ -951,6 +974,16 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 				{
 					//tch.x += (point.x - pt.x);
 					tch.y += (point.y  - pt.y);
+					if (p3.x>0&&p3.y>0&&p4.x>0&&p4.y>0)
+					{
+						p3.y += (point.y - pt.y);
+						p4.y += (point.y - pt.y);
+					}
+					if (pl.x>0&&pl.y>0&&pr.x>0&&pr.y>0)
+					{
+						pl.y += (point.y - pt.y);
+						pr.y += (point.y - pt.y);
+					}
 					SetDlgItemInt(IDC_editX, tch.x);
 					SetDlgItemInt(IDC_editY, tch.y);
 					SetDlgItemInt(IDC_editW, tch.width);
@@ -1226,17 +1259,21 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 		}
 		else
 		{
-			if (tch.x<point.x&&point.x<tch.x+tch.width&&tch.y<point.y&&point.y<tch.y+tch.height)
+			if (tch.x<point.x&&point.x<tch.x+tch.width&&tch.y<point.y&&point.y<tch.y+tch.height+pic_top)
 			{
 				if (isKeyDown==CTRL_KEY_UP)
 				{
-					p3 = point;
+					p3 = p4 = { 0 };
+					pt = { 0 };
+					p3.x = point.x - 40;
+					p3.y = point.y - pic_top;
 					mouseStatus = Mouse_RBDOWN;
 				}
 				else
 				{
-					pl.x = point.x - 40;
+					pl.x = 0;
 					pl.y = point.y - pic_top;
+					mouseStatus = Mouse_RBDOWN;
 				}
 			}
 		}
@@ -1251,11 +1288,12 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 	{
 		if (CurSel==TCH_TAB)
 		{
-			if (tch.x < point.x&&point.x < tch.x + tch.width&&tch.y < point.y&&point.y < tch.y + tch.height)
+			if (tch.x < point.x&&point.x < tch.x + tch.width&&tch.y < point.y&&point.y < tch.y + tch.height + pic_top)
 			{
 				if (isKeyDown==CTRL_KEY_UP)
 				{
-					p4 = point;
+					p4.x = point.x - 40;
+					p4.y = point.y - pic_top;
 					if (p4.x < p3.x || p4.y<p3.y)
 					{
 						pt = p4;
@@ -1283,16 +1321,18 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 				}
 				else
 				{
-					pr.x = Frame_Width;
+					pr.x = WIDTH;
 					pr.y = point.y - pic_top;
 					int h = pr.y - blk.y;
 					str.Format("%d", h);
 					dlgTch.tch_params.threshold.outside = h;
 					dlgTch.m_editOutSide.SetWindowText(_T(str));
 					str = "";
+					mouseStatus = Mouse_RBUP;
 				}
+				pt = { 0 };
 			}
-			else
+			/*else
 			{
 				p1.x = 0; p1.y = 0;
 				p2.x = 0; p2.y = 0;
@@ -1307,7 +1347,8 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 				dlgTch.m_txtBlkArg.SetWindowText(_T(""));
 				mouseCnt = 0;
 				mouseStatus = Mouse_RBUP;
-			}
+			}*/
+			
 		}
 		else
 		{
@@ -1435,13 +1476,33 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 	CDialogEx::OnRButtonUp(nFlags, point);
 }
 
+void CMFCTrackToolsDlg::OnRButtonDblClk(UINT nFlags, CPoint point)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	if (40 <= point.x&&point.x <= 40 + WIDTH && pic_top <= point.y&&point.y <= pic_top + HEIGHT)
+	{
+		p1.x = 0; p1.y = 0;
+		p2.x = 0; p2.y = 0;
+		pt.x = 0; pt.y = 0;
+		tch.x = 0; tch.y = 0;
+		tch.width = 0; tch.height = 0;
+		blk.x = 0; blk.y = 0;
+		blk.width = 0; blk.height = 0;
+		p3 = p4 = { 0 };
+		pl = pr = { 0 };
+
+		dlgTch.m_txtTchArg.SetWindowText(_T(""));
+		dlgTch.m_txtBlkArg.SetWindowText(_T(""));
+		mouseCnt = 0;
+		mouseStatus = Mouse_RBUP;
+	}
+	CDialogEx::OnRButtonDblClk(nFlags, point);
+}
+
 void CMFCTrackToolsDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	if (40 <= point.x&&point.x <= 40 + Frame_Width && pic_top <= point.y&&point.y <= pic_top + Frame_Height)
-	{
-		
-	}
+	
 	CDialogEx::OnLButtonDblClk(nFlags, point);
 }
 void CMFCTrackToolsDlg::updateLines()
@@ -2018,3 +2079,6 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 	CDialogEx::OnTimer(nIDEvent);
 }
+
+
+
