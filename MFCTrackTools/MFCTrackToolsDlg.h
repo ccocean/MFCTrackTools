@@ -34,6 +34,9 @@
 #define Mouse_ADJUST_C 8
 #define Mouse_ADJUST_D 9
 
+#define CTRL_KEY_DOWN 1
+#define CTRL_KEY_UP 0
+
 #define Frame_Width WIDTH	    //960
 #define Frame_Height HEIGHT	//540
 
@@ -136,6 +139,8 @@ public:
 	void* m_streamStuHandle;
 	CPoint centre_pt;
 	CPoint p1 = { 0 }, p2 = { 0 }, pt = { 0 };//教师区域跟踪框的点
+	CPoint p3 = { 0 }, p4 = { 0 };
+	CPoint pl = { 0 }, pr = { 0 };
 	CPoint pa = { 0 }, pb = { 0 }, pc = { 0 }, pd = { 0 };//学生跟踪参数四顶点的坐标
 	CPoint pA = { 0 }, pB = { 0 }, pC = { 0 }, pD = { 0 };//学生跟踪参数四顶点的角度，delta值为pA-pa。
 	CPoint ln1[2],ln2[2],ln3[2],ln4[2];//表示宽度的线段
@@ -145,8 +150,8 @@ public:
 	int mouseStatus = 0;
 	int mouseCnt = 0;
 	int whichRect = 0;
-	int isKeyDown = 0;
-	int isRightButton = 0;
+	int isKeyDown = CTRL_KEY_UP;
+	//int isRightButton = 0;
 	int whichVertex = -1;
 
 	int rst = -1;
@@ -160,6 +165,8 @@ public:
 	CPen penG;
 	CPen penR;
 	CPen penB;
+	CPen penPink;
+	CPen penPurple;
 	CPen *pOldPen;//画笔
 	CBrush *pBrush = CBrush::FromHandle((HBRUSH)
 		GetStockObject(NULL_BRUSH));
