@@ -1901,6 +1901,7 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 	//dlgCam.m_uiPort = 5556; //80
 	//dlgCam.m_strPword = _T("admin");
 	//dlgCam.m_strUname = _T("admin");
+
 	//BYTE nf1 = 192;
 	//BYTE nf2 = 168;
 	//BYTE nf3 = 11;
@@ -1911,8 +1912,8 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 	//int iResult = 0;
 	//WSADATA wsaData = { 0 };
 	//iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	//dlgCam.m_CameraControl.startControl(str.GetBuffer(), 1259);
-	//dlgCam.m_CameraControl.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
+	//dlgCam.m_CameraControl_tch.startControl(str.GetBuffer(), 1259);
+	//dlgCam.m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
 
 	//dlgCam.m_comboSpeed.InsertString(0, "5");
 	//dlgCam.m_comboSpeed.InsertString(1, "12");

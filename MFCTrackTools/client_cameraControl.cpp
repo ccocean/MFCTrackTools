@@ -2,37 +2,37 @@
 
 static void* recv_thread(void *argv)
 {
-	PanAndTiltCameraControl* p = (PanAndTiltCameraControl*)argv;
+	PanAndTiltCameraControl* tempCam = (PanAndTiltCameraControl*)argv;
 	int len;
 	char buffer[256];
 	int posit_pan;
 	int posit_tilt;
 	int zoomValue;
-	while (p->getRun_Status() == TRUE)
+	while (tempCam->getRun_Status() == TRUE)
 	{
-		if (p->getStart_Status() == TRUE)
+		if (tempCam->getStart_Status() == TRUE)
 		{	
-			len = p->recv_CameraInfo(buffer);
-			if (len >= 7)
+			len = tempCam->recv_CameraInfo(buffer);
+			if (len >= INFO_ZOOM_FOCUS)
 			{
 				if (buffer[1] = 0x50)
 				{
-					if (len == 11)
+					if (len == INFO_PAN_TILT)
 					{
 						posit_pan = ((buffer[2] & 0x0f) << 12) + ((buffer[3] & 0x0f) << 8) + ((buffer[4] & 0x0f) << 4) + (buffer[5] & 0x0f);
 						posit_pan = ((posit_pan >> 15) & 1) ? posit_pan | ((-1 >> 16) << 16) : posit_pan & 0xffff;
 
 						posit_tilt = ((buffer[6] & 0x0f) << 12) + ((buffer[7] & 0x0f) << 8) + ((buffer[8] & 0x0f) << 4) + (buffer[9] & 0x0f);
 						posit_tilt = ((posit_tilt >> 15) & 1) ? posit_tilt | ((-1 >> 16) << 16) : posit_tilt & 0xffff;
-						p->set_CameraInfo_panTilt(posit_pan, posit_tilt);
-						::SetEvent(p->m_hHandle1);
+						tempCam->set_CameraInfo_panTilt(posit_pan, posit_tilt);
+						::SetEvent(tempCam->m_hHandle1);
 					}
-					else if (len == 7)
+					else if (len == INFO_ZOOM_FOCUS)
 					{
 						zoomValue = ((buffer[2] & 0x0f) << 12) + ((buffer[3] & 0x0f) << 8) + ((buffer[4] & 0x0f) << 4) + (buffer[5] & 0x0f);
 						zoomValue = ((zoomValue >> 15) & 1) ? zoomValue | ((-1 >> 16) << 16) : zoomValue & 0xffff;
-						p->set_CameraInfo_zoom(zoomValue);
-						::SetEvent(p->m_hHandle2);
+						tempCam->set_CameraInfo_zoom(zoomValue);
+						::SetEvent(tempCam->m_hHandle2);
 					}
 				}
 			}
