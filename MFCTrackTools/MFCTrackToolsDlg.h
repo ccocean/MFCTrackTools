@@ -138,6 +138,7 @@ public:
 	cv::Mat m_imgbufferYUV;
 	cv::Mat m_imgbufferShow_tch;
 	cv::Mat m_imgbufferShow_stu;
+	HANDLE m_hThread_img_show;
 	
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
@@ -204,9 +205,10 @@ private:
 	void loadParamsFromStu(StuITRACK_ClientParams_t* params);
 	void initCamDlg(int cx, int cy, CRect rct);
 	BOOL connectCam();
-	void showImage();
+	
 public:
 	int video_display(Decode_Info_t *pInfo);
+	void showImage();
 	CTabCtrl m_tabTrack;
 public:
 	CIPAddressCtrl m_ipAddr;

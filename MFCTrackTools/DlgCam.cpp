@@ -407,10 +407,10 @@ void DlgCam::OnBnClickedButCalibration()
 	//采集标定点
 	if (countCalib < 4)
 	{
-		m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		m_calibPt[countCalib].x = m_get_panPosit;
 		m_calibPt[countCalib].y = m_get_tiltPosit;
-		m_CameraControl_tch.getZoom(&m_get_zoomValue, 500);
+		m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
 		m_zoom[countCalib] = m_get_zoomValue;
 		countCalib++;
 		CString str;
@@ -430,7 +430,7 @@ void DlgCam::OnBnClickedButCalibration()
 		{
 			str.Format(_T("计算标定参数"));
 		}
-		this->SetDlgItemText(IDC_BUT_AGAINCALIB, str);
+		this->SetDlgItemText(IDC_BUT_CALIBRATION, str);
 	}
 	else
 	{
@@ -495,5 +495,5 @@ void DlgCam::OnBnClickedButAgaincalib()
 	countCalib = 0;
 	CString str;
 	str.Format(_T("标定左上角"));
-	this->SetDlgItemText(IDC_BUT_AGAINCALIB, str);
+	this->SetDlgItemText(IDC_BUT_CALIBRATION, str);
 }

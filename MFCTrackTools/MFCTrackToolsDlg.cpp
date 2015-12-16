@@ -155,6 +155,7 @@ static int video_call_back(Decode_Info_t *pInfo, void*param)
 		OutputDebugString("video_call_back is NULL\n");
 	}
 	pSelf->video_display(pInfo);
+	//pSelf->showImage();
 	return 0;
 }
 int CMFCTrackToolsDlg::video_display(Decode_Info_t *pInfo)
@@ -218,7 +219,6 @@ void CMFCTrackToolsDlg::showImage()
 		cv::Mat temp = m_tch_cam.getImageBuffer();
 		if (!temp.empty())
 		{
-			
 			cv::resize(temp, m_imgbufferYUV, cv::Size(m_imgbufferYUV.cols, m_imgbufferYUV.rows));
 			cvtColor(m_imgbufferYUV, m_imgbufferShow_tch, CV_YUV2BGR_I420);
 			IplImage m_showImage(m_imgbufferShow_tch);
@@ -260,6 +260,15 @@ void CMFCTrackToolsDlg::showImage()
 				m_showImage.imageData, bmi, DIB_RGB_COLORS, SRCCOPY);
 		}
 	}
+	//绘制特写镜头的十字光标
+	pOldPen = pDC2->SelectObject(&penR);
+	pDC2->MoveTo(CPoint(centre_pt.x, centre_pt.y - 10));
+	pDC2->LineTo(CPoint(centre_pt.x, centre_pt.y + 10));
+
+	pDC2->MoveTo(CPoint(centre_pt.x - 10, centre_pt.y));
+	pDC2->LineTo(CPoint(centre_pt.x + 10, centre_pt.y));
+
+	pDC2->SelectObject(&pOldPen);
 }
 
 BOOL CMFCTrackToolsDlg::initNetCommuntication()
@@ -402,7 +411,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	GetDlgItem(IDC_picFeature)->GetClientRect(&showRectFeature);
 	centre_pt.x = showRectFeature.left + showRectFeature.Width() / 2;
 	centre_pt.y = showRectFeature.top + showRectFeature.Height() / 2;
-	//SetTimer(1, 100, NULL);
+	SetTimer(1,40, NULL);
 
 	GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
 	CString str(m_pExeDir);
@@ -587,17 +596,6 @@ void CMFCTrackToolsDlg::drawEndRect(CPoint center, int size)
 
 void CMFCTrackToolsDlg::trackdraw()
 {
-	showImage();
-	//绘制特写镜头的十字光标
-	pOldPen = pDC2->SelectObject(&penR);
-	pDC2->MoveTo(CPoint(centre_pt.x, centre_pt.y - 10));
-	pDC2->LineTo(CPoint(centre_pt.x, centre_pt.y + 10));
-
-	pDC2->MoveTo(CPoint(centre_pt.x - 10, centre_pt.y));
-	pDC2->LineTo(CPoint(centre_pt.x + 10, centre_pt.y));
-
-	pDC2->SelectObject(&pOldPen);
-
 	if (CurSel == TCH_TAB)
 	{
 		if (g_drawPS == 1)
@@ -2089,8 +2087,8 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(FALSE);
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(FALSE);
 		ctrlClient_get_teach_params(m_track_clientHandle);
-		m_stu_cam.StreamStop();
-		m_tch_cam.StreamStart();
+		/*m_stu_cam.StreamStop();
+		m_tch_cam.StreamStart();*/
 		break;
 	case 1:
 		dlgTch.ShowWindow(FALSE);
@@ -2117,8 +2115,8 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(TRUE);
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(TRUE);
 		ctrlClient_get_stu_params(m_track_clientHandle);
-		m_tch_cam.StreamStop();
-		m_stu_cam.StreamStart();
+		/*m_tch_cam.StreamStop();
+		m_stu_cam.StreamStart();*/
 		break;
 	case 2:
 		dlgTch.ShowWindow(FALSE);
@@ -2173,11 +2171,6 @@ BOOL CMFCTrackToolsDlg::connectCam()
 	int iResult = 0;
 	WSADATA wsaData = { 0 };
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	BYTE nf1;
-	BYTE nf2;
-	BYTE nf3;
-	BYTE nf4;
-
 	BOOL ret;
 	if (m_tch_cam.login(&m_uiHandle_tch, CAM_USER, CAM_PSWD, m_cameraInfo.ip[TCH_FEATURE_CAM], m_cameraInfo.nPort[TCH_FEATURE_CAM]))
 	{
@@ -2203,7 +2196,8 @@ BOOL CMFCTrackToolsDlg::connectCam()
 		return FALSE;
 	}
 	m_tch_cam.StreamStart();
-	showImage();
+	m_stu_cam.StreamStart();
+	//showImage();
 	return ret;
 }
 
@@ -2252,8 +2246,7 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	if (nIDEvent==1)
 	{
-		trackdraw();
-		GetDlgItem(IDC_picSrc)->Invalidate(FALSE);
+		showImage();
 	}
 	CDialogEx::OnTimer(nIDEvent);
 }
