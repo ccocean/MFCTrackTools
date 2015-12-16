@@ -1994,8 +1994,8 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 				{
 					m_cameraInfo.nPort[TCH_FEATURE_CAM] = 5556;
 					m_cameraInfo.nPort[STU_FEATURE_CAM] = 5556;
-					m_cameraInfo.nControPort[TCH_FEATURE_CAM] = 1259;
-					m_cameraInfo.nControPort[STU_FEATURE_CAM] = 1259;
+					/*m_cameraInfo.nControPort[TCH_FEATURE_CAM] = 1259;
+					m_cameraInfo.nControPort[STU_FEATURE_CAM] = 1259;*/
 					connectCam();
 				}
 				else
@@ -2181,14 +2181,7 @@ BOOL CMFCTrackToolsDlg::connectCam()
 	BOOL ret;
 	if (m_tch_cam.login(&m_uiHandle_tch, CAM_USER, CAM_PSWD, m_cameraInfo.ip[TCH_FEATURE_CAM], m_cameraInfo.nPort[TCH_FEATURE_CAM]))
 	{
-		//m_tch_cam.StreamStart();
-		nf1 = (m_cameraInfo.ip[TCH_FEATURE_CAM][0] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][1] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][2] - '0');
-		nf2 = (m_cameraInfo.ip[TCH_FEATURE_CAM][4] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][5] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][6] - '0');
-		nf3 = (m_cameraInfo.ip[TCH_FEATURE_CAM][8] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][9] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][10] - '0');
-		nf4 = (m_cameraInfo.ip[TCH_FEATURE_CAM][12] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][13] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][14] - '0');
-
-		str.Format("%d.%d.%d.%d", nf1, nf2, nf3, nf4);
-		dlgCam.m_CameraControl_tch.startControl(str.GetBuffer(), m_cameraInfo.nControPort[TCH_FEATURE_CAM]);
+		dlgCam.m_CameraControl_tch.startControl(m_cameraInfo.ip[TCH_FEATURE_CAM], m_cameraInfo.nControPort[TCH_FEATURE_CAM]);
 		dlgCam.m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
 		ret = TRUE;
 	}
@@ -2200,14 +2193,7 @@ BOOL CMFCTrackToolsDlg::connectCam()
 
 	if (m_stu_cam.login(&m_uiHandle_tch, CAM_USER, CAM_PSWD, m_cameraInfo.ip[STU_FEATURE_CAM], m_cameraInfo.nPort[STU_FEATURE_CAM]))
 	{
-		//m_stu_cam.StreamStart();
-		nf1 = (m_cameraInfo.ip[TCH_FEATURE_CAM][0] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][1] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][2] - '0');
-		nf2 = (m_cameraInfo.ip[TCH_FEATURE_CAM][4] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][5] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][6] - '0');
-		nf3 = (m_cameraInfo.ip[TCH_FEATURE_CAM][8] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][9] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][10] - '0');
-		nf4 = (m_cameraInfo.ip[TCH_FEATURE_CAM][12] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][13] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][14] - '0');
-
-		str.Format("%d.%d.%d.%d", nf1, nf2, nf3, nf4);
-		dlgCam.m_CameraControl_stu.startControl(str.GetBuffer(), m_cameraInfo.nControPort[STU_FEATURE_CAM]);
+		dlgCam.m_CameraControl_stu.startControl(m_cameraInfo.ip[STU_FEATURE_CAM], m_cameraInfo.nControPort[STU_FEATURE_CAM]);
 		dlgCam.m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
 		ret = TRUE;
 	}
@@ -2216,6 +2202,8 @@ BOOL CMFCTrackToolsDlg::connectCam()
 		MessageBox("学生相机连接失败！");
 		return FALSE;
 	}
+	m_tch_cam.StreamStart();
+	showImage();
 	return ret;
 }
 
