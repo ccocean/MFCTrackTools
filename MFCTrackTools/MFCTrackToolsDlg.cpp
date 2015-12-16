@@ -607,7 +607,7 @@ void CMFCTrackToolsDlg::trackdraw()
 			//	cvRectangle(srcImg, cvPoint(camPosSlide.left*(Frame_Width / int_pos), 0), cvPoint((camPosSlide.right + 1) * (Frame_Width / int_pos), Frame_Height), cvScalar(255, 0, 0));//画预置位滑框
 			//}
 			pOldPen = pDC->SelectObject(&penDB);
-			drawRectangle(CPoint(camPosSlide.left*(WIDTH / int_pos), 0), CPoint((camPosSlide.right + 1) * (WIDTH / int_pos), HEIGHT));
+			drawRectangle(CPoint(camPosSlide.left*(WIDTH / int_pos), tch.y), CPoint((camPosSlide.right + 1) * (WIDTH / int_pos), tch.y+tch.height));
 
 
 			//绘制特写镜头的十字光标
@@ -1090,16 +1090,18 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 				{
 					//tch.x += (point.x - pt.x);
 					tch.y += (point.y  - pt.y);
+					pl.y += (point.y - pt.y);
+					pr.y += (point.y - pt.y);
+					centre_pt2.y += (point.y - pt.y);
 					if (p3.x>0&&p3.y>0&&p4.x>0&&p4.y>0)
 					{
 						p3.y += (point.y - pt.y);
 						p4.y += (point.y - pt.y);
 					}
-					if (pl.x>0&&pl.y>0&&pr.x>0&&pr.y>0)
+					/*if (pl.x>0&&pl.y>0&&pr.x>0&&pr.y>0)
 					{
-						pl.y += (point.y - pt.y);
-						pr.y += (point.y - pt.y);
-					}
+						
+					}*/
 					SetDlgItemInt(IDC_editX, tch.x);
 					SetDlgItemInt(IDC_editY, tch.y);
 					SetDlgItemInt(IDC_editW, tch.width);
