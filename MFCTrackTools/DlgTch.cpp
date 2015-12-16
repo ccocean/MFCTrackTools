@@ -177,7 +177,7 @@ void DlgTch::OnBnClickedbtnapply()
 			pWnd->centre_pt2.x = (pWnd->camPosSlide.left + pWnd->int_slide / 2 + 0.5)*(WIDTH / pWnd->int_pos);
 			pWnd->centre_pt2.y = tch_params.tch.y + tch_params.tch.height / 2;
 
-			pWnd->pl = { tch_params.threshold.outside + tch_params.tch.y };
+			pWnd->pl = { 0, tch_params.threshold.outside + tch_params.tch.y };
 			pWnd->pr = { WIDTH, tch_params.threshold.outside + tch_params.tch.y };
 
 			ctrlClient_set_teach_params(&tch_params, m_Connect_clientHandle);

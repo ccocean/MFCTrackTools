@@ -1990,60 +1990,59 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	}
 	case STU_GETTRACK_CMD:
 	{
-			if (head->total_len != sizeof(StuITRACK_ClientParams_t))
-			{
+		if (head->total_len != sizeof(StuITRACK_ClientParams_t))
+		{
 
-			}
-			else
-			{
-				StuITRACK_ClientParams_t * stu_params = (StuITRACK_ClientParams_t *)msg;
-				loadParamsFromStu(stu_params);
-				ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, STU_CHANNL);
-
-			}
-			break;
+		}
+		else
+		{
+			StuITRACK_ClientParams_t * stu_params = (StuITRACK_ClientParams_t *)msg;
+			loadParamsFromStu(stu_params);
+			ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, STU_CHANNL);
+		}
+		break;
 	}
 	case TEA_GETTRACK_CMD:
 	{
-			if (head->total_len != sizeof(TeaITRACK_Params))
-			{
+		if (head->total_len != sizeof(TeaITRACK_Params))
+		{
 
-			}
-			else
-			{
-				TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
-				loadParamsFromTch(tea_params);
-				ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, TEACH_CHANNL);
+		}
+		else
+		{
+			TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
+			loadParamsFromTch(tea_params);
+			ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, TEACH_CHANNL);
 
-			}
+		}
 
-			break;
+		break;
 	}
 	case GET_CAMERA_INFO:
 	{
-			if (head->total_len != sizeof(Panoramic_Camera_Info))
-			{
+		if (head->total_len != sizeof(Panoramic_Camera_Info))
+		{
 
+		}
+		else
+		{
+			Panoramic_Camera_Info * cameras_params = (Panoramic_Camera_Info *)msg;
+			memcpy(&m_cameraInfo, cameras_params, sizeof(Panoramic_Camera_Info));
+			//获取相机ip
+			if (m_cameraInfo.ip[TCH_FEATURE_CAM]!=NULL&&m_cameraInfo.ip[STU_FEATURE_CAM]!=NULL)
+			{
+				m_cameraInfo.nPort[TCH_FEATURE_CAM] = 5556;
+				m_cameraInfo.nPort[STU_FEATURE_CAM] = 5556;
+				/*m_cameraInfo.nControPort[TCH_FEATURE_CAM] = 1259;
+				m_cameraInfo.nControPort[STU_FEATURE_CAM] = 1259;*/
+				connectCam();
 			}
 			else
 			{
-				Panoramic_Camera_Info * cameras_params = (Panoramic_Camera_Info *)msg;
-				memcpy(&m_cameraInfo, cameras_params, sizeof(Panoramic_Camera_Info));
-				//获取相机ip
-				if (m_cameraInfo.ip[TCH_FEATURE_CAM]!=NULL&&m_cameraInfo.ip[STU_FEATURE_CAM]!=NULL)
-				{
-					m_cameraInfo.nPort[TCH_FEATURE_CAM] = 5556;
-					m_cameraInfo.nPort[STU_FEATURE_CAM] = 5556;
-					/*m_cameraInfo.nControPort[TCH_FEATURE_CAM] = 1259;
-					m_cameraInfo.nControPort[STU_FEATURE_CAM] = 1259;*/
-					connectCam();
-				}
-				else
-				{
-					MessageBox("获取相机IP地址失败！");
-				}
+				MessageBox("获取相机IP地址失败！");
 			}
-			break;
+		}
+		break;
 	}
 	case GET_TRACK_STATUS_CMD:
 	{
