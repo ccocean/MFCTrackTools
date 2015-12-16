@@ -135,6 +135,7 @@ public:
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
 	Panoramic_Camera_Info m_cameraInfo;
+	Track_Status_t m_trackstatus;
 	void* m_streamTeaHandle;
 	void* m_streamStuHandle;
 	CPoint centre_pt;

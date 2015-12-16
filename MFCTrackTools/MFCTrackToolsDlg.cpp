@@ -26,6 +26,8 @@ static Track_cmd_info_t g_track_cmd[] =
 	{ STU_GETTRACK_CMD, "获取学生参数" },
 	{ TEA_GETTRACK_CMD, "获取老师参数" },
 	{ GET_CAMERA_INFO, "获取相机参数" },
+	{ SET_TRACK_STATUS_CMD, "设置跟踪状态" },
+	{ GET_TRACK_STATUS_CMD, "获取跟踪状态" },
 };
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
@@ -1798,6 +1800,7 @@ static int ctrl_connect_status(Connect_Status status, void * param)
 	{
 		pTrackDlg->ctrlClient_init_Stream();
 		ctrlClient_get_teach_params(pTrackDlg->m_track_clientHandle);
+		ctrlClient_get_track_status(pTrackDlg->m_track_clientHandle);
 		ctrlClient_get_camera_params(pTrackDlg->m_track_clientHandle);
 		PostMessage(pTrackDlg->m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 	}
@@ -1842,6 +1845,10 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	{
 							 break;
 	}
+	case SET_TRACK_STATUS_CMD:
+	{
+							 break;
+	}
 	case STU_GETTRACK_CMD:
 	{
 			if (head->total_len != sizeof(StuITRACK_ClientParams_t))
@@ -1883,6 +1890,20 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			{
 				Panoramic_Camera_Info * cameras_params = (Panoramic_Camera_Info *)msg;
 				memcpy(&m_cameraInfo, cameras_params, sizeof(Panoramic_Camera_Info));
+
+			}
+			break;
+	}
+	case GET_TRACK_STATUS_CMD:
+	{
+			if (head->total_len != sizeof(Track_Status_t))
+			{
+
+			}
+			else
+			{
+				Track_Status_t * trackstatus_params = (Track_Status_t *)msg;
+				memcpy(&m_trackstatus, trackstatus_params, sizeof(Track_Status_t));
 
 			}
 			break;

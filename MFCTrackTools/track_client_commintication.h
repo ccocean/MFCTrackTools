@@ -13,6 +13,8 @@ using namespace std;
 #define STU_GETTRACK_CMD  0x102
 #define TEA_GETTRACK_CMD  0x103
 #define GET_CAMERA_INFO   0x104
+#define SET_TRACK_STATUS_CMD   0x105
+#define GET_TRACK_STATUS_CMD   0x106
 #define TIMEOUT 500
 
 #define TEACH_STREAM_PORT 21301
@@ -34,6 +36,11 @@ typedef struct
 	char streamName[CAMENUM][LIVE_STREAM_NAME_MAX];
 }Panoramic_Camera_Info;
 //第2路老师特写，第3路学生特写，0路和1路为全景 留着扩展
+typedef struct
+{
+	int nTurnTrack;
+	int param1;
+}Track_Status_t;
 typedef enum
 {
 	STREAMCLINT_START = 0,
@@ -92,6 +99,9 @@ int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param, Commuticatio
 int ctrlClient_get_teach_params(Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_get_stu_params(Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_get_camera_params(Commutication_Handle_t ptrack_clientHandle);
+
+int ctrlClient_set_track_status(Track_Status_t * track_status, Commutication_Handle_t ptrack_clientHandle);
+int ctrlClient_get_track_status(Commutication_Handle_t ptrack_clientHandle);
 
 int ctrlClient_set_stream_display(void* pStream_StuclientHandle, void* pStream_TeaclientHandle, int chanenel);
 #endif
