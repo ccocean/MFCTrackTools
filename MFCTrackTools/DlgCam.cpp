@@ -63,38 +63,90 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 		m_comboSpeed.GetWindowText(str);
 		speed = _ttoi(str);
 		m_CameraControl_tch.setMoveSpeed(speed, speed);
+		HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_UP)->m_hWnd)
 		{
-			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_UP);
+			if (pWnd->CurSel==TCH_TAB)
+			{
+				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_UP);
+			}
+			else
+			{
+				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_UP);
+			}
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_LEFT)->m_hWnd)
 		{
-			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_LEFT);
+			if (pWnd->CurSel == TCH_TAB)
+			{
+				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_LEFT);
+			}
+			else
+			{
+				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_LEFT);
+			}
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_RIGHT)->m_hWnd)
 		{
-			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_RIGHT);
+			if (pWnd->CurSel == TCH_TAB)
+			{
+				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_RIGHT);
+			}
+			else
+			{
+				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_RIGHT);
+			}
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_DOWN)->m_hWnd)
 		{
-			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_DOWN);
+			if (pWnd->CurSel == TCH_TAB)
+			{
+				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_DOWN);
+			}
+			else
+			{
+				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_DOWN);
+			}
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMIN)->m_hWnd)
 		{
-			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMIN);
+			if (pWnd->CurSel == TCH_TAB)
+			{
+				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMIN);
+			}
+			else
+			{
+				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMIN);
+			}
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMOUT)->m_hWnd)
 		{
-			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
+			if (pWnd->CurSel == TCH_TAB)
+			{
+				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
+			}
+			else
+			{
+				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
+			}
 		}
 		//m_btnUp.SetState(TRUE);
 	}
 	if (pMsg->message == WM_LBUTTONUP)
 	{
-		//HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_STOP, m_comboSpeed.GetCurSel());
-		m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
-		m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
-		//m_btnUp.SetState(FALSE);
+		HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
+		if (pWnd->CurSel == TCH_TAB)
+		{
+			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
+			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
+		}
+		else
+		{
+			m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
+			m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
+		}
 	}
 		
 	return CDialog::PreTranslateMessage(pMsg);
@@ -161,10 +213,22 @@ void DlgCam::OnBnClickedButtonHome()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	//HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_HOME, m_comboSpeed.GetCurSel());
+	HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+	CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
 	m_comboSpeed.GetWindowText(str);
 	speed = _ttoi(str);
-	m_CameraControl_tch.setMoveSpeed(speed, speed);
-	m_CameraControl_tch.home();
+	switch (pWnd->CurSel)
+	{
+	case TCH_TAB:
+		m_CameraControl_tch.setMoveSpeed(speed, speed);
+		m_CameraControl_tch.home();
+	case STU_TAB:
+		m_CameraControl_stu.setMoveSpeed(speed, speed);
+		m_CameraControl_stu.home();
+	default:
+		break;
+	}
+	
 }
 
 

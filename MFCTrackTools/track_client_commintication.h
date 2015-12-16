@@ -28,6 +28,12 @@ using namespace std;
 #define C_CONTROL_TRACK 15200
 #define LIVE_STREAM_NAME_MAX 64
 #define CAMENUM 4
+#define TCH_FEATURE_CAM 2
+#define STU_FEATURE_CAM 3
+
+#define CAM_USER "admin"
+#define CAM_PSWD "admin"
+
 typedef struct
 {
 	char ip[CAMENUM][IP_LEN];

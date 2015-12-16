@@ -1,6 +1,6 @@
 #ifndef _COMMUNTICATION_H__
 #define _COMMUNTICATION_H__
-#include "pthread.h"
+#include "../pthread.h"
 #include "share_socket.h"
 typedef enum{
 	CLIENT_TO_SERVER = 0,

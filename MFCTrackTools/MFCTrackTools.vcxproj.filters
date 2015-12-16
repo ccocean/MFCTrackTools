@@ -72,6 +72,15 @@
     <ClInclude Include="GlobalContrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="decoder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="itcCamera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CMyLock.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCTrackTools.cpp">
@@ -114,6 +123,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GlobalContrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="decoder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="itcCamera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CMyLock.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 #include "afxwin.h"
 #include "client_cameraControl.h"
+#include "MFCTrackToolsDlg.h"
 
 // DlgCam ¶Ô»°¿ò
 
@@ -50,6 +51,9 @@ public:
 	CString str;
 	int speed;
 	CComboBox m_comboSpeed;
+
+	
+
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CButton m_btnUp;
 	CButton m_btnLeft;

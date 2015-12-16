@@ -50,6 +50,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\release\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,13 +113,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client_cameraControl.h" />
+    <ClInclude Include="CMyLock.h" />
     <ClInclude Include="communtication.h" />
     <ClInclude Include="connect.h" />
     <ClInclude Include="decode.h" />
+    <ClInclude Include="decoder.h" />
     <ClInclude Include="DlgCam.h" />
     <ClInclude Include="DlgStu.h" />
     <ClInclude Include="DlgTch.h" />
     <ClInclude Include="GlobalContrl.h" />
+    <ClInclude Include="itcCamera.h" />
     <ClInclude Include="MFCTrackTools.h" />
     <ClInclude Include="MFCTrackToolsDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -132,13 +136,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="client_cameraControl.cpp" />
+    <ClCompile Include="CMyLock.cpp" />
     <ClCompile Include="communtication_client.cpp" />
     <ClCompile Include="connect.cpp" />
     <ClCompile Include="decode.cpp" />
+    <ClCompile Include="decoder.cpp" />
     <ClCompile Include="DlgCam.cpp" />
     <ClCompile Include="DlgStu.cpp" />
     <ClCompile Include="DlgTch.cpp" />
     <ClCompile Include="GlobalContrl.cpp" />
+    <ClCompile Include="itcCamera.cpp" />
     <ClCompile Include="MFCTrackTools.cpp" />
     <ClCompile Include="MFCTrackToolsDlg.cpp" />
     <ClCompile Include="share_socket.cpp" />

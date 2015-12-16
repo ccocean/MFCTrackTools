@@ -19,6 +19,7 @@
 #include"connect.h"
 #include <cmath>
 #include "decode.h"
+#include "itcCamera.h"
 
 
 #define SKINNAME "\\skin\\Longhorn.ssk"
@@ -126,15 +127,21 @@ public:
 
 	AVCodec *pCodec = NULL;
 
+	CRect showRectFeature;
 	CRect picRect;
 	CString str;
 	CString tmp;
 	CString s;
 	//CvvImage cimg;
+
+	//为了显示从云台获取的图像
+	cv::Mat m_imgbufferYUV;
+	cv::Mat m_imgbufferShow_tch;
+	cv::Mat m_imgbufferShow_stu;
 	
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
-	Panoramic_Camera_Info m_cameraInfo;
+	Panoramic_Camera_Info m_cameraInfo;//保存相机信息
 	Track_Status_t m_trackstatus;
 	void* m_streamTeaHandle;
 	void* m_streamStuHandle;
@@ -158,6 +165,12 @@ public:
 	int rst = -1;
 	int angle = 0;//角度
 	int dist = 0;//宽度
+
+	//相机变量
+	camera m_tch_cam;
+	camera m_stu_cam;
+	UINT m_uiHandle_tch;
+	UINT m_uiHandle_stu;
 
 	CDC *pDC ;
 	CDC *pDC2;
@@ -190,6 +203,8 @@ private:
 	void loadParamsFromTch(TeaITRACK_Params* params);
 	void loadParamsFromStu(StuITRACK_ClientParams_t* params);
 	void initCamDlg(int cx, int cy, CRect rct);
+	BOOL connectCam();
+	void showImage();
 public:
 	int video_display(Decode_Info_t *pInfo);
 	CTabCtrl m_tabTrack;

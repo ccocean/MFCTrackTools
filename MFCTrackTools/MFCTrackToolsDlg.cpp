@@ -77,6 +77,8 @@ CMFCTrackToolsDlg::CMFCTrackToolsDlg(CWnd* pParent /*=NULL*/)
 	m_strSkin = "";
 	m_streamTeaHandle = NULL;
 	m_streamStuHandle = NULL;
+
+	m_imgbufferYUV.create(HEIGHT * 3 / 2, WIDTH, CV_8UC1);
 }
 
 void CMFCTrackToolsDlg::DoDataExchange(CDataExchange* pDX)
@@ -174,6 +176,7 @@ int CMFCTrackToolsDlg::video_display(Decode_Info_t *pInfo)
 	//pDC->SetDCPenColor(RGB(255, 0, 0));
 	trackdraw();
 	pDC->SelectObject(pOldPen);
+	
 
 	//pDC->Rectangle(50, 50, 100, 100);
 	//pDC->RectVisible(CRect(50, 50, 100, 100));
@@ -181,6 +184,84 @@ int CMFCTrackToolsDlg::video_display(Decode_Info_t *pInfo)
 
 	return 0;
 }
+
+void  FillBitmapInfo(BITMAPINFO* bmi, int width, int height, int bpp, int origin)
+{
+	assert(bmi && width >= 0 && height >= 0 && (bpp == 8 || bpp == 24 || bpp == 32));
+
+	BITMAPINFOHEADER* bmih = &(bmi->bmiHeader);
+
+	memset(bmih, 0, sizeof(*bmih));
+	bmih->biSize = sizeof(BITMAPINFOHEADER);
+	bmih->biWidth = width;
+	bmih->biHeight = origin ? abs(height) : -abs(height);
+	bmih->biPlanes = 1;
+	bmih->biBitCount = (unsigned short)bpp;
+	bmih->biCompression = BI_RGB;
+
+	if (bpp == 8)
+	{
+		RGBQUAD* palette = bmi->bmiColors;
+		int i;
+		for (i = 0; i < 256; i++)
+		{
+			palette[i].rgbBlue = palette[i].rgbGreen = palette[i].rgbRed = (BYTE)i;
+			palette[i].rgbReserved = 0;
+		}
+	}
+}
+
+void CMFCTrackToolsDlg::showImage()
+{
+	if (CurSel==TCH_TAB)
+	{
+		cv::Mat temp = m_tch_cam.getImageBuffer();
+		if (!temp.empty())
+		{
+			
+			cv::resize(temp, m_imgbufferYUV, cv::Size(m_imgbufferYUV.cols, m_imgbufferYUV.rows));
+			cvtColor(m_imgbufferYUV, m_imgbufferShow_tch, CV_YUV2BGR_I420);
+			IplImage m_showImage(m_imgbufferShow_tch);
+			uchar buffer[sizeof(BITMAPINFOHEADER)+1024];
+			BITMAPINFO* bmi = (BITMAPINFO*)buffer;
+			int bmp_w = m_showImage.width, bmp_h = m_showImage.height;
+			int bpp = (m_showImage.depth & 255)*m_showImage.nChannels;
+			//代替cvvimage的Bpp()函数
+			FillBitmapInfo(bmi, bmp_w, bmp_h, bpp, m_showImage.origin);
+			/*CRect ShowRect;
+			GetDlgItem(IDC_picFeature)->GetClientRect(&ShowRect);
+			CDC *dc = GetDlgItem(IDC_picFeature)->GetDC();*/
+			SetStretchBltMode(pDC2->GetSafeHdc(), COLORONCOLOR);
+			StretchDIBits(
+				pDC2->GetSafeHdc(), showRectFeature.left, showRectFeature.top, showRectFeature.Width(), showRectFeature.Height(), 0, 0, bmp_w, bmp_h,
+				m_showImage.imageData, bmi, DIB_RGB_COLORS, SRCCOPY);
+		}
+	}
+	else
+	{
+		cv::Mat temp = m_stu_cam.getImageBuffer();
+		if (!temp.empty())
+		{
+			cv::resize(temp, m_imgbufferYUV, cv::Size(m_imgbufferYUV.cols, m_imgbufferYUV.rows));
+			cvtColor(m_imgbufferYUV, m_imgbufferShow_tch, CV_YUV2BGR_I420);
+			IplImage m_showImage(m_imgbufferShow_tch);
+			uchar buffer[sizeof(BITMAPINFOHEADER)+1024];
+			BITMAPINFO* bmi = (BITMAPINFO*)buffer;
+			int bmp_w = m_showImage.width, bmp_h = m_showImage.height;
+			int bpp = (m_showImage.depth & 255)*m_showImage.nChannels;
+			//代替cvvimage的Bpp()函数
+			FillBitmapInfo(bmi, bmp_w, bmp_h, bpp, m_showImage.origin);
+			/*CRect ShowRect;
+			GetDlgItem(IDC_picFeature)->GetClientRect(&ShowRect);
+			CDC *dc = GetDlgItem(IDC_picFeature)->GetDC();*/
+			SetStretchBltMode(pDC2->GetSafeHdc(), COLORONCOLOR);
+			StretchDIBits(
+				pDC2->GetSafeHdc(), showRectFeature.left, showRectFeature.top, showRectFeature.Width(), showRectFeature.Height(), 0, 0, bmp_w, bmp_h,
+				m_showImage.imageData, bmi, DIB_RGB_COLORS, SRCCOPY);
+		}
+	}
+}
+
 BOOL CMFCTrackToolsDlg::initNetCommuntication()
 {
 	memset(&m_bmphdr, 0, sizeof(BITMAPINFO));
@@ -317,10 +398,10 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 
 	//用于画标定特写镜头时的中心标志
 	pDC2 = GetDlgItem(IDC_picFeature)->GetDC();
-	CRect showRect;
-	GetDlgItem(IDC_picFeature)->GetClientRect(&showRect);
-	centre_pt.x = showRect.left + showRect.Width() / 2;
-	centre_pt.y = showRect.top + showRect.Height() / 2;
+	//CRect showRect;
+	GetDlgItem(IDC_picFeature)->GetClientRect(&showRectFeature);
+	centre_pt.x = showRectFeature.left + showRectFeature.Width() / 2;
+	centre_pt.y = showRectFeature.top + showRectFeature.Height() / 2;
 	//SetTimer(1, 100, NULL);
 
 	GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
@@ -393,6 +474,19 @@ void CMFCTrackToolsDlg::OnClose()
 	if (MessageBox(_T("确定退出吗"), _T("提示"), MB_YESNO | MB_ICONWARNING)
 		== IDNO)
 		return;
+
+	m_tch_cam.StreamStop();
+	m_tch_cam.logout();
+
+
+	m_stu_cam.StreamStop();
+	m_stu_cam.logout();
+
+
+	dlgCam.m_CameraControl_tch.stopControl();
+	dlgCam.m_CameraControl_stu.stopControl();
+	
+	WSACleanup();			//释放网络连接资源
 	skinppExitSkin();
 	CDialogEx::OnClose();
 }
@@ -493,10 +587,15 @@ void CMFCTrackToolsDlg::drawEndRect(CPoint center, int size)
 
 void CMFCTrackToolsDlg::trackdraw()
 {
+	showImage();
 	//绘制特写镜头的十字光标
 	pOldPen = pDC2->SelectObject(&penR);
-	CRect rct = CRect(centre_pt.x - 10, centre_pt.y - 10, centre_pt.x + 10, centre_pt.y + 10);
-	pDC2->Rectangle(&rct);
+	pDC2->MoveTo(CPoint(centre_pt.x, centre_pt.y - 10));
+	pDC2->LineTo(CPoint(centre_pt.x, centre_pt.y + 10));
+
+	pDC2->MoveTo(CPoint(centre_pt.x - 10, centre_pt.y));
+	pDC2->LineTo(CPoint(centre_pt.x + 10, centre_pt.y));
+
 	pDC2->SelectObject(&pOldPen);
 
 	if (CurSel == TCH_TAB)
@@ -1890,7 +1989,19 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			{
 				Panoramic_Camera_Info * cameras_params = (Panoramic_Camera_Info *)msg;
 				memcpy(&m_cameraInfo, cameras_params, sizeof(Panoramic_Camera_Info));
-
+				//获取相机ip
+				if (m_cameraInfo.ip[TCH_FEATURE_CAM]!=NULL&&m_cameraInfo.ip[STU_FEATURE_CAM]!=NULL)
+				{
+					m_cameraInfo.nPort[TCH_FEATURE_CAM] = 5556;
+					m_cameraInfo.nPort[STU_FEATURE_CAM] = 5556;
+					m_cameraInfo.nControPort[TCH_FEATURE_CAM] = 1259;
+					m_cameraInfo.nControPort[STU_FEATURE_CAM] = 1259;
+					connectCam();
+				}
+				else
+				{
+					MessageBox("获取相机IP地址失败！");
+				}
 			}
 			break;
 	}
@@ -1961,6 +2072,7 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		pt.x = 0; pt.y = 0;
 		p1.x = 0; p1.y = 0;
 		p2.x = 0; p2.y = 0;
+		p3 = p4 = pl = pr = { 0 };
 		mouseCnt = 0;
 
 		dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(TRUE);
@@ -1977,6 +2089,8 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(FALSE);
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(FALSE);
 		ctrlClient_get_teach_params(m_track_clientHandle);
+		m_stu_cam.StreamStop();
+		m_tch_cam.StreamStart();
 		break;
 	case 1:
 		dlgTch.ShowWindow(FALSE);
@@ -2003,6 +2117,8 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(TRUE);
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(TRUE);
 		ctrlClient_get_stu_params(m_track_clientHandle);
+		m_tch_cam.StreamStop();
+		m_stu_cam.StreamStart();
 		break;
 	case 2:
 		dlgTch.ShowWindow(FALSE);
@@ -2050,6 +2166,59 @@ BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
+
+BOOL CMFCTrackToolsDlg::connectCam()
+{
+	//连接相机
+	int iResult = 0;
+	WSADATA wsaData = { 0 };
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	BYTE nf1;
+	BYTE nf2;
+	BYTE nf3;
+	BYTE nf4;
+
+	BOOL ret;
+	if (m_tch_cam.login(&m_uiHandle_tch, CAM_USER, CAM_PSWD, m_cameraInfo.ip[TCH_FEATURE_CAM], m_cameraInfo.nPort[TCH_FEATURE_CAM]))
+	{
+		//m_tch_cam.StreamStart();
+		nf1 = (m_cameraInfo.ip[TCH_FEATURE_CAM][0] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][1] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][2] - '0');
+		nf2 = (m_cameraInfo.ip[TCH_FEATURE_CAM][4] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][5] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][6] - '0');
+		nf3 = (m_cameraInfo.ip[TCH_FEATURE_CAM][8] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][9] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][10] - '0');
+		nf4 = (m_cameraInfo.ip[TCH_FEATURE_CAM][12] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][13] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][14] - '0');
+
+		str.Format("%d.%d.%d.%d", nf1, nf2, nf3, nf4);
+		dlgCam.m_CameraControl_tch.startControl(str.GetBuffer(), m_cameraInfo.nControPort[TCH_FEATURE_CAM]);
+		dlgCam.m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
+		ret = TRUE;
+	}
+	else
+	{
+		MessageBox("教师相机连接失败！");
+		return FALSE;
+	}
+
+	if (m_stu_cam.login(&m_uiHandle_tch, CAM_USER, CAM_PSWD, m_cameraInfo.ip[STU_FEATURE_CAM], m_cameraInfo.nPort[STU_FEATURE_CAM]))
+	{
+		//m_stu_cam.StreamStart();
+		nf1 = (m_cameraInfo.ip[TCH_FEATURE_CAM][0] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][1] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][2] - '0');
+		nf2 = (m_cameraInfo.ip[TCH_FEATURE_CAM][4] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][5] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][6] - '0');
+		nf3 = (m_cameraInfo.ip[TCH_FEATURE_CAM][8] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][9] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][10] - '0');
+		nf4 = (m_cameraInfo.ip[TCH_FEATURE_CAM][12] - '0') * 100 + (m_cameraInfo.ip[TCH_FEATURE_CAM][13] - '0') * 10 + (m_cameraInfo.ip[TCH_FEATURE_CAM][14] - '0');
+
+		str.Format("%d.%d.%d.%d", nf1, nf2, nf3, nf4);
+		dlgCam.m_CameraControl_stu.startControl(str.GetBuffer(), m_cameraInfo.nControPort[STU_FEATURE_CAM]);
+		dlgCam.m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
+		ret = TRUE;
+	}
+	else
+	{
+		MessageBox("学生相机连接失败！");
+		return FALSE;
+	}
+	return ret;
+}
+
 void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 {
 	CRect rsDlgcam;
@@ -2080,11 +2249,11 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 	//dlgCam.m_CameraControl_tch.startControl(str.GetBuffer(), 1259);
 	//dlgCam.m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
 
-	//dlgCam.m_comboSpeed.InsertString(0, "5");
-	//dlgCam.m_comboSpeed.InsertString(1, "12");
-	//dlgCam.m_comboSpeed.InsertString(2, "20");
+	dlgCam.m_comboSpeed.InsertString(0, "5");
+	dlgCam.m_comboSpeed.InsertString(1, "12");
+	dlgCam.m_comboSpeed.InsertString(2, "20");
 
-	//dlgCam.m_comboSpeed.SetCurSel(1);
+	dlgCam.m_comboSpeed.SetCurSel(1);
 	//dlgCam.setNumOfPreset(10);
 	
 	//connectCam();

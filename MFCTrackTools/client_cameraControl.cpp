@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "client_cameraControl.h"
 
 static void* recv_thread(void *argv)
