@@ -38,6 +38,8 @@
 #define CTRL_KEY_DOWN 1
 #define CTRL_KEY_UP 0
 
+#define MARGIN_LEFT 40
+
 #define Frame_Width WIDTH	    //960
 #define Frame_Height HEIGHT	//540
 
@@ -147,6 +149,7 @@ public:
 	void* m_streamTeaHandle;
 	void* m_streamStuHandle;
 	CPoint centre_pt;
+	CPoint centre_pt2;
 	CPoint p1 = { 0 }, p2 = { 0 }, pt = { 0 };//教师区域跟踪框的点
 	CPoint p3 = { 0 }, p4 = { 0 };
 	CPoint pl = { 0 }, pr = { 0 };
@@ -180,6 +183,7 @@ public:
 	CPen penG;
 	CPen penR;
 	CPen penB;
+	CPen penDB;
 	CPen penPink;
 	CPen penPurple;
 	CPen *pOldPen;//画笔

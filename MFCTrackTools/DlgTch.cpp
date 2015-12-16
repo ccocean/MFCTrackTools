@@ -167,6 +167,19 @@ void DlgTch::OnBnClickedbtnapply()
 			HWND hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
 			CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 			pWnd->dlgCam.setNumOfPreset(tch_params.numOfPos);
+			pWnd->g_drawPS = 1;
+			pWnd->camPosSlide.center = tch_params.numOfPos / 2;
+			pWnd->camPosSlide.width = tch_params.numOfSlide / 2;
+			pWnd->camPosSlide.left = pWnd->camPosSlide.center - pWnd->camPosSlide.width;
+			pWnd->camPosSlide.right = pWnd->camPosSlide.center + pWnd->camPosSlide.width;
+			pWnd->int_pos = tch_params.numOfPos;
+
+			pWnd->centre_pt2.x = (pWnd->camPosSlide.left + pWnd->int_slide / 2 + 0.5)*(WIDTH / pWnd->int_pos);
+			pWnd->centre_pt2.y = tch_params.tch.y + tch_params.tch.height / 2;
+
+			pWnd->pl = { tch_params.threshold.outside + tch_params.tch.y };
+			pWnd->pr = { WIDTH, tch_params.threshold.outside + tch_params.tch.y };
+
 			ctrlClient_set_teach_params(&tch_params, m_Connect_clientHandle);
 		}
 		else
