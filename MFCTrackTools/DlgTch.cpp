@@ -20,6 +20,7 @@ DlgTch::DlgTch(CWnd* pParent /*=NULL*/)
 
 DlgTch::~DlgTch()
 {
+
 }
 
 void DlgTch::DoDataExchange(CDataExchange* pDX)
@@ -174,7 +175,7 @@ void DlgTch::OnBnClickedbtnapply()
 			pWnd->camPosSlide.right = pWnd->camPosSlide.center + pWnd->camPosSlide.width;
 			pWnd->int_pos = tch_params.numOfPos;
 
-			pWnd->centre_pt2.x = (pWnd->camPosSlide.left + pWnd->int_slide / 2 + 0.5)*(WIDTH / pWnd->int_pos);
+			pWnd->centre_pt2.x = (pWnd->camPosSlide.left + tch_params.numOfSlide / 2 + 0.5)*(WIDTH / tch_params.numOfPos);
 			pWnd->centre_pt2.y = tch_params.tch.y + tch_params.tch.height / 2;
 
 			pWnd->pl = { 0, tch_params.threshold.outside + tch_params.tch.y };

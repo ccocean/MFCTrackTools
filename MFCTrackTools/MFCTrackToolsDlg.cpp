@@ -155,7 +155,7 @@ static int video_call_back(Decode_Info_t *pInfo, void*param)
 		OutputDebugString("video_call_back is NULL\n");
 	}
 	pSelf->video_display(pInfo);
-	//pSelf->showImage();
+	pSelf->showImage();
 	return 0;
 }
 int CMFCTrackToolsDlg::video_display(Decode_Info_t *pInfo)
@@ -412,7 +412,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	GetDlgItem(IDC_picFeature)->GetClientRect(&showRectFeature);
 	centre_pt.x = showRectFeature.left + showRectFeature.Width() / 2;
 	centre_pt.y = showRectFeature.top + showRectFeature.Height() / 2;
-	SetTimer(1,40, NULL);
+	//SetTimer(1,40, NULL);
 
 	GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
 	CString str(m_pExeDir);
