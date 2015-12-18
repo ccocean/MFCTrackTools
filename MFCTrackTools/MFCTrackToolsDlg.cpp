@@ -92,6 +92,7 @@ void CMFCTrackToolsDlg::DoDataExchange(CDataExchange* pDX)
 	//DDX_Control(pDX, IDC_grpBoxCam, m_grpBoxCam);
 
 	DDX_Control(pDX, IDC_tabTrack, m_tabTrack);
+	DDX_Control(pDX, IDC_CHECK1, m_check_algFlag);
 }
 
 //消息映射
@@ -110,6 +111,7 @@ BEGIN_MESSAGE_MAP(CMFCTrackToolsDlg, CDialogEx)
 	ON_WM_RBUTTONDOWN()
 	ON_WM_TIMER()
 	ON_WM_RBUTTONDBLCLK()
+	ON_BN_CLICKED(IDC_CHECK1, &CMFCTrackToolsDlg::OnBnClickedCheck1)
 END_MESSAGE_MAP()
 
 
@@ -143,7 +145,7 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-
+	m_check_algFlag.SetCheck(TRUE);
 	// TODO:  在此添加额外的初始化代码
 	return initProgramControl();
 }
@@ -2296,3 +2298,13 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 
 
 
+
+
+void CMFCTrackToolsDlg::OnBnClickedCheck1()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	BOOL algFlag = m_check_algFlag.GetCheck();
+	Track_Status_t tt;
+	tt.nTurnTrack = algFlag == FALSE ? TRUE : FALSE;
+	ctrlClient_set_track_status(&tt,m_track_clientHandle );
+}
