@@ -44,4 +44,5 @@ public:
 	int m_edt_timeBlk;
 	int m_edt_timeVGA;
 	afx_msg void OnBnClickedBtnCtrlApply();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
