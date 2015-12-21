@@ -612,8 +612,16 @@ void CMFCTrackToolsDlg::trackdraw()
 			//	cvLine(srcImg, cvPoint(i, 0), cvPoint(i, Frame_Height), cvScalar(0, 0, 255));
 			//	cvRectangle(srcImg, cvPoint(camPosSlide.left*(Frame_Width / int_pos), 0), cvPoint((camPosSlide.right + 1) * (Frame_Width / int_pos), Frame_Height), cvScalar(255, 0, 0));//画预置位滑框
 			//}
-			pOldPen = pDC->SelectObject(&penDB);
-			drawRectangle(CPoint(camPosSlide.left*(WIDTH / int_pos), tch.y), CPoint((camPosSlide.right + 1) * (WIDTH / int_pos), tch.y+tch.height));
+			if (int_pos > 0)
+			{
+				pOldPen = pDC->SelectObject(&penDB);
+				drawRectangle(CPoint(camPosSlide.left*(WIDTH / int_pos), tch.y), CPoint((camPosSlide.right + 1) * (WIDTH / int_pos), tch.y + tch.height));
+
+				pOldPen = pDC->SelectObject(&penY);
+				drawEndRect(CPoint((WIDTH / int_pos )/ 2, tch.y + tch.height / 2), 10);
+				drawEndRect(CPoint(WIDTH - (WIDTH / int_pos) / 2, tch.y + tch.height / 2), 10);
+			}
+			
 
 
 			//绘制特写镜头的十字光标
