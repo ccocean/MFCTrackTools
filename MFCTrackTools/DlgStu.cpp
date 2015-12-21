@@ -88,6 +88,14 @@ void DlgStu::setParams(StuITRACK_ClientParams_t* params)
 	stu_params.stuTrack_vertex[2] = params->stuTrack_vertex[2];
 	stu_params.stuTrack_vertex[3] = params->stuTrack_vertex[3];
 	stu_params.width = params->width;
+	
+	stu_params.stretchingAB[0] = params->stretchingAB[0];
+	stu_params.stretchingAB[1] = params->stretchingAB[1];
+
+	for (int i = 0; i < 9; i++)
+	{
+		stu_params.transformationMatrix[i] = params->transformationMatrix[i];
+	}
 }
 
 int DlgStu::checkParameters()

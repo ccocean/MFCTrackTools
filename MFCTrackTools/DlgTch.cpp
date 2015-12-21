@@ -155,6 +155,7 @@ int DlgTch::checkParameters()
 	}
 	tch_params.frame.width = WIDTH;
 	tch_params.frame.height = HEIGHT;
+	tch_params.isSetParams = FALSE;
 	return 0;
 }
 

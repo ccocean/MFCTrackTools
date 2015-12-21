@@ -390,6 +390,10 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgStu.m_comboDly.InsertString(4, _T("2500"));
 	dlgStu.m_comboDly.InsertString(5, _T("3000"));
 
+	//初始化dlgCtrl中的控件
+	dlgCtrl.m_chk_multiple.SetCheck(TRUE);
+	dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面开启"));
+
 	p1.x = 0;
 	p1.y = 0;
 	p2.x = 0;
@@ -2146,13 +2150,14 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		pt.x = 0; pt.y = 0;
 		mouseCnt = 0;
 
-		/*dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(FALSE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_LEFT)->EnableWindow(FALSE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_RIGHT)->EnableWindow(FALSE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(FALSE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(FALSE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(FALSE);
-		dlgTch.dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(FALSE);*/
+		dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_LEFT)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(TRUE);
+		//屏蔽教师预置位设置
 		dlgCam.GetDlgItem(IDC_BUTTON_LEFT_PRESET)->ShowWindow(FALSE);
 		dlgCam.GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->ShowWindow(FALSE);
 		//dlgTch.dlgCam.GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(FALSE);
