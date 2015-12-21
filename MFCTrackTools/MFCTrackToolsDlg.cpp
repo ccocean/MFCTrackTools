@@ -1901,6 +1901,16 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 
 	dlgStu.setParams(params);
 }
+
+void CMFCTrackToolsDlg::loadParamsFromPlc(Policy_Set_t* params)
+{
+	dlgCtrl.m_edt_timeBlk = params->time.blb_time_min;
+	dlgCtrl.m_edt_timeStu = params->time.stu_time_min;
+	dlgCtrl.m_edt_timeTch = params->time.tea_time_min;
+	dlgCtrl.m_edt_timeVGA = params->time.ppt_time_min;
+	UpdateData(TRUE);
+}
+
 static  inline char *get_track_cmd_name(int cmd)
 {
 	int i = 0;
@@ -1957,10 +1967,12 @@ static int ctrl_connect_status(Connect_Status status, void * param)
 		ctrlClient_get_teach_params(pTrackDlg->m_track_clientHandle);
 		ctrlClient_get_track_status(pTrackDlg->m_track_clientHandle);
 		ctrlClient_get_camera_params(pTrackDlg->m_track_clientHandle);
+		ctrlClient_get_policy_params(pTrackDlg->m_track_clientHandle);
 		PostMessage(pTrackDlg->m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 	}
 	pTrackDlg->dlgTch.setConnectHandle(pTrackDlg->m_track_clientHandle);
 	pTrackDlg->dlgStu.setConnectHandle(pTrackDlg->m_track_clientHandle);
+	pTrackDlg->dlgCtrl.setConnectHandle(pTrackDlg->m_track_clientHandle);
 	return  0;
 }
 //回调函数处理
@@ -2033,6 +2045,22 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 		}
 
 		break;
+	}
+	case PLC_GETTRACK_CMD:
+	{
+			if (head->total_len != sizeof(Policy_Set_t))
+			{
+
+			}
+			else
+			{
+				Policy_Set_t * plc_params = (Policy_Set_t *)msg;
+				//loadParamsFromTch(plc_params);
+				//ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, TEACH_CHANNL);
+
+			}
+
+			break;
 	}
 	case GET_CAMERA_INFO:
 	{
@@ -2198,6 +2226,7 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 
 		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(FALSE);
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(FALSE);
+		ctrlClient_get_policy_params(m_track_clientHandle);
 	default:
 		;
 	}

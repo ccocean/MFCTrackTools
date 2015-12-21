@@ -17,6 +17,34 @@ int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param, Commutication_Hand
 	communtication_send_clientMsg(&head, (char *)(tec_param), sizeof(TeaITRACK_Params), ptrack_clientHandle);
 	return 0;
 }
+
+int ctrlClient_set_policy_params(Policy_Set_t * policy_param, Commutication_Handle_t ptrack_clientHandle)
+{
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
+		return -1;
+	}
+	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
+	head.cmd = PLC_SETTRACK_CMD;
+	communtication_send_clientMsg(&head, (char *)(policy_param), sizeof(Policy_Set_t), ptrack_clientHandle);
+	return 0;
+}
+
+int ctrlClient_get_policy_params(Commutication_Handle_t ptrack_clientHandle)
+{
+	Policy_Set_t  policy_param = { 0 };
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
+		return -1;
+	}
+	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
+	head.cmd = PLC_GETTRACK_CMD;
+	communtication_send_clientMsg(&head, (char *)(&policy_param), sizeof(Policy_Set_t), ptrack_clientHandle);
+	return 0;
+}
+
 int ctrlClient_get_teach_params(Commutication_Handle_t ptrack_clientHandle)
 {
 	TeaITRACK_Params  tec_param = { 0 };

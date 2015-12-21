@@ -133,6 +133,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tch_params.h" />
     <ClInclude Include="track_client_commintication.h" />
+    <ClInclude Include="track_ctrl_params.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="client_cameraControl.cpp" />

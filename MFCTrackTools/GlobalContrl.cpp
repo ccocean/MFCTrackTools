@@ -61,34 +61,56 @@ void GlobalContrl::OnBnClickedChkMultiple()
 }
 
 
-void GlobalContrl::OnBnClickedBtnCtrlApply()
+int GlobalContrl::checkParameters()
 {
-	// TODO:  在此添加控件通知处理程序代码
-	if (m_edt_timeBlk<=0)
+	if (m_edt_timeBlk <= 0)
 	{
 		MessageBox(_T("板书时间错误！"));
-		return;
+		return -1;
 	}
 	if (m_edt_timeStu <= 0)
 	{
 		MessageBox(_T("学生时间错误！"));
-		return;
+		return -1;
 	}
 	if (m_edt_timeTch <= 0)
 	{
 		MessageBox(_T("教师时间错误！"));
-		return;
+		return -1;
 	}
 	if (m_edt_timeVGA <= 0)
 	{
 		MessageBox(_T("讲义时间错误！"));
-		return;
+		return -1;
 	}
 
 	ctrl_params.time.blb_time_min = m_edt_timeBlk;
 	ctrl_params.time.tea_time_min = m_edt_timeTch;
 	ctrl_params.time.stu_time_min = m_edt_timeStu;
 	ctrl_params.time.ppt_time_min = m_edt_timeVGA;
+	return 0;
+}
+
+void GlobalContrl::setConnectHandle(Commutication_Handle_t pConnect_clientHandle)
+{
+	m_Connect_clientHandle = pConnect_clientHandle;
+}
+
+void GlobalContrl::OnBnClickedBtnCtrlApply()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	if (checkParameters()==0)
+	{
+		if (m_Connect_clientHandle)
+		{
+			ctrlClient_set_policy_params(&ctrl_params, m_Connect_clientHandle);
+		}
+		else
+		{
+			MessageBox("未连接服务器！");
+		}
+	}
 }
 
 BOOL GlobalContrl::PreTranslateMessage(MSG* pMsg)

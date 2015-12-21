@@ -2,6 +2,7 @@
 #define TRACK_CLIENT_COMMUNTICATION_H
 #include "tch_params.h"
 #include"stuTrack_settings_parameter.h"
+#include "track_ctrl_params.h"
 #include "communtication.h"
 #include "share_stream.h"
 #include"decode.h"
@@ -15,6 +16,8 @@ using namespace std;
 #define GET_CAMERA_INFO   0x104
 #define SET_TRACK_STATUS_CMD   0x105
 #define GET_TRACK_STATUS_CMD   0x106
+#define PLC_GETTRACK_CMD 0x107
+#define PLC_SETTRACK_CMD 0x108
 #define TIMEOUT 500
 
 #define TEACH_STREAM_PORT 21301
@@ -105,6 +108,9 @@ int ctrlClient_set_stu_params(StuITRACK_ClientParams_t * stu_param, Commuticatio
 int ctrlClient_get_teach_params(Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_get_stu_params(Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_get_camera_params(Commutication_Handle_t ptrack_clientHandle);
+
+int ctrlClient_set_policy_params(Policy_Set_t * policy_param, Commutication_Handle_t ptrack_clientHandle);
+int ctrlClient_get_policy_params(Commutication_Handle_t ptrack_clientHandle);
 
 int ctrlClient_set_track_status(Track_Status_t * track_status, Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_get_track_status(Commutication_Handle_t ptrack_clientHandle);

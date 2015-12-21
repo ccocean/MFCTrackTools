@@ -207,6 +207,7 @@ private:
 	void updateParams(int flag);
 	void loadParamsFromTch(TeaITRACK_Params* params);
 	void loadParamsFromStu(StuITRACK_ClientParams_t* params);
+	void loadParamsFromPlc(Policy_Set_t* params);
 	void initCamDlg(int cx, int cy, CRect rct);
 	BOOL connectCam();
 	
