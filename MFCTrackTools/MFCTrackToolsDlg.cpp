@@ -2169,6 +2169,10 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		m_stu_cam.StreamStart();*/
 		break;
 	case 2:
+		pa = pb = pc = pd = { 0 };
+		pA = pB = pC = pD = { 0 };
+		ln1[0] = ln2[0] = ln3[0] = ln4[0] = { 0 };
+		ln1[1] = ln2[1] = ln3[1] = ln4[1] = { 0 };
 		dlgTch.ShowWindow(FALSE);
 		dlgStu.ShowWindow(FALSE);
 		dlgCtrl.ShowWindow(TRUE);
