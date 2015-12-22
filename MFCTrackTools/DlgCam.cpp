@@ -485,6 +485,7 @@ void DlgCam::OnBnClickedButCalibration()
 			pWnd->dlgStu.stu_params.stretchingAB[0] = 0;
 			pWnd->dlgStu.stu_params.stretchingAB[1] = MIN(zoom1, zoom2);
 		}
+		pWnd->dlgStu.isSetCam = TRUE;
 	}
 }
 

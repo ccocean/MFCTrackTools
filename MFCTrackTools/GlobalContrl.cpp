@@ -13,10 +13,6 @@ IMPLEMENT_DYNAMIC(GlobalContrl, CDialog)
 
 GlobalContrl::GlobalContrl(CWnd* pParent /*=NULL*/)
 	: CDialog(GlobalContrl::IDD, pParent)
-	, m_edt_timeTch(0)
-	, m_edt_timeStu(0)
-	, m_edt_timeBlk(0)
-	, m_edt_timeVGA(0)
 {
 	ctrl_params.mut_pic_flag = TRUE;
 }
@@ -29,10 +25,14 @@ void GlobalContrl::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_CHK_MULTIPLE, m_chk_multiple);
-	DDX_Text(pDX, IDC_EDIT_TIME_TCH, m_edt_timeTch);
-	DDX_Text(pDX, IDC_EDIT_TIME_STU, m_edt_timeStu);
-	DDX_Text(pDX, IDC_EDIT_TIME_BLK, m_edt_timeBlk);
-	DDX_Text(pDX, IDC_EDIT_TIME_VGA, m_edt_timeVGA);
+	DDX_Control(pDX, IDC_EDIT_TIME_TCH, m_edt_timeTch);
+	DDX_Control(pDX, IDC_EDIT_TIME_STU, m_edt_timeStu);
+	DDX_Control(pDX, IDC_EDIT_TIME_BLK, m_edt_timeBlk);
+	DDX_Control(pDX, IDC_EDIT_TIME_VGA, m_edt_timeVGA);
+	DDX_Control(pDX, IDC_EDIT_TIME_TCH, m_edt_timeTch);
+	DDX_Control(pDX, IDC_EDIT_TIME_STU, m_edt_timeStu);
+	DDX_Control(pDX, IDC_EDIT_TIME_BLK, m_edt_timeBlk);
+	DDX_Control(pDX, IDC_EDIT_TIME_VGA, m_edt_timeVGA);
 }
 
 
@@ -63,31 +63,46 @@ void GlobalContrl::OnBnClickedChkMultiple()
 
 int GlobalContrl::checkParameters()
 {
-	if (m_edt_timeBlk <= 0)
+	CString tch, stu, blk, vga;
+	int _tch, _stu, _blk, _vga;
+	m_edt_timeTch.GetWindowText(tch);
+	m_edt_timeStu.GetWindowText(stu);
+	m_edt_timeBlk.GetWindowText(blk);
+	m_edt_timeVGA.GetWindowText(vga);
+	if (tch.IsEmpty()||stu.IsEmpty()||blk.IsEmpty()||vga.IsEmpty())
+	{
+		MessageBox(_T("参数不能为空！"));
+		return -1;
+	}
+	_tch = _ttoi(tch);
+	_stu = _ttoi(stu);
+	_blk = _ttoi(blk);
+	_vga = _ttoi(vga);
+	if (_blk <= 0)
 	{
 		MessageBox(_T("板书时间错误！"));
 		return -1;
 	}
-	if (m_edt_timeStu <= 0)
+	if (_stu <= 0)
 	{
 		MessageBox(_T("学生时间错误！"));
 		return -1;
 	}
-	if (m_edt_timeTch <= 0)
+	if (_tch <= 0)
 	{
 		MessageBox(_T("教师时间错误！"));
 		return -1;
 	}
-	if (m_edt_timeVGA <= 0)
+	if (_vga <= 0)
 	{
 		MessageBox(_T("讲义时间错误！"));
 		return -1;
 	}
 
-	ctrl_params.time.blb_time_min = m_edt_timeBlk;
-	ctrl_params.time.tea_time_min = m_edt_timeTch;
-	ctrl_params.time.stu_time_min = m_edt_timeStu;
-	ctrl_params.time.ppt_time_min = m_edt_timeVGA;
+	ctrl_params.time.blb_time_min = _blk;
+	ctrl_params.time.tea_time_min = _tch;
+	ctrl_params.time.stu_time_min = _stu;
+	ctrl_params.time.ppt_time_min = _vga;
 	return 0;
 }
 

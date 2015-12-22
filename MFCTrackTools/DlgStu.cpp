@@ -96,6 +96,7 @@ void DlgStu::setParams(StuITRACK_ClientParams_t* params)
 	{
 		stu_params.transformationMatrix[i] = params->transformationMatrix[i];
 	}
+	isSetCam = TRUE;
 }
 
 int DlgStu::checkParameters()
@@ -164,17 +165,22 @@ int DlgStu::checkParameters()
 			MessageBox("移动延时数据错误！");
 			return -1;
 		}
-		stu_params.stuTrack_direct_range = _standAgl;
-		stu_params.stuTrack_standCount_threshold = _standFrm;
-		stu_params.stuTrack_sitdownCount_threshold = _sitFrm;
-		stu_params.stuTrack_move_threshold = _moveDev;
-		stu_params.stuTrack_moveDelayed_threshold = _moveDly;
-		stu_params.width = WIDTH;
-		stu_params.height = HEIGHT;
-		stu_params.flag_setting = TRUE;
-		stu_params.stuTrack_debugMsg_flag = 1;
-		stu_params.stuTrack_Draw_flag = TRUE;
 	}
+	if (FALSE==isSetCam)
+	{
+		MessageBox(_T("相机参数还未设置，请设置相机参数！"));
+		return -1;
+	}
+	stu_params.stuTrack_direct_range = _standAgl;
+	stu_params.stuTrack_standCount_threshold = _standFrm;
+	stu_params.stuTrack_sitdownCount_threshold = _sitFrm;
+	stu_params.stuTrack_move_threshold = _moveDev;
+	stu_params.stuTrack_moveDelayed_threshold = _moveDly;
+	stu_params.width = WIDTH;
+	stu_params.height = HEIGHT;
+	stu_params.flag_setting = TRUE;
+	stu_params.stuTrack_debugMsg_flag = 1;
+	stu_params.stuTrack_Draw_flag = TRUE;
 	return 0;
 }
 void DlgStu::setConnectHandle(Commutication_Handle_t pConnect_clientHandle)

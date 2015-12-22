@@ -239,7 +239,7 @@ void CMFCTrackToolsDlg::showImage()
 				m_showImage.imageData, bmi, DIB_RGB_COLORS, SRCCOPY);
 		}
 	}
-	else
+	else if (STU_TAB==CurSel)
 	{
 		cv::Mat temp = m_stu_cam.getImageBuffer();
 		if (!temp.empty())
@@ -1904,11 +1904,16 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 
 void CMFCTrackToolsDlg::loadParamsFromPlc(Policy_Set_t* params)
 {
-	dlgCtrl.m_edt_timeBlk = params->time.blb_time_min;
-	dlgCtrl.m_edt_timeStu = params->time.stu_time_min;
-	dlgCtrl.m_edt_timeTch = params->time.tea_time_min;
-	dlgCtrl.m_edt_timeVGA = params->time.ppt_time_min;
-	UpdateData(TRUE);
+	str.Format(_T("%d"), params->time.blb_time_min);
+	dlgCtrl.m_edt_timeBlk.SetWindowText(str);
+	str.Format(_T("%d"), params->time.stu_time_min);
+	dlgCtrl.m_edt_timeStu.SetWindowText(str);
+	str.Format(_T("%d"), params->time.tea_time_min);
+	dlgCtrl.m_edt_timeTch.SetWindowText(str);
+	str.Format(_T("%d"), params->time.ppt_time_min);
+	dlgCtrl.m_edt_timeVGA.SetWindowText(str);
+	dlgCtrl.m_chk_multiple.SetCheck(params->mut_pic_flag);
+	str.Format(_T(""));
 }
 
 static  inline char *get_track_cmd_name(int cmd)
@@ -2055,6 +2060,7 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			else
 			{
 				Policy_Set_t * plc_params = (Policy_Set_t *)msg;
+				loadParamsFromPlc(plc_params);
 				//loadParamsFromTch(plc_params);
 				//ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, TEACH_CHANNL);
 
@@ -2172,8 +2178,6 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(FALSE);
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(FALSE);
 		ctrlClient_get_teach_params(m_track_clientHandle);
-		/*m_stu_cam.StreamStop();
-		m_tch_cam.StreamStart();*/
 		break;
 	case 1:
 		dlgTch.ShowWindow(FALSE);
@@ -2201,8 +2205,6 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(TRUE);
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(TRUE);
 		ctrlClient_get_stu_params(m_track_clientHandle);
-		/*m_tch_cam.StreamStop();
-		m_stu_cam.StreamStart();*/
 		break;
 	case 2:
 		pa = pb = pc = pd = { 0 };

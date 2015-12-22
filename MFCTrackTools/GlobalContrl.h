@@ -30,11 +30,11 @@ public:
 	void setConnectHandle(Commutication_Handle_t pConnect_clientHandle);
 	CButton m_chk_multiple;
 	afx_msg void OnBnClickedChkMultiple();
-	int m_edt_timeTch;
-	int m_edt_timeStu;
-	int m_edt_timeBlk;
-	int m_edt_timeVGA;
 	afx_msg void OnBnClickedBtnCtrlApply();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	int checkParameters();
+	CEdit m_edt_timeTch;
+	CEdit m_edt_timeStu;
+	CEdit m_edt_timeBlk;
+	CEdit m_edt_timeVGA;
 };

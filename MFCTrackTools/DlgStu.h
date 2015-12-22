@@ -21,6 +21,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 
+	int isSetCam = FALSE;
 	StuITRACK_ClientParams_t stu_params;
 	afx_msg void OnBnClickedBtnstuapply();
 	int checkParameters();
