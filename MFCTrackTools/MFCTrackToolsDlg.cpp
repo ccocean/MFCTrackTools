@@ -178,6 +178,7 @@ int CMFCTrackToolsDlg::video_display(Decode_Info_t *pInfo)
 	//CPen *pOldPen = pDC->SelectObject(&pen);
 	//pDC->SetDCPenColor(RGB(255, 0, 0));
 	trackdraw();
+	//showImage();
 	pDC->SelectObject(pOldPen);
 	
 
@@ -393,6 +394,10 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	//初始化dlgCtrl中的控件
 	dlgCtrl.m_chk_multiple.SetCheck(TRUE);
 	dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面开启"));
+	dlgCtrl.m_chk_trackStu.SetCheck(TRUE);
+	dlgCtrl.m_chk_trackStu.SetWindowText(_T("学生跟踪开启"));
+	dlgCtrl.m_chk_stuOverview.SetCheck(TRUE);
+	dlgCtrl.m_chk_stuOverview.SetWindowText(_T("学生全景开启"));
 
 	p1.x = 0;
 	p1.y = 0;
@@ -1622,6 +1627,7 @@ void CMFCTrackToolsDlg::OnRButtonDblClk(UINT nFlags, CPoint point)
 		blk.width = 0; blk.height = 0;
 		p3 = p4 = { 0 };
 		pl = pr = { 0 };
+		centre_pt2 = { 0 };
 
 		dlgTch.m_txtTchArg.SetWindowText(_T(""));
 		dlgTch.m_txtBlkArg.SetWindowText(_T(""));
@@ -1912,7 +1918,36 @@ void CMFCTrackToolsDlg::loadParamsFromPlc(Policy_Set_t* params)
 	dlgCtrl.m_edt_timeTch.SetWindowText(str);
 	str.Format(_T("%d"), params->time.ppt_time_min);
 	dlgCtrl.m_edt_timeVGA.SetWindowText(str);
+
 	dlgCtrl.m_chk_multiple.SetCheck(params->mut_pic_flag);
+	if (params->mut_pic_flag)
+	{
+		dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面开启"));
+	}
+	else
+	{
+		dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面关闭"));
+	}
+
+	dlgCtrl.m_chk_trackStu.SetCheck(params->stu_track_flag);
+	if (params->stu_track_flag)
+	{
+		dlgCtrl.m_chk_trackStu.SetWindowText(_T("学生跟踪开启"));
+	}
+	else
+	{
+		dlgCtrl.m_chk_trackStu.SetWindowText(_T("学生跟踪关闭"));
+	}
+
+	dlgCtrl.m_chk_stuOverview.SetCheck(params->stu_overview_flag);
+	if (params->stu_overview_flag)
+	{
+		dlgCtrl.m_chk_stuOverview.SetWindowText(_T("学生全景开启"));
+	}
+	else
+	{
+		dlgCtrl.m_chk_stuOverview.SetWindowText(_T("学生全景关闭"));
+	}
 	str.Format(_T(""));
 }
 

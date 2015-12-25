@@ -11,6 +11,8 @@
 #define PreSet_OK 1
 #define PreSet_NO 0
 
+#define WM_USER_THREADEND WM_USER + 1
+
 class DlgCam : public CDialog
 {
 	DECLARE_DYNAMIC(DlgCam)
@@ -24,7 +26,11 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	
 	DECLARE_MESSAGE_MAP()
+	bool m_process_flag;
+	HANDLE m_hThread;
+	DWORD m_threadID;
 
 public:
 	UINT m_uiHandle;//云台相机句柄
@@ -38,6 +44,7 @@ public:
 	CPoint m_calibPt[4];
 	int m_zoom[4];
 
+	
 	//云台相机控制
 	PanAndTiltCameraControl m_CameraControl_tch;
 	PanAndTiltCameraControl m_CameraControl_stu;
@@ -60,9 +67,12 @@ public:
 	afx_msg void OnBnClickedButtonHome();
 	afx_msg void OnBnClickedButtonLeftPreset();
 	afx_msg void OnBnClickedButtonRightPreset();
-
+	afx_msg LRESULT OnUserThreadend(WPARAM wParam, LPARAM lParam);
+	static DWORD WINAPI automaticPreset(LPVOID pParam);
 	void setNumOfPreset(int num);
 	void autoPreSet(int a, int b ,int direct);
+	void enableButton();
+	void disableButton();
 	CStatic m_grpBoxCam;
 	CStatic m_txtPreset;
 	afx_msg void OnBnClickedButCalibration();

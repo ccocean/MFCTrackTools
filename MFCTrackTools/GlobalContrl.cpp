@@ -33,12 +33,16 @@ void GlobalContrl::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_TIME_STU, m_edt_timeStu);
 	DDX_Control(pDX, IDC_EDIT_TIME_BLK, m_edt_timeBlk);
 	DDX_Control(pDX, IDC_EDIT_TIME_VGA, m_edt_timeVGA);
+	DDX_Control(pDX, IDC_CHK_TRACKSTU, m_chk_trackStu);
+	DDX_Control(pDX, IDC_CHK_STUOVERVIEW, m_chk_stuOverview);
 }
 
 
 BEGIN_MESSAGE_MAP(GlobalContrl, CDialog)
 	ON_BN_CLICKED(IDC_CHK_MULTIPLE, &GlobalContrl::OnBnClickedChkMultiple)
 	ON_BN_CLICKED(IDC_BTN_CTRL_APPLY, &GlobalContrl::OnBnClickedBtnCtrlApply)
+	ON_BN_CLICKED(IDC_CHK_TRACKSTU, &GlobalContrl::OnBnClickedChkTrackstu)
+	ON_BN_CLICKED(IDC_CHK_STUOVERVIEW, &GlobalContrl::OnBnClickedChkStuoverview)
 END_MESSAGE_MAP()
 
 
@@ -139,4 +143,36 @@ BOOL GlobalContrl::PreTranslateMessage(MSG* pMsg)
 	if (pMsg->message == WM_KEYDOWN&&pMsg->wParam == VK_RETURN)
 		return TRUE;
 	return CDialog::PreTranslateMessage(pMsg);
+}
+
+
+void GlobalContrl::OnBnClickedChkTrackstu()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	if (m_chk_trackStu.GetCheck())
+	{
+		m_chk_trackStu.SetWindowText(_T("学生跟踪开启"));
+		ctrl_params.stu_track_flag = TRUE;
+	}
+	else
+	{
+		m_chk_trackStu.SetWindowText(_T("学生跟踪关闭"));
+		ctrl_params.stu_track_flag = FALSE;
+	}
+}
+
+
+void GlobalContrl::OnBnClickedChkStuoverview()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	if (m_chk_stuOverview.GetCheck())
+	{
+		m_chk_stuOverview.SetWindowText(_T("学生全景开启"));
+		ctrl_params.stu_overview_flag = TRUE;
+	}
+	else
+	{
+		m_chk_stuOverview.SetWindowText(_T("学生全景关闭"));
+		ctrl_params.stu_overview_flag = FALSE;
+	}
 }

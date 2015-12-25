@@ -17,6 +17,7 @@ public:
 
 	//控制全局的参数
 	Policy_Set_t ctrl_params;
+	
 
 // 对话框数据
 	enum { IDD = IDD_DLGGLOBAL };
@@ -37,4 +38,8 @@ public:
 	CEdit m_edt_timeStu;
 	CEdit m_edt_timeBlk;
 	CEdit m_edt_timeVGA;
+	CButton m_chk_trackStu;
+	CButton m_chk_stuOverview;
+	afx_msg void OnBnClickedChkTrackstu();
+	afx_msg void OnBnClickedChkStuoverview();
 };

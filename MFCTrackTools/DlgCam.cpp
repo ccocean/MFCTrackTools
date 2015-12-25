@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(DlgCam, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_RIGHT_PRESET, &DlgCam::OnBnClickedButtonRightPreset)
 	ON_BN_CLICKED(IDC_BUT_CALIBRATION, &DlgCam::OnBnClickedButCalibration)
 	ON_BN_CLICKED(IDC_BUT_AGAINCALIB, &DlgCam::OnBnClickedButAgaincalib)
+	ON_MESSAGE(WM_USER_THREADEND, OnUserThreadend)
 END_MESSAGE_MAP()
 
 
@@ -249,8 +250,17 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 			return;
 		}
 		m_leftPreset = m_get_panPosit;
-
-		autoPreSet(m_leftPreset, m_rightPreset,LeftToRight);
+		DWORD *pParams = new DWORD[2];
+		int *params = new int[3];
+		params[0] = m_leftPreset;
+		params[1] = m_rightPreset;
+		params[2] = LeftToRight;
+		pParams[0] = (DWORD)this;
+		pParams[1] = (DWORD)params;
+		//autoPreSet(m_leftPreset, m_rightPreset,LeftToRight);
+		disableButton();
+		m_hThread = ::CreateThread(NULL, NULL, automaticPreset, (LPVOID*)(pParams), NULL, NULL);
+		//WaitForSingleObject(m_hThread, INFINITE);
 	}
 	else
 	{
@@ -284,7 +294,17 @@ void DlgCam::OnBnClickedButtonRightPreset()
 		}
 		m_rightPreset = m_get_panPosit;
 
-		autoPreSet(m_leftPreset, m_rightPreset,RightToLeft);
+		DWORD *pParams = new DWORD[2];
+		int *params = new int[3];
+		params[0] = m_leftPreset;
+		params[1] = m_rightPreset;
+		params[2] = LeftToRight;
+		pParams[0] = (DWORD)this;
+		pParams[1] = (DWORD)params;
+		//autoPreSet(m_leftPreset, m_rightPreset,LeftToRight);
+		disableButton();
+		m_hThread = ::CreateThread(NULL, NULL, automaticPreset, (LPVOID*)(pParams), NULL, NULL);
+		//WaitForSingleObject(m_hThread, INFINITE);
 	}
 	else
 	{
@@ -302,6 +322,104 @@ void DlgCam::OnBnClickedButtonRightPreset()
 void DlgCam::setNumOfPreset(int num)
 {
 	numPos = num;
+}
+
+void DlgCam::enableButton()
+{
+	GetDlgItem(IDC_BUTTON_UP)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BUTTON_LEFT)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BUTTON_RIGHT)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(TRUE);
+	GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(TRUE);
+	GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(TRUE);
+
+// 	GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(TRUE);
+// 	GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(TRUE);
+}
+
+void DlgCam::disableButton()
+{
+	GetDlgItem(IDC_BUTTON_UP)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_LEFT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_RIGHT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_DOWN)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_ZOOMIN)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_ZOOMOUT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_HOME)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_LEFT_PRESET)->EnableWindow(FALSE);
+	GetDlgItem(IDC_BUTTON_RIGHT_PRESET)->EnableWindow(FALSE);
+	GetDlgItem(IDC_COMBO_SPEED)->EnableWindow(FALSE);
+
+// 	GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(FALSE);
+// 	GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(FALSE);
+}
+
+LRESULT DlgCam::OnUserThreadend(WPARAM wParam, LPARAM lParam)
+{
+	enableButton();
+	return 0;
+}
+
+DWORD WINAPI DlgCam::automaticPreset(LPVOID pParam)
+{
+	DWORD *in = (DWORD*)pParam;
+	DlgCam *pDlg = (DlgCam*)(in[0]);
+	int *params = (int*)(in[1]);
+	int a = params[0];
+	int b = params[1];
+	int direct = params[2];
+
+	if (a == b)
+	{
+		pDlg->MessageBox("左右位置都为原点位置！");
+		pDlg->left = pDlg->right = 0;
+		return false;
+	}
+	pDlg->m_CameraControl_tch.setMoveSpeed(20, 20);
+	int width = (b - a) / (pDlg->numPos - 1);
+	int fix = (b - a) % (pDlg->numPos - 1);
+	int num = 0;
+	CString s;
+	for (int i = a; i <= b; i += width)
+	{
+		s.Format("正在设置%d号预置位...", num);
+		pDlg->m_txtPreset.SetWindowText(s);
+
+		if (num == pDlg->numPos - 1)
+		{
+			while (pDlg->m_get_panPosit != i + fix)
+			{
+				pDlg->m_CameraControl_tch.getPosit(&pDlg->m_get_panPosit, &pDlg->m_get_tiltPosit, 500);
+				pDlg->m_CameraControl_tch.move(i + fix, pDlg->m_get_tiltPosit, FALSE);
+			}
+		}
+		else
+		{
+			while (pDlg->m_get_panPosit != i)
+			{
+				pDlg->m_CameraControl_tch.getPosit(&pDlg->m_get_panPosit, &pDlg->m_get_tiltPosit, 500);
+				pDlg->m_CameraControl_tch.move(i, pDlg->m_get_tiltPosit, FALSE);
+			}
+		}
+
+
+		pDlg->m_CameraControl_tch.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num);
+		Sleep(500);
+		s.Format("%d号预置位设置成功...", num);
+		pDlg->m_txtPreset.SetWindowText(s);
+		Sleep(500);
+		num++;
+	}
+	pDlg->left = 0;
+	pDlg->right = 0;
+	pDlg->MessageBox("云台摄像机预置位设置成功！");
+	pDlg->m_txtPreset.SetWindowText(_T(""));
+	::PostMessage(pDlg->GetSafeHwnd(), WM_USER_THREADEND, 0, 0);
+	return true;
 }
 
 void DlgCam::autoPreSet(int a, int b, int direct)
