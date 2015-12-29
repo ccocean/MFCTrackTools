@@ -27,7 +27,10 @@ static Track_cmd_info_t g_track_cmd[] =
 	{ TEA_GETTRACK_CMD, "获取老师参数" },
 	{ GET_CAMERA_INFO, "获取相机参数" },
 	{ SET_TRACK_STATUS_CMD, "设置跟踪状态" },
+
 	{ GET_TRACK_STATUS_CMD, "获取跟踪状态" },
+	{ PLC_GETTRACK_CMD, "获取策略状态" },
+	{ PLC_SETTRACK_CMD, "设置跟踪状态" },
 };
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
@@ -93,6 +96,7 @@ void CMFCTrackToolsDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Control(pDX, IDC_tabTrack, m_tabTrack);
 	DDX_Control(pDX, IDC_CHECK1, m_check_algFlag);
+	DDX_Control(pDX, IDC_CHECK2, m_check_stuFlag);
 }
 
 //消息映射
@@ -112,6 +116,7 @@ BEGIN_MESSAGE_MAP(CMFCTrackToolsDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_WM_RBUTTONDBLCLK()
 	ON_BN_CLICKED(IDC_CHECK1, &CMFCTrackToolsDlg::OnBnClickedCheck1)
+	ON_BN_CLICKED(IDC_CHECK2, &CMFCTrackToolsDlg::OnBnClickedCheck2)
 END_MESSAGE_MAP()
 
 
@@ -145,7 +150,9 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-	m_check_algFlag.SetCheck(TRUE);
+	m_check_algFlag.SetCheck(FALSE);
+	m_check_stuFlag.SetCheck(FALSE);
+	m_isAlgActivity.isTchTrack = m_isAlgActivity.isStuTrack = FALSE;
 	// TODO:  在此添加额外的初始化代码
 	return initProgramControl();
 }
@@ -393,11 +400,9 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 
 	//初始化dlgCtrl中的控件
 	dlgCtrl.m_chk_multiple.SetCheck(TRUE);
-	dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面开启"));
-	dlgCtrl.m_chk_trackStu.SetCheck(TRUE);
-	dlgCtrl.m_chk_trackStu.SetWindowText(_T("学生跟踪开启"));
+	dlgCtrl.m_chk_multiple.SetWindowText(_T("开启多画面"));
 	dlgCtrl.m_chk_stuOverview.SetCheck(TRUE);
-	dlgCtrl.m_chk_stuOverview.SetWindowText(_T("学生全景开启"));
+	dlgCtrl.m_chk_stuOverview.SetWindowText(_T("开启学生特写"));
 
 	p1.x = 0;
 	p1.y = 0;
@@ -1920,34 +1925,24 @@ void CMFCTrackToolsDlg::loadParamsFromPlc(Policy_Set_t* params)
 	dlgCtrl.m_edt_timeVGA.SetWindowText(str);
 
 	dlgCtrl.m_chk_multiple.SetCheck(params->mut_pic_flag);
-	if (params->mut_pic_flag)
-	{
-		dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面开启"));
-	}
-	else
-	{
-		dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面关闭"));
-	}
+	//if (params->mut_pic_flag)
+	//{
+	//	dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面开启"));
+	//}
+	//else
+	//{
+	//	dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面关闭"));
+	//}
 
-	dlgCtrl.m_chk_trackStu.SetCheck(params->stu_track_flag);
-	if (params->stu_track_flag)
-	{
-		dlgCtrl.m_chk_trackStu.SetWindowText(_T("学生跟踪开启"));
-	}
-	else
-	{
-		dlgCtrl.m_chk_trackStu.SetWindowText(_T("学生跟踪关闭"));
-	}
-
-	dlgCtrl.m_chk_stuOverview.SetCheck(params->stu_overview_flag);
-	if (params->stu_overview_flag)
+	dlgCtrl.m_chk_stuOverview.SetCheck(params->stu_feature_flag);
+	/*if (params->stu_feature_flag)
 	{
 		dlgCtrl.m_chk_stuOverview.SetWindowText(_T("学生全景开启"));
 	}
 	else
 	{
 		dlgCtrl.m_chk_stuOverview.SetWindowText(_T("学生全景关闭"));
-	}
+	}*/
 	str.Format(_T(""));
 }
 
@@ -2025,6 +2020,7 @@ static int ctrlClient_process_trackMsgEx(Communtication_Head_t *head, void *msg,
 	}
 	return pTrackDlg->ctrlClient_process_trackMsg(head, msg, handle);
 }
+
 int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle)
 {
 
@@ -2138,8 +2134,11 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			else
 			{
 				Track_Status_t * trackstatus_params = (Track_Status_t *)msg;
-				memcpy(&m_trackstatus, trackstatus_params, sizeof(Track_Status_t));
-
+				trackstatus_params->isStuTrack = !trackstatus_params->isStuTrack;
+				trackstatus_params->isTchTrack = !trackstatus_params->isTchTrack;
+				memcpy(&m_isAlgActivity, trackstatus_params, sizeof(Track_Status_t));
+				m_check_algFlag.SetCheck(m_isAlgActivity.isTchTrack);
+				m_check_stuFlag.SetCheck(m_isAlgActivity.isStuTrack);
 			}
 			break;
 	}
@@ -2386,8 +2385,14 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 void CMFCTrackToolsDlg::OnBnClickedCheck1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	BOOL algFlag = m_check_algFlag.GetCheck();
-	Track_Status_t tt;
-	tt.nTurnTrack = algFlag == FALSE ? TRUE : FALSE;
-	ctrlClient_set_track_status(&tt,m_track_clientHandle );
+	m_isAlgActivity.isTchTrack = !m_check_algFlag.GetCheck();
+	ctrlClient_set_track_status(&m_isAlgActivity, m_track_clientHandle);
+}
+
+
+void CMFCTrackToolsDlg::OnBnClickedCheck2()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	m_isAlgActivity.isStuTrack = !m_check_stuFlag.GetCheck();
+	ctrlClient_set_track_status(&m_isAlgActivity, m_track_clientHandle);
 }

@@ -47,8 +47,8 @@ typedef struct
 //第2路老师特写，第3路学生特写，0路和1路为全景 留着扩展
 typedef struct
 {
-	int nTurnTrack;
-	int param1;
+	int isTchTrack;
+	int isStuTrack;
 }Track_Status_t;
 typedef enum
 {

@@ -14,8 +14,7 @@ typedef struct
 {
 	Time_Set_t time;
 	int mut_pic_flag;//多画面标志位 设置为1表示需要多画面，0表示关闭多画面
-	int stu_track_flag;//开启学生标志位 设置为1表示需要学生跟踪，0表示关闭学生跟踪
-	int stu_overview_flag;//开启学生全景标志位 设置为1表示需要学生全景， 0表示关闭学生全景
+	int stu_feature_flag;//开启学生特写标志位 设置为1表示需要学生特写， 0表示关闭学生特写
 }Policy_Set_t;
 
 #endif

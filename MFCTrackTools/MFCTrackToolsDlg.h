@@ -136,6 +136,9 @@ public:
 	CString s;
 	//CvvImage cimg;
 
+	//跟踪开启选项
+	Track_Status_t m_isAlgActivity;
+
 	//为了显示从云台获取的图像
 	cv::Mat m_imgbufferYUV;
 	cv::Mat m_imgbufferShow_tch;
@@ -243,4 +246,6 @@ public:
 	afx_msg void OnRButtonDblClk(UINT nFlags, CPoint point);
 	CButton m_check_algFlag;
 	afx_msg void OnBnClickedCheck1();
+	afx_msg void OnBnClickedCheck2();
+	CButton m_check_stuFlag;
 };
