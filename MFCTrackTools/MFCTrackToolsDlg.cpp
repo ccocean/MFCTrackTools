@@ -2021,6 +2021,8 @@ static int ctrlClient_process_trackMsgEx(Communtication_Head_t *head, void *msg,
 	return pTrackDlg->ctrlClient_process_trackMsg(head, msg, handle);
 }
 
+
+
 int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle)
 {
 
@@ -2112,8 +2114,8 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			//获取相机ip
 			if (m_cameraInfo.ip[TCH_FEATURE_CAM]!=NULL&&m_cameraInfo.ip[STU_FEATURE_CAM]!=NULL)
 			{
-				m_cameraInfo.nPort[TCH_FEATURE_CAM] = 5556;
-				m_cameraInfo.nPort[STU_FEATURE_CAM] = 5556;
+				m_cameraInfo.nPort[TCH_FEATURE_CAM] = FEATURE_CAM_PORT;
+				m_cameraInfo.nPort[STU_FEATURE_CAM] = FEATURE_CAM_PORT;
 				/*m_cameraInfo.nControPort[TCH_FEATURE_CAM] = 1259;
 				m_cameraInfo.nControPort[STU_FEATURE_CAM] = 1259;*/
 				connectCam();
@@ -2134,8 +2136,8 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			else
 			{
 				Track_Status_t * trackstatus_params = (Track_Status_t *)msg;
-				trackstatus_params->isStuTrack = !trackstatus_params->isStuTrack;
-				trackstatus_params->isTchTrack = !trackstatus_params->isTchTrack;
+				//trackstatus_params->isStuTrack = !trackstatus_params->isStuTrack;
+				//trackstatus_params->isTchTrack = !trackstatus_params->isTchTrack;
 				memcpy(&m_isAlgActivity, trackstatus_params, sizeof(Track_Status_t));
 				m_check_algFlag.SetCheck(m_isAlgActivity.isTchTrack);
 				m_check_stuFlag.SetCheck(m_isAlgActivity.isStuTrack);
@@ -2174,9 +2176,9 @@ int CMFCTrackToolsDlg::ctrlClient_init_trackCommuntication()
 		AfxMessageBox(TEXT("创建客户端失败"));
 		return -1;
 	}
-
 	return  0;
 }
+
 void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO:  在此添加控件通知处理程序代码
@@ -2385,7 +2387,7 @@ void CMFCTrackToolsDlg::OnTimer(UINT_PTR nIDEvent)
 void CMFCTrackToolsDlg::OnBnClickedCheck1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	m_isAlgActivity.isTchTrack = !m_check_algFlag.GetCheck();
+	m_isAlgActivity.isTchTrack = m_check_algFlag.GetCheck();
 	ctrlClient_set_track_status(&m_isAlgActivity, m_track_clientHandle);
 }
 
@@ -2393,6 +2395,6 @@ void CMFCTrackToolsDlg::OnBnClickedCheck1()
 void CMFCTrackToolsDlg::OnBnClickedCheck2()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	m_isAlgActivity.isStuTrack = !m_check_stuFlag.GetCheck();
+	m_isAlgActivity.isStuTrack = m_check_stuFlag.GetCheck();
 	ctrlClient_set_track_status(&m_isAlgActivity, m_track_clientHandle);
 }

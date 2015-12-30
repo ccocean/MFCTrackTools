@@ -33,6 +33,7 @@ using namespace std;
 #define CAMENUM 4
 #define TCH_FEATURE_CAM 2
 #define STU_FEATURE_CAM 3
+#define FEATURE_CAM_PORT 5556
 
 #define CAM_USER "admin"
 #define CAM_PSWD "admin"
