@@ -407,7 +407,7 @@ DWORD WINAPI DlgCam::automaticPreset(LPVOID pParam)
 		}
 
 
-		pDlg->m_CameraControl_tch.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num);
+		pDlg->m_CameraControl_tch.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num + 10);
 		Sleep(500);
 		s.Format("%d号预置位设置成功...", num);
 		pDlg->m_txtPreset.SetWindowText(s);

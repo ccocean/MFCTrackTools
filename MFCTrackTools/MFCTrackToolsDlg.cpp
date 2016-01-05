@@ -837,14 +837,15 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		else
 		{
-			if (pa.x+10<point.x-MARGIN_LEFT&&point.x-MARGIN_LEFT<pc.x-10&&pa.y+10<point.y-pic_top&&point.y-pic_top<pc.y-10)
+			//学生跟踪框拖拽bug
+			/*if (pa.x+10<point.x-MARGIN_LEFT&&pb.x+10<point.x-MARGIN_LEFT&&point.x-MARGIN_LEFT<pc.x-10&&point.x-MARGIN_LEFT<pd.x&&pa.y+10<point.y-pic_top&&pb.y+10<point.y-pic_top&&point.y-pic_top<pc.y-10&&point.y-pic_top<pd.y-10)
 			{
 				pt.x = point.x;
 				pt.y = point.y;
 				mouseStatus = Mouse_LBDRAG;
 				pA = pB = pC = pD = { 0 };
 			}
-			else if (pa.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pa.x + 10 && pa.y - 10 <= point.y - pic_top&&point.y - pic_top <= pa.y + 10)
+			else */if (pa.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pa.x + 10 && pa.y - 10 <= point.y - pic_top&&point.y - pic_top <= pa.y + 10)
 			{
 				if (pa.x!=point.x&&pa.y!=point.y)
 				{
@@ -1925,24 +1926,7 @@ void CMFCTrackToolsDlg::loadParamsFromPlc(Policy_Set_t* params)
 	dlgCtrl.m_edt_timeVGA.SetWindowText(str);
 
 	dlgCtrl.m_chk_multiple.SetCheck(params->mut_pic_flag);
-	//if (params->mut_pic_flag)
-	//{
-	//	dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面开启"));
-	//}
-	//else
-	//{
-	//	dlgCtrl.m_chk_multiple.SetWindowText(_T("多画面关闭"));
-	//}
-
 	dlgCtrl.m_chk_stuOverview.SetCheck(params->stu_feature_flag);
-	/*if (params->stu_feature_flag)
-	{
-		dlgCtrl.m_chk_stuOverview.SetWindowText(_T("学生全景开启"));
-	}
-	else
-	{
-		dlgCtrl.m_chk_stuOverview.SetWindowText(_T("学生全景关闭"));
-	}*/
 	str.Format(_T(""));
 }
 
@@ -2079,7 +2063,6 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
 			loadParamsFromTch(tea_params);
 			ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, TEACH_CHANNL);
-
 		}
 
 		break;
@@ -2341,24 +2324,6 @@ void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 	cy = rsDlgcam.bottom;
 	dlgCam.SetWindowPos(NULL, rsDlgcam.left, rsDlgcam.top, cx, cy, SWP_NOZORDER);
 	dlgCam.ShowWindow(TRUE);
-	//dlgCam.m_uiHandle = 100;
-	//dlgCam.m_strHost = _T("192.168.11.166");
-	//dlgCam.m_uiPort = 5556; //80
-	//dlgCam.m_strPword = _T("admin");
-	//dlgCam.m_strUname = _T("admin");
-
-	//BYTE nf1 = 192;
-	//BYTE nf2 = 168;
-	//BYTE nf3 = 11;
-	//BYTE nf4 = 167;
-
-	//CString str;
-	//str.Format("%d.%d.%d.%d", nf1, nf2, nf3, nf4);
-	//int iResult = 0;
-	//WSADATA wsaData = { 0 };
-	//iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	//dlgCam.m_CameraControl_tch.startControl(str.GetBuffer(), 1259);
-	//dlgCam.m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
 
 	dlgCam.m_comboSpeed.InsertString(0, "5");
 	dlgCam.m_comboSpeed.InsertString(1, "12");
