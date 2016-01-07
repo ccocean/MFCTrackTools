@@ -16,7 +16,7 @@ trackconnect::trackconnect(CWnd* pParent /*=NULL*/)
 {
 	m_initNetFun = NULL;
 	m_DialogParam = NULL;
-
+	//m_ip.SetWindowText(_T("192.168.0.0"));
 }
 
 trackconnect::~trackconnect()
@@ -57,7 +57,6 @@ int trackconnect::setConectfunCall(initConnectNet fun, void * param)
 void trackconnect::OnBnClickedButtonConnect()
 {
 	BYTE nf1, nf2, nf3, nf4;
-	
 	m_ip.GetAddress(nf1, nf2, nf3, nf4);
 	m_strIp.Format("%d.%d.%d.%d", nf1, nf2, nf3, nf4);//这里的nf得到的值是IP值了.
 	strcpy(m_connectInfo.Ip, m_strIp.GetString());

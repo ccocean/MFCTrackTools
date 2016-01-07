@@ -248,4 +248,5 @@ public:
 	afx_msg void OnBnClickedCheck1();
 	afx_msg void OnBnClickedCheck2();
 	CButton m_check_stuFlag;
+	afx_msg void OnBnClickedButtonAbout();
 };

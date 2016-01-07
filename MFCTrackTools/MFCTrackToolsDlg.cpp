@@ -117,6 +117,7 @@ BEGIN_MESSAGE_MAP(CMFCTrackToolsDlg, CDialogEx)
 	ON_WM_RBUTTONDBLCLK()
 	ON_BN_CLICKED(IDC_CHECK1, &CMFCTrackToolsDlg::OnBnClickedCheck1)
 	ON_BN_CLICKED(IDC_CHECK2, &CMFCTrackToolsDlg::OnBnClickedCheck2)
+	ON_BN_CLICKED(IDC_BUTTON_ABOUT, &CMFCTrackToolsDlg::OnBnClickedButtonAbout)
 END_MESSAGE_MAP()
 
 
@@ -2362,4 +2363,12 @@ void CMFCTrackToolsDlg::OnBnClickedCheck2()
 	// TODO:  在此添加控件通知处理程序代码
 	m_isAlgActivity.isStuTrack = m_check_stuFlag.GetCheck();
 	ctrlClient_set_track_status(&m_isAlgActivity, m_track_clientHandle);
+}
+
+
+void CMFCTrackToolsDlg::OnBnClickedButtonAbout()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CAboutDlg dlgAbout;
+	dlgAbout.DoModal();
 }
