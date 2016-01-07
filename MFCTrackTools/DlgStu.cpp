@@ -138,8 +138,8 @@ int DlgStu::checkParameters()
 		_standAgl = _ttoi(standAgl);
 		_standFrm = _ttoi(standFrm);
 		_sitFrm = _ttoi(sitFrm);
-		_moveDev = _ttof(moveDev);
-		_moveDly = _ttoi(moveDly);
+		_moveDev = _ttof(moveDev)/100;
+		_moveDly = (int)(_ttof(moveDly)*1000);
 		if (_standAgl<0)
 		{
 			MessageBox("起立角度偏移数据错误！");

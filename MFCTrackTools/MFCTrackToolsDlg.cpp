@@ -381,23 +381,23 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgTch.m_comboSlide.InsertString(1,_T("5"));
 	dlgTch.m_comboSlide.InsertString(2,_T("7"));
 	dlgTch.m_comboSlide.InsertString(3,_T("9"));
-	dlgTch.m_comboStand.InsertString(0, _T("1000"));
-	dlgTch.m_comboStand.InsertString(1, _T("2000"));
-	dlgTch.m_comboStand.InsertString(2, _T("3000"));
-	dlgTch.m_comboStand.InsertString(3, _T("4000"));
-	dlgTch.m_comboStand.InsertString(4, _T("5000"));
+	dlgTch.m_comboStand.InsertString(0, _T("1"));
+	dlgTch.m_comboStand.InsertString(1, _T("2"));
+	dlgTch.m_comboStand.InsertString(2, _T("3"));
+	dlgTch.m_comboStand.InsertString(3, _T("4"));
+	dlgTch.m_comboStand.InsertString(4, _T("5"));
 
 	//初始化DlgStu中的控件
 	dlgStu.m_edtStandAgl.SetWindowText(_T("0~360度"));
 	dlgStu.m_edtStandFrm.SetWindowText(_T("3~10帧"));
 	dlgStu.m_edtSitFrm.SetWindowText(_T("3~10帧"));
-	dlgStu.m_edtMoveDev.SetWindowText(_T("0.2~2.0"));
-	dlgStu.m_comboDly.InsertString(0, _T("500"));
-	dlgStu.m_comboDly.InsertString(1, _T("1000"));
-	dlgStu.m_comboDly.InsertString(2, _T("1500"));
-	dlgStu.m_comboDly.InsertString(3, _T("2000"));
-	dlgStu.m_comboDly.InsertString(4, _T("2500"));
-	dlgStu.m_comboDly.InsertString(5, _T("3000"));
+	dlgStu.m_edtMoveDev.SetWindowText(_T("20~200"));
+	dlgStu.m_comboDly.InsertString(0, _T("0.5"));
+	dlgStu.m_comboDly.InsertString(1, _T("1.0"));
+	dlgStu.m_comboDly.InsertString(2, _T("1.5"));
+	dlgStu.m_comboDly.InsertString(3, _T("2.0"));
+	dlgStu.m_comboDly.InsertString(4, _T("2.5"));
+	dlgStu.m_comboDly.InsertString(5, _T("3.0"));
 
 	//初始化dlgCtrl中的控件
 	dlgCtrl.m_chk_multiple.SetCheck(TRUE);
@@ -1749,7 +1749,7 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 	blk = params->blk;
 	s.Format("%d", params->threshold.outside);
 	dlgTch.m_editOutSide.SetWindowText(s);
-	s.Format("%d", params->threshold.stand);
+	s.Format("%d", (int)(params->threshold.stand/1000));
 	dlgTch.m_comboStand.SetWindowText(s);
 	s.Format("%d", params->numOfSlide);
 	dlgTch.m_comboSlide.SetWindowText(s);
@@ -1906,10 +1906,10 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 	s.Format("%d", params->stuTrack_sitdownCount_threshold);
 	dlgStu.m_edtSitFrm.SetWindowText(s);
 
-	s.Format("%f", params->stuTrack_move_threshold);
+	s.Format("%d", (int)(params->stuTrack_move_threshold*100));
 	dlgStu.m_edtMoveDev.SetWindowText(s);
 
-	s.Format("%d", params->stuTrack_moveDelayed_threshold);
+	s.Format("%.1f", params->stuTrack_moveDelayed_threshold/1000.0);
 	dlgStu.m_comboDly.SetWindowText(s);
 
 	dlgStu.setParams(params);

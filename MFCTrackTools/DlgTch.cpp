@@ -138,7 +138,7 @@ int DlgTch::checkParameters()
 	}
 	else
 	{
-		_stand = _ttoi(stand);
+		_stand = _ttoi(stand)*1000;
 		_targetArea = _ttoi(targetArea);
 		_outside = _ttoi(outside);
 		if (_stand <= 0 || _targetArea <= 0 || _outside <= 0)
