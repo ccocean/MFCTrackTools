@@ -123,7 +123,18 @@ int ctrlClient_get_camera_params(Commutication_Handle_t ptrack_clientHandle)
 	communtication_send_clientMsg(&head, (char *)(&camera_param), sizeof(Panoramic_Camera_Info), ptrack_clientHandle);
 	return 0;
 }
-
+int ctrlClient_set_track_debug(int debug, Commutication_Handle_t ptrack_clientHandle)
+{
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
+		return -1;
+	}
+	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
+	head.cmd = SET_TRACK_DEBUG_CMD;
+	communtication_send_clientMsg(&head, (char *)(&debug), sizeof(int), ptrack_clientHandle);
+	return 0;
+}
 
 //netstream==================================================================================================================
 

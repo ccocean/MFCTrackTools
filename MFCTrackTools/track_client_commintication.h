@@ -18,6 +18,8 @@ using namespace std;
 #define GET_TRACK_STATUS_CMD   0x106
 #define PLC_GETTRACK_CMD 0x107
 #define PLC_SETTRACK_CMD 0x108
+#define GET_TRACK_DEBUG_CMD   0x109
+#define SET_TRACK_DEBUG_CMD   0x10a
 #define TIMEOUT 500
 
 #define TEACH_STREAM_PORT 21301
@@ -116,5 +118,6 @@ int ctrlClient_get_policy_params(Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_set_track_status(Track_Status_t * track_status, Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_get_track_status(Commutication_Handle_t ptrack_clientHandle);
 
+int ctrlClient_set_track_debug(int debug, Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_set_stream_display(void* pStream_StuclientHandle, void* pStream_TeaclientHandle, int chanenel);
 #endif

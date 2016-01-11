@@ -31,6 +31,8 @@ static Track_cmd_info_t g_track_cmd[] =
 	{ GET_TRACK_STATUS_CMD, "获取跟踪状态" },
 	{ PLC_GETTRACK_CMD, "获取策略状态" },
 	{ PLC_SETTRACK_CMD, "设置跟踪状态" },
+	{ GET_TRACK_DEBUG_CMD, "获取调试状态"},
+	{SET_TRACK_DEBUG_CMD, "设置调试状态"},
 };
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
@@ -502,6 +504,8 @@ void CMFCTrackToolsDlg::OnClose()
 		== IDNO)
 		return;
 
+	//开启跟踪调试
+	ctrlClient_set_track_debug(0, m_track_clientHandle);
 	m_tch_cam.StreamStop();
 	m_tch_cam.logout();
 
@@ -1983,6 +1987,8 @@ static int ctrl_connect_status(Connect_Status status, void * param)
 	}
 	else
 	{
+		//开启跟踪调试
+		ctrlClient_set_track_debug(1, pTrackDlg->m_track_clientHandle);
 		pTrackDlg->ctrlClient_init_Stream();
 		ctrlClient_get_teach_params(pTrackDlg->m_track_clientHandle);
 		ctrlClient_get_track_status(pTrackDlg->m_track_clientHandle);
@@ -2127,6 +2133,23 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 				m_check_stuFlag.SetCheck(m_isAlgActivity.isStuTrack);
 			}
 			break;
+	}
+	case	SET_TRACK_DEBUG_CMD:
+	{
+		if (head->total_len != sizeof(int))
+		{
+			
+		}
+		else
+		{
+
+		}
+		break;
+	}
+	default:
+	{
+			   MessageBox("命令无效");
+			   break;
 	}
 	}
 	sprintf_s(errMsg, sizeof(errMsg), "%s成功", get_track_cmd_name(head->cmd));
