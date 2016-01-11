@@ -49,4 +49,5 @@ public:
 	void setTrackRects(Tch_Rect_t rc,int flag);
 	void setParams(TeaITRACK_Params* params);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnBnClickedbtndefault();
 };

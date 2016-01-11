@@ -43,6 +43,7 @@ void DlgTch::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(DlgTch, CDialog)
 	ON_BN_CLICKED(IDC_btnApply, &DlgTch::OnBnClickedbtnapply)
 	ON_WM_SIZE()
+	ON_BN_CLICKED(IDC_btnDefault, &DlgTch::OnBnClickedbtndefault)
 END_MESSAGE_MAP()
 
 
@@ -214,4 +215,10 @@ void DlgTch::OnSize(UINT nType, int cx, int cy)
 	CDialog::OnSize(nType, cx, cy);
 
 	// TODO: Add your message handler code here
+}
+
+
+void DlgTch::OnBnClickedbtndefault()
+{
+	// TODO:  在此添加控件通知处理程序代码
 }
