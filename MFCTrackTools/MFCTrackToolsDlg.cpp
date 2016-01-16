@@ -918,14 +918,24 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			if (mouseStatus != Mouse_LBDRAG)
 			{
-				p1.x = 0;
-				p2.x = Frame_Width;
+				mouseCnt++;
+				if (mouseCnt==1)
+				{
+					p1.x = 0;
+					p2.x = Frame_Width;
+				}
+				if (mouseCnt==2)
+				{
+					p1.x = 0;//修改板书范围
+					//p2.x = pt.x;
+					p2.x = Frame_Width;
+				}
 				//p2.x = point.x - MARGIN_LEFT;
 				p2.y = point.y - pic_top;
 				mouseStatus = Mouse_LBUP;
 				pt.x = -1;
 				pt.y = -1;
-				mouseCnt++;
+				
 				if (p2.x < p1.x || p2.y<p1.y)
 				{
 					pt = p2;
@@ -973,7 +983,8 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				}
 				if (mouseCnt == 2)
 				{
-					blk.x = p1.x; blk.y = p1.y;
+					blk.x = p1.x; 
+					blk.y = p1.y;
 					blk.width = p2.x - p1.x;
 					blk.height = p2.y - p1.y;
 
@@ -1139,7 +1150,7 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 				}
 				if (whichRect == 2)
 				{
-					//blk.x += (point.x - pt.x);
+					//blk.x += (point.x - pt.x);//修改板书框
 					blk.y += (point.y  - pt.y);
 					SetDlgItemInt(IDC_editX, blk.x);
 					SetDlgItemInt(IDC_editY, blk.y);
@@ -1767,8 +1778,11 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 	camPosSlide.left = camPosSlide.center - camPosSlide.width;
 	camPosSlide.right = camPosSlide.center + camPosSlide.width;
 
-	centre_pt2.x = (camPosSlide.left + int_slide / 2 + 0.5)*(WIDTH / int_pos);
-	centre_pt2.y = tch.y + tch.height / 2;
+	if (int_pos!=0)
+	{
+		centre_pt2.x = (camPosSlide.left + int_slide / 2 + 0.5)*(WIDTH / int_pos);
+		centre_pt2.y = tch.y + tch.height / 2;
+	}	
 
 	pl = { 0, params->threshold.outside + tch.y };
 	pr = { WIDTH, params->threshold.outside + tch.y };
@@ -2017,7 +2031,7 @@ static int ctrlClient_process_trackMsgEx(Communtication_Head_t *head, void *msg,
 int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle)
 {
 
-	char errMsg[128] = { 0 };
+ 	char errMsg[128] = { 0 };
 	if (NULL == head || NULL == msg || NULL == handle) {
 		AfxMessageBox(_T("接收信息失败"));
 		return -1;
@@ -2035,14 +2049,21 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	{
 	case STU_SETTRACK_CMD:
 	{
+							 MessageBox("学生设置成功！");
 							 break;
 	}
 	case TEA_SETTRACK_CMD:
 	{
+							 MessageBox("教师设置成功！");
 							 break;
 	}
 	case SET_TRACK_STATUS_CMD:
 	{
+							 break;
+	}
+	case PLC_SETTRACK_CMD:
+	{
+							 MessageBox("设置成功，重启生效！");
 							 break;
 	}
 	case STU_GETTRACK_CMD:
