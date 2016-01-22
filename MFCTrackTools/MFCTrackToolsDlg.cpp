@@ -660,8 +660,8 @@ void CMFCTrackToolsDlg::trackdraw()
 			pOldPen = pDC->SelectObject(&penPink);
 			drawRectangle(p3, p4);
 		}
-		pOldPen = pDC->SelectObject(&penPurple);
-		drawLine(pl, pr);
+		/*pOldPen = pDC->SelectObject(&penPurple);
+		drawLine(pl, pr);*/
 		if (mouseStatus == Mouse_LBDOWN)
 		{
 			if (pt.x > 0 && pt.y > 0)
