@@ -1641,21 +1641,27 @@ void CMFCTrackToolsDlg::OnRButtonDblClk(UINT nFlags, CPoint point)
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	if (MARGIN_LEFT <= point.x&&point.x <= MARGIN_LEFT + WIDTH && pic_top <= point.y&&point.y <= pic_top + HEIGHT)
 	{
-		p1.x = 0; p1.y = 0;
-		p2.x = 0; p2.y = 0;
-		pt.x = 0; pt.y = 0;
-		tch.x = 0; tch.y = 0;
-		tch.width = 0; tch.height = 0;
-		blk.x = 0; blk.y = 0;
-		blk.width = 0; blk.height = 0;
-		p3 = p4 = { 0 };
-		pl = pr = { 0 };
-		centre_pt2 = { 0 };
+		if (CurSel==TCH_TAB)
+		{
+			p1.x = -10; p1.y = -10;
+			p2.x = -10; p2.y = -10;
+			pt.x = -10; pt.y = -10;
+			tch.x = -10; tch.y = -10;
+			tch.width = -10; tch.height = -10;
+			blk.x = -10; blk.y = -10;
+			blk.width = -10; blk.height = -10;
+			p3 = p4 = { -10 };
+			pl = pr = { -10 };
+			centre_pt2 = { -10 };
 
-		dlgTch.m_txtTchArg.SetWindowText(_T(""));
-		dlgTch.m_txtBlkArg.SetWindowText(_T(""));
-		mouseCnt = 0;
-		mouseStatus = Mouse_RBUP;
+			dlgTch.m_txtTchArg.SetWindowText(_T(""));
+			dlgTch.m_txtBlkArg.SetWindowText(_T(""));
+			dlgTch.m_editOutSide.SetWindowText(_T(""));
+			dlgTch.m_editTargetArea.SetWindowText(_T(""));
+			mouseCnt = 0;
+			mouseStatus = Mouse_RBUP;
+		}
+		
 	}
 	CDialogEx::OnRButtonDblClk(nFlags, point);
 }
@@ -2231,14 +2237,14 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgTch.ShowWindow(TRUE);
 		dlgStu.ShowWindow(FALSE);
 		dlgCtrl.ShowWindow(FALSE);
-		pa.x = 0; pa.y = 0;
-		pb.x = 0; pb.y = 0;
-		pc.x = 0; pc.y = 0;
-		pd.x = 0; pd.y = 0;
-		pt.x = 0; pt.y = 0;
-		p1.x = 0; p1.y = 0;
-		p2.x = 0; p2.y = 0;
-		p3 = p4 = pl = pr = { 0 };
+		pa.x = -10; pa.y = -10;
+		pb.x = -10; pb.y = -10;
+		pc.x = -10; pc.y = -10;
+		pd.x = -10; pd.y = -10;
+		pt.x = -10; pt.y = -10;
+		p1.x = -10; p1.y = -10;
+		p2.x = -10; p2.y = -10;
+		p3 = p4 = pl = pr = { -10 };
 		mouseCnt = 0;
 
 		dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(TRUE);
@@ -2260,11 +2266,11 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgTch.ShowWindow(FALSE);
 		dlgStu.ShowWindow(TRUE);
 		dlgCtrl.ShowWindow(FALSE);
-		tch.x = 0; tch.y = 0;
-		tch.width = 0; tch.height = 0;
-		blk.x = 0; blk.y = 0;
-		blk.width = 0; blk.height = 0;
-		pt.x = 0; pt.y = 0;
+		tch.x = -10; tch.y = -10;
+		tch.width = -10; tch.height = -10;
+		blk.x = -10; blk.y = -10;
+		blk.width = -10; blk.height = -10;
+		pt.x = -10; pt.y = -10;
 		mouseCnt = 0;
 
 		dlgCam.GetDlgItem(IDC_BUTTON_UP)->EnableWindow(TRUE);
@@ -2284,10 +2290,10 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		ctrlClient_get_stu_params(m_track_clientHandle);
 		break;
 	case 2:
-		pa = pb = pc = pd = { 0 };
-		pA = pB = pC = pD = { 0 };
-		ln1[0] = ln2[0] = ln3[0] = ln4[0] = { 0 };
-		ln1[1] = ln2[1] = ln3[1] = ln4[1] = { 0 };
+		pa = pb = pc = pd = { -10 };
+		pA = pB = pC = pD = { -10 };
+		ln1[0] = ln2[0] = ln3[0] = ln4[0] = { -10 };
+		ln1[1] = ln2[1] = ln3[1] = ln4[1] = { -10 };
 		dlgTch.ShowWindow(FALSE);
 		dlgStu.ShowWindow(FALSE);
 		dlgCtrl.ShowWindow(TRUE);
