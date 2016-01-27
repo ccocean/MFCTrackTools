@@ -1,6 +1,7 @@
 #pragma once
 #include "afxwin.h"
 #include "afxcmn.h"
+#include <afx.h>
 
 
 // connect dialog
@@ -41,6 +42,7 @@ public:
 	virtual void OnOK();
 	void autoclose();
 	CEdit m_username;
-
+	CString str;
 	CEdit m_passwd;
+	virtual BOOL OnInitDialog();
 };

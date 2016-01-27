@@ -16,6 +16,7 @@ trackconnect::trackconnect(CWnd* pParent /*=NULL*/)
 {
 	m_initNetFun = NULL;
 	m_DialogParam = NULL;
+	
 	//m_ip.SetWindowText(_T("192.168.0.0"));
 }
 
@@ -29,6 +30,8 @@ void trackconnect::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_IPADDRESS_TRACK, m_ip);
 	DDX_Control(pDX, IDC_EDIT_USER, m_username);
 	DDX_Control(pDX, IDC_EDIT_PASSWD, m_passwd);
+
+	
 }
 
 
@@ -54,10 +57,17 @@ int trackconnect::setConectfunCall(initConnectNet fun, void * param)
 		m_initNetFun = fun;
 		m_DialogParam = param;
 	}
+	
+	
 	return 0;
 }
 void trackconnect::OnBnClickedButtonConnect()
 {
+	char *fileName = "loginInfo.txt";
+	//CFile myFile;
+	CFileException fileException;
+	CStdioFile myFile;
+
 	CString usrename, passwd;
 	BYTE nf1, nf2, nf3, nf4;
 	m_ip.GetAddress(nf1, nf2, nf3, nf4);
@@ -80,6 +90,22 @@ void trackconnect::OnBnClickedButtonConnect()
 	if (m_initNetFun)
 	{
 		m_initNetFun(m_DialogParam, &m_connectInfo);
+	}
+
+	BOOL openResult = myFile.Open(fileName, CFile::modeCreate | CFile::modeReadWrite);
+	if (!openResult)
+	{
+		MessageBox(_T("打开文件错误！"));
+	}
+	else
+	{
+		myFile.SeekToBegin();
+		myFile.WriteString(usrename);
+		myFile.Write(("\r\n"), 2);
+		myFile.WriteString(m_strIp);
+		myFile.Write(("\r\n"), 2);
+		myFile.Flush();
+		myFile.Close();
 	}
 	// TODO: Add your control notification handler code here
 }
@@ -117,4 +143,41 @@ void trackconnect::OnOK()
 	// TODO: Add your specialized code here and/or call the base class
 
 	CDialogEx::OnOK();
+}
+
+
+BOOL trackconnect::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  在此添加额外的初始化
+	char *fileName = "loginInfo.txt";
+	CStdioFile myFile;
+	BOOL openResult = myFile.Open(fileName, CFile::modeRead);
+	int cnt = 0;
+	int len;
+	if (!openResult)
+	{
+		MessageBox(_T("打开文件错误！"));
+	}
+	else
+	{
+		while (myFile.ReadString(str))
+		{
+			len = str.GetLength();
+			str.Delete(len - 1, 1);
+			if (cnt == 0)
+			{
+				m_username.SetWindowText(_T(str));
+			}
+			if (cnt == 1)
+			{
+				m_ip.SetWindowText(_T(str));
+			}
+			cnt++;
+		}
+	}
+	myFile.Close();
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// 异常:  OCX 属性页应返回 FALSE
 }
