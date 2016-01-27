@@ -84,7 +84,18 @@ int ctrlClient_get_stu_params(Commutication_Handle_t ptrack_clientHandle)
 	communtication_send_clientMsg(&head, (char *)(&stu_param), sizeof(StuITRACK_ClientParams_t), ptrack_clientHandle);
 	return 0;
 }
-
+int ctrlClient_login(Login_t* logininfo, Commutication_Handle_t ptrack_clientHandle)
+{
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
+		return -1;
+	}
+	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
+	head.cmd = TRACK_LOGIN;
+	communtication_send_clientMsg(&head, (char *)(logininfo), sizeof(Login_t), ptrack_clientHandle);
+	return 0;
+}
 int ctrlClient_set_track_status(Track_Status_t * track_status, Commutication_Handle_t ptrack_clientHandle)
 {
 	if (ptrack_clientHandle == NULL) {

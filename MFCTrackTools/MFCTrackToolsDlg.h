@@ -249,4 +249,5 @@ public:
 	afx_msg void OnBnClickedCheck2();
 	CButton m_check_stuFlag;
 	afx_msg void OnBnClickedButtonAbout();
+	Login_t m_loginInfo;
 };

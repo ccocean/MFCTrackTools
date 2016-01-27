@@ -33,6 +33,7 @@ static Track_cmd_info_t g_track_cmd[] =
 	{ PLC_SETTRACK_CMD, "设置跟踪状态" },
 	{ GET_TRACK_DEBUG_CMD, "获取调试状态"},
 	{SET_TRACK_DEBUG_CMD, "设置调试状态"},
+	{ TRACK_LOGIN, "登录" },
 };
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
@@ -2000,15 +2001,9 @@ static int ctrl_connect_status(Connect_Status status, void * param)
 		AfxMessageBox(_T("服务器断开连接"));
 	}
 	else
-	{
-		//开启跟踪调试
-		ctrlClient_set_track_debug(1, pTrackDlg->m_track_clientHandle);
-		pTrackDlg->ctrlClient_init_Stream();
-		ctrlClient_get_teach_params(pTrackDlg->m_track_clientHandle);
-		ctrlClient_get_track_status(pTrackDlg->m_track_clientHandle);
-		ctrlClient_get_camera_params(pTrackDlg->m_track_clientHandle);
-		ctrlClient_get_policy_params(pTrackDlg->m_track_clientHandle);
-		PostMessage(pTrackDlg->m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
+	{	//用户名密码登录
+		pTrackDlg->dlgCtrl.setConnectHandle(pTrackDlg->m_track_clientHandle);
+		ctrlClient_login(&(pTrackDlg->m_loginInfo), pTrackDlg->m_track_clientHandle);
 	}
 	pTrackDlg->dlgTch.setConnectHandle(pTrackDlg->m_track_clientHandle);
 	pTrackDlg->dlgStu.setConnectHandle(pTrackDlg->m_track_clientHandle);
@@ -2167,6 +2162,20 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 		}
 		break;
 	}
+	case TRACK_LOGIN:
+	{
+
+		//登陆成功，开启跟踪调试
+		Login_t * pLogin_info = (Login_t*)msg;
+		ctrlClient_set_track_debug(1, m_track_clientHandle);
+		ctrlClient_init_Stream();
+		ctrlClient_get_teach_params(m_track_clientHandle);
+		ctrlClient_get_track_status(m_track_clientHandle);
+		ctrlClient_get_camera_params(m_track_clientHandle);
+		ctrlClient_get_policy_params(m_track_clientHandle);
+		::PostMessage(m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
+		break;
+	}
 	default:
 	{
 			   MessageBox("命令无效");
@@ -2186,6 +2195,8 @@ int CMFCTrackToolsDlg::ctrlClient_init_trackCommunticationEx(void*param, Net_Inf
 	}
 	
 	strcpy(pTrackDialog->m_trackIp, pnetInfo->Ip);
+	memcpy(&((pTrackDialog->m_loginInfo).username), pnetInfo->username, sizeof((pTrackDialog->m_loginInfo).username));
+	memcpy(&((pTrackDialog->m_loginInfo).passwd), pnetInfo->passwd, sizeof((pTrackDialog->m_loginInfo).passwd));
 	return pTrackDialog->ctrlClient_init_trackCommuntication();
 
 }
@@ -2194,6 +2205,8 @@ int CMFCTrackToolsDlg::ctrlClient_init_trackCommuntication()
 
 	if (m_track_clientHandle != NULL)
 	{
+		//用户名密码登录
+		ctrlClient_login(&m_loginInfo, m_track_clientHandle);
 		OutputDebugString(_T("ctrlClient_init_trackCommuntication is init"));
 		return -1;
 	}

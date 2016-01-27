@@ -27,6 +27,8 @@ void trackconnect::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_IPADDRESS_TRACK, m_ip);
+	DDX_Control(pDX, IDC_EDIT_USER, m_username);
+	DDX_Control(pDX, IDC_EDIT_PASSWD, m_passwd);
 }
 
 
@@ -56,15 +58,25 @@ int trackconnect::setConectfunCall(initConnectNet fun, void * param)
 }
 void trackconnect::OnBnClickedButtonConnect()
 {
+	CString usrename, passwd;
 	BYTE nf1, nf2, nf3, nf4;
 	m_ip.GetAddress(nf1, nf2, nf3, nf4);
 	m_strIp.Format("%d.%d.%d.%d", nf1, nf2, nf3, nf4);//这里的nf得到的值是IP值了.
 	strcpy(m_connectInfo.Ip, m_strIp.GetString());
+	m_username.GetWindowText(usrename);
+	m_passwd.GetWindowText(passwd);
 	if (strcmp(m_strIp.GetString(), "0.0.0.0") == 0)
 	{
 		MessageBox("IP为空");
 		return;
 	}
+	if (strcmp(usrename.GetString(), "") == 0)
+	{
+		MessageBox("用户名为空");
+		return;
+	}
+	memcpy(m_connectInfo.passwd, passwd.GetString(), sizeof(m_connectInfo.passwd));
+	memcpy(m_connectInfo.username, usrename.GetString(), sizeof(m_connectInfo.username));
 	if (m_initNetFun)
 	{
 		m_initNetFun(m_DialogParam, &m_connectInfo);

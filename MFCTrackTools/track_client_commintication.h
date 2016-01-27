@@ -20,6 +20,7 @@ using namespace std;
 #define PLC_SETTRACK_CMD 0x108
 #define GET_TRACK_DEBUG_CMD   0x109
 #define SET_TRACK_DEBUG_CMD   0x10a
+#define TRACK_LOGIN   0x10b
 #define TIMEOUT 500
 
 #define TEACH_STREAM_PORT 21301
@@ -103,6 +104,11 @@ typedef struct Stream_Handle
 	void* param1;//扩展参数,由使用者带进去，通过回调函数call_back带出来
 	void *streamConnectHanlde;
 }RecvStream_Handle_t;
+typedef struct Track_Login_Info_t
+{
+	char username[32];
+	char passwd[32];
+}Login_t;
 void * init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle);
 int stop_stream_stream(void* pRecv_stream_handle);
 
@@ -120,4 +126,6 @@ int ctrlClient_get_track_status(Commutication_Handle_t ptrack_clientHandle);
 
 int ctrlClient_set_track_debug(int debug, Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_set_stream_display(void* pStream_StuclientHandle, void* pStream_TeaclientHandle, int chanenel);
+
+int ctrlClient_login(Login_t* logininfo, Commutication_Handle_t ptrack_clientHandle);
 #endif

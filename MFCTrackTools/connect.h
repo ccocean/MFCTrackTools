@@ -7,7 +7,8 @@
 typedef struct
 {
 	char Ip[16];
-
+	char username[32];
+	char passwd[32];
 }Net_Info;
 typedef int(*initConnectNet)(void*, Net_Info *);
 class trackconnect : public CDialogEx
@@ -39,4 +40,7 @@ public:
 	afx_msg void OnClose();
 	virtual void OnOK();
 	void autoclose();
+	CEdit m_username;
+
+	CEdit m_passwd;
 };
