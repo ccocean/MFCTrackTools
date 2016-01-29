@@ -2170,7 +2170,6 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	}
 	case TRACK_LOGIN:
 	{
-
 		//登陆成功，开启跟踪调试
 		Login_t * pLogin_info = (Login_t*)msg;
 		ctrlClient_set_track_debug(1, m_track_clientHandle);
@@ -2204,7 +2203,6 @@ int CMFCTrackToolsDlg::ctrlClient_init_trackCommunticationEx(void*param, Net_Inf
 	memcpy(&((pTrackDialog->m_loginInfo).username), pnetInfo->username, sizeof((pTrackDialog->m_loginInfo).username));
 	memcpy(&((pTrackDialog->m_loginInfo).passwd), pnetInfo->passwd, sizeof((pTrackDialog->m_loginInfo).passwd));
 	return pTrackDialog->ctrlClient_init_trackCommuntication();
-
 }
 int CMFCTrackToolsDlg::ctrlClient_init_trackCommuntication()
 {

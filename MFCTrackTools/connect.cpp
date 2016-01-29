@@ -158,7 +158,11 @@ BOOL trackconnect::OnInitDialog()
 	int len;
 	if (!openResult)
 	{
-		MessageBox(_T("打开文件错误！"));
+		openResult = myFile.Open(fileName, CFile::modeCreate);
+		if (!openResult)
+		{
+			MessageBox(_T("创建文件错误！"));
+		}
 	}
 	else
 	{
