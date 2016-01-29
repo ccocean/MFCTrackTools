@@ -2258,6 +2258,11 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 
 		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(FALSE);
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(FALSE);
+
+		dlgCam.GetDlgItem(IDC_BUTTON2)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON3)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON4)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON5)->ShowWindow(FALSE);
 		ctrlClient_get_teach_params(m_track_clientHandle);
 		break;
 	case 1:
@@ -2285,6 +2290,11 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 
 		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(TRUE);
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(TRUE);
+
+		dlgCam.GetDlgItem(IDC_BUTTON2)->ShowWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON3)->ShowWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON4)->ShowWindow(TRUE);
+		dlgCam.GetDlgItem(IDC_BUTTON5)->ShowWindow(TRUE);
 		ctrlClient_get_stu_params(m_track_clientHandle);
 		break;
 	case 2:
@@ -2309,6 +2319,10 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 
 		dlgCam.GetDlgItem(IDC_BUT_CALIBRATION)->ShowWindow(FALSE);
 		dlgCam.GetDlgItem(IDC_BUT_AGAINCALIB)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON2)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON3)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON4)->ShowWindow(FALSE);
+		dlgCam.GetDlgItem(IDC_BUTTON5)->ShowWindow(FALSE);
 		ctrlClient_get_policy_params(m_track_clientHandle);
 	default:
 		;

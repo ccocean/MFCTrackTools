@@ -77,4 +77,8 @@ public:
 	CStatic m_txtPreset;
 	afx_msg void OnBnClickedButCalibration();
 	afx_msg void OnBnClickedButAgaincalib();
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedButton3();
+	afx_msg void OnBnClickedButton4();
+	afx_msg void OnBnClickedButton5();
 };

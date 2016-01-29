@@ -42,6 +42,10 @@ BEGIN_MESSAGE_MAP(DlgCam, CDialog)
 	ON_BN_CLICKED(IDC_BUT_CALIBRATION, &DlgCam::OnBnClickedButCalibration)
 	ON_BN_CLICKED(IDC_BUT_AGAINCALIB, &DlgCam::OnBnClickedButAgaincalib)
 	ON_MESSAGE(WM_USER_THREADEND, OnUserThreadend)
+	ON_BN_CLICKED(IDC_BUTTON2, &DlgCam::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &DlgCam::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &DlgCam::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BUTTON5, &DlgCam::OnBnClickedButton5)
 END_MESSAGE_MAP()
 
 
@@ -519,43 +523,100 @@ void DlgCam::autoPreSet(int a, int b, int direct)
 #pragma comment(lib,"opencv/opencv_core249.lib")
 #pragma comment(lib,"opencv/opencv_imgproc249.lib")
 #endif
-static int countCalib = 0;
+
+#define CALIBRATION_FLAG_NULL 0
+#define CALIBRATION_FLAG_LEFT_UP 1
+#define CALIBRATION_FLAG_RIGHT_UP 2
+#define CALIBRATION_FLAG_LEFT_DOWN 4
+#define CALIBRATION_FLAG_RIGHT_DOWN 8
+#define CALIBRATION_FLAG_ALL 15
+
+static int countCalib = CALIBRATION_FLAG_NULL;
 void DlgCam::OnBnClickedButCalibration()
 {
-	//采集标定点
-	if (countCalib < 4)
+	//采集标定点，左上角
+	m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+	m_calibPt[0].x = m_get_panPosit;
+	m_calibPt[0].y = m_get_tiltPosit;
+	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
+	m_zoom[0] = m_get_zoomValue;
+	countCalib |= CALIBRATION_FLAG_LEFT_UP;
+	//CString str;
+	//if (countCalib == 1)
+	//{
+	//	str.Format(_T("标定右上角"));
+	//}
+	//else if (countCalib == 2)
+	//{
+	//	str.Format(_T("标定右下角"));
+	//}
+	//else if (countCalib == 3)
+	//{
+	//	str.Format(_T("标定左下角"));
+	//}
+	//else if (countCalib == 4)
+	//{
+	//	str.Format(_T("计算标定参数"));
+	//}
+	//this->SetDlgItemText(IDC_BUT_CALIBRATION, str);
+}
+
+
+void DlgCam::OnBnClickedButAgaincalib()
+{
+	//重新标定
+	countCalib = CALIBRATION_FLAG_NULL;
+	//CString str;
+	//str.Format(_T("标定左上角"));
+	//this->SetDlgItemText(IDC_BUT_CALIBRATION, str);
+}
+
+
+void DlgCam::OnBnClickedButton2()
+{
+	//右上角
+	m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+	m_calibPt[1].x = m_get_panPosit;
+	m_calibPt[1].y = m_get_tiltPosit;
+	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
+	m_zoom[1] = m_get_zoomValue;
+	countCalib |= CALIBRATION_FLAG_RIGHT_UP;
+}
+
+
+void DlgCam::OnBnClickedButton3()
+{
+	//左下角
+	m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+	m_calibPt[3].x = m_get_panPosit;
+	m_calibPt[3].y = m_get_tiltPosit;
+	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
+	m_zoom[3] = m_get_zoomValue;
+	countCalib |= CALIBRATION_FLAG_LEFT_DOWN;
+}
+
+
+void DlgCam::OnBnClickedButton4()
+{
+	//右下角
+	m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+	m_calibPt[2].x = m_get_panPosit;
+	m_calibPt[2].y = m_get_tiltPosit;
+	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
+	m_zoom[2] = m_get_zoomValue;
+	countCalib |= CALIBRATION_FLAG_RIGHT_DOWN;
+}
+
+
+void DlgCam::OnBnClickedButton5()
+{
+	//标定
+	//计算标定参数
+	if ((countCalib&CALIBRATION_FLAG_ALL) == CALIBRATION_FLAG_ALL)
 	{
-		m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
-		m_calibPt[countCalib].x = m_get_panPosit;
-		m_calibPt[countCalib].y = m_get_tiltPosit;
-		m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
-		m_zoom[countCalib] = m_get_zoomValue;
-		countCalib++;
-		CString str;
-		if (countCalib == 1)
-		{
-			str.Format(_T("标定右上角"));
-		}
-		else if (countCalib == 2)
-		{
-			str.Format(_T("标定右下角"));
-		}
-		else if (countCalib == 3)
-		{
-			str.Format(_T("标定左下角"));
-		}
-		else if (countCalib == 4)
-		{
-			str.Format(_T("计算标定参数"));
-		}
-		this->SetDlgItemText(IDC_BUT_CALIBRATION, str);
-	}
-	else
-	{
-		//计算标定参数
 		HWND hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
-		
+
 		//StuITRACK_ClientParams_t &stu_params = ((CMFCTrackToolsDlg*)GetDlgItem(IDD_MFCTRACKTOOLS_DIALOG))->dlgStu.stu_params;
 		cv::Point2f ptSrc[4];
 		ptSrc[0].x = pWnd->dlgStu.stu_params.stuTrack_vertex[0].x;
@@ -604,15 +665,21 @@ void DlgCam::OnBnClickedButCalibration()
 			pWnd->dlgStu.stu_params.stretchingAB[1] = MIN(zoom1, zoom2);
 		}
 		pWnd->dlgStu.isSetCam = TRUE;
+		MessageBox("标定成功，但未保存！");
 	}
-}
+	else
+	{
+		if ((countCalib&CALIBRATION_FLAG_LEFT_UP) != CALIBRATION_FLAG_LEFT_UP)
+			MessageBox("左上角未设标定点！");
+		
+		if ((countCalib&CALIBRATION_FLAG_RIGHT_UP) != CALIBRATION_FLAG_RIGHT_UP)
+			MessageBox("右上角未设标定点！");
 
+		if ((countCalib&CALIBRATION_FLAG_RIGHT_DOWN) != CALIBRATION_FLAG_RIGHT_DOWN)
+			MessageBox("右下角未设标定点！");
 
-void DlgCam::OnBnClickedButAgaincalib()
-{
-	//重新标定
-	countCalib = 0;
-	CString str;
-	str.Format(_T("标定左上角"));
-	this->SetDlgItemText(IDC_BUT_CALIBRATION, str);
+		if ((countCalib&CALIBRATION_FLAG_LEFT_DOWN) != CALIBRATION_FLAG_LEFT_DOWN)
+			MessageBox("左下角未设标定点！");
+
+	}
 }
