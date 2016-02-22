@@ -509,11 +509,12 @@ void DlgStu::updateWidth()
 
 	CPoint v1, v2;
 	int mod1 = 0, mod2 = 0;
+	double v1x, v1y, v2x, v2y;
 	v1 = pWnd->pb - pWnd->pa; v2 = pWnd->pd - pWnd->pc;
 	mod1 = sqrt(v1.x*v1.x + v1.y*v1.y);
 	mod2 = sqrt(v2.x*v2.x + v2.y*v2.y);
-	v1.x = v1.x / mod1; v1.y = v1.y / mod1;
-	v2.x = v2.x / mod2; v2.y = v2.y / mod2;
+	v1x =((double)v1.x)/ mod1; v1y = ((double)v1.y )/ mod1;
+	v2x = ((double)v2.x) / mod2; v2y = ((double)v2.y) / mod2;
 	CString str;
 	int width;
 
@@ -534,8 +535,8 @@ void DlgStu::updateWidth()
 		GetDlgItem(IDC_EDT_LEFTUP_WID)->SetWindowText(str);
 
 		pWnd->ln1[0] = pWnd->pa;
-		pWnd->ln1[1].x = pWnd->pa.x + v1.x*width;
-		pWnd->ln1[1].y = pWnd->pa.y + v1.y*width;
+		pWnd->ln1[1].x = (int)(pWnd->pa.x + v1x*width + 0.5);
+		pWnd->ln1[1].y = (int)(pWnd->pa.y + v1y*width + 0.5);
 
 		break;
 	case 1:
@@ -552,8 +553,8 @@ void DlgStu::updateWidth()
 		GetDlgItem(IDC_EDT_RIGHTUP_WID)->SetWindowText(str);
 
 		pWnd->ln2[0] = pWnd->pb;
-		pWnd->ln2[1].x = pWnd->pb.x - v1.x*width;
-		pWnd->ln2[1].y = pWnd->pb.y - v1.y*width;
+		pWnd->ln2[1].x = (int)(pWnd->pb.x - v1x*width + 0.5);
+		pWnd->ln2[1].y = (int)(pWnd->pb.y - v1y*width + 0.5);
 		break;
 	case 2:
 		m_sliderWidth.SetRange(0, mod2);
@@ -569,8 +570,8 @@ void DlgStu::updateWidth()
 		GetDlgItem(IDC_EDT_LEFTDN_WID)->SetWindowText(str);
 
 		pWnd->ln4[0] = pWnd->pd;
-		pWnd->ln4[1].x = pWnd->pd.x - v2.x*width;
-		pWnd->ln4[1].y = pWnd->pd.y - v2.y*width;
+		pWnd->ln4[1].x = (int)(pWnd->pd.x - v2x*width + 0.5);
+		pWnd->ln4[1].y = (int)(pWnd->pd.y - v2y*width + 0.5);
 		break;
 	case 3:
 		m_sliderWidth.SetRange(0, mod2);
@@ -586,8 +587,8 @@ void DlgStu::updateWidth()
 		GetDlgItem(IDC_EDT_RIGHTDN_WID)->SetWindowText(str);
 
 		pWnd->ln3[0] = pWnd->pc;
-		pWnd->ln3[1].x = pWnd->pc.x + v2.x*width;
-		pWnd->ln3[1].y = pWnd->pc.y + v2.y*width;
+		pWnd->ln3[1].x = (int)(pWnd->pc.x + v2x*width + 0.5);
+		pWnd->ln3[1].y = (int)(pWnd->pc.y + v2y*width + 0.5);
 		
 		break;
 	default:
