@@ -194,6 +194,7 @@ public:
 		GetStockObject(NULL_BRUSH));
 	CBrush *pOldBrush;//»­Ë¢
 	BITMAPINFO m_bmphdr;//bmpÎÄ¼þÍ·
+	void updateParamsFromStu(StuITRACK_ClientParams_t* params);
 private:
 	char m_trackIp[16];
 	BOOL initProgramControl();

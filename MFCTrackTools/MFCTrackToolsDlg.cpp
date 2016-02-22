@@ -1295,6 +1295,11 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 	CDialogEx::OnMouseMove(nFlags, point);
 }
 
+void CMFCTrackToolsDlg::updateParamsFromStu(StuITRACK_ClientParams_t* params)
+{
+	loadParamsFromStu(params);
+}
+
 void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值

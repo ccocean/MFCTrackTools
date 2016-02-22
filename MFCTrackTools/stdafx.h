@@ -33,7 +33,15 @@
 
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
-
+#include "opencv2/opencv.hpp"
+#ifdef _DEBUG
+#pragma comment(lib,"opencv/opencv_core249d.lib")
+#pragma comment(lib,"opencv/opencv_imgproc249d.lib")
+#endif
+#ifndef _DEBUG
+#pragma comment(lib,"opencv/opencv_core249.lib")
+#pragma comment(lib,"opencv/opencv_imgproc249.lib")
+#endif
 
 
 

@@ -29,6 +29,7 @@ public:
 	int checkParameters();
 	void getParameters();
 	void setParams(StuITRACK_ClientParams_t* params);
+
 	CEdit m_edtLeftUpPos;
 	CEdit m_edtLeftDnPos;
 	CEdit m_edtRightUpPos;
@@ -60,4 +61,12 @@ public:
 	void updateAngle();
 	void updateWidth();
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+
+private:
+	//从本地加载或保存设置参数
+	bool save_local_Parameter(std::string filePath, StuITRACK_ClientParams_t* stu_params);
+	bool load_local_Parameter(std::string filePath, StuITRACK_ClientParams_t* stu_params);
+public:
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedButton3();
 };

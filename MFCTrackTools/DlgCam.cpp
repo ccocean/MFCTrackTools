@@ -514,15 +514,6 @@ void DlgCam::autoPreSet(int a, int b, int direct)
 	m_txtPreset.SetWindowText(_T(""));
 }
 
-#include "opencv2/opencv.hpp"
-#ifdef _DEBUG
-#pragma comment(lib,"opencv/opencv_core249d.lib")
-#pragma comment(lib,"opencv/opencv_imgproc249d.lib")
-#endif
-#ifndef _DEBUG
-#pragma comment(lib,"opencv/opencv_core249.lib")
-#pragma comment(lib,"opencv/opencv_imgproc249.lib")
-#endif
 
 #define CALIBRATION_FLAG_NULL 0
 #define CALIBRATION_FLAG_LEFT_UP 1
@@ -541,6 +532,7 @@ void DlgCam::OnBnClickedButCalibration()
 	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
 	m_zoom[0] = m_get_zoomValue;
 	countCalib |= CALIBRATION_FLAG_LEFT_UP;
+	MessageBox("左上角标定点设置完成！");
 	//CString str;
 	//if (countCalib == 1)
 	//{
@@ -581,6 +573,7 @@ void DlgCam::OnBnClickedButton2()
 	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
 	m_zoom[1] = m_get_zoomValue;
 	countCalib |= CALIBRATION_FLAG_RIGHT_UP;
+	MessageBox("右上角标定点设置完成！");
 }
 
 
@@ -593,6 +586,7 @@ void DlgCam::OnBnClickedButton3()
 	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
 	m_zoom[3] = m_get_zoomValue;
 	countCalib |= CALIBRATION_FLAG_LEFT_DOWN;
+	MessageBox("左下角标定点设置完成！");
 }
 
 
@@ -605,6 +599,7 @@ void DlgCam::OnBnClickedButton4()
 	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
 	m_zoom[2] = m_get_zoomValue;
 	countCalib |= CALIBRATION_FLAG_RIGHT_DOWN;
+	MessageBox("右下角标定点设置完成！");
 }
 
 
@@ -671,15 +666,11 @@ void DlgCam::OnBnClickedButton5()
 	{
 		if ((countCalib&CALIBRATION_FLAG_LEFT_UP) != CALIBRATION_FLAG_LEFT_UP)
 			MessageBox("左上角未设标定点！");
-		
-		if ((countCalib&CALIBRATION_FLAG_RIGHT_UP) != CALIBRATION_FLAG_RIGHT_UP)
+		else if ((countCalib&CALIBRATION_FLAG_RIGHT_UP) != CALIBRATION_FLAG_RIGHT_UP)
 			MessageBox("右上角未设标定点！");
-
-		if ((countCalib&CALIBRATION_FLAG_RIGHT_DOWN) != CALIBRATION_FLAG_RIGHT_DOWN)
+		else if ((countCalib&CALIBRATION_FLAG_RIGHT_DOWN) != CALIBRATION_FLAG_RIGHT_DOWN)
 			MessageBox("右下角未设标定点！");
-
-		if ((countCalib&CALIBRATION_FLAG_LEFT_DOWN) != CALIBRATION_FLAG_LEFT_DOWN)
+		else if ((countCalib&CALIBRATION_FLAG_LEFT_DOWN) != CALIBRATION_FLAG_LEFT_DOWN)
 			MessageBox("左下角未设标定点！");
-
 	}
 }

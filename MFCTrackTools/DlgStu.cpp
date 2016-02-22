@@ -59,6 +59,8 @@ BEGIN_MESSAGE_MAP(DlgStu, CDialog)
 	ON_BN_CLICKED(IDC_BTNSTUAPPLY, &DlgStu::OnBnClickedBtnstuapply)
 	ON_WM_SIZE()
 	ON_WM_HSCROLL()
+	ON_BN_CLICKED(IDC_BUTTON2, &DlgStu::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &DlgStu::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -273,6 +275,162 @@ void DlgStu::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
+bool DlgStu::save_local_Parameter(std::string filePath, StuITRACK_ClientParams_t* stu_params)
+{
+	cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
+	if (fs.isOpened())
+	{
+		fs << "height" << stu_params->height;
+		fs << "width" << stu_params->width;
+		fs << "stuTrack_debugMsg_flag" << stu_params->stuTrack_debugMsg_flag;
+		fs << "stuTrack_Draw_flag" << stu_params->stuTrack_Draw_flag;
+
+		fs << "stuTrack_direct_standard" << "[";
+		fs << stu_params->stuTrack_direct_standard[0] << stu_params->stuTrack_direct_standard[1] << stu_params->stuTrack_direct_standard[2] << stu_params->stuTrack_direct_standard[3];
+		fs << "]";
+
+		fs << "stuTrack_stuWidth_standard" << "[";
+		fs << stu_params->stuTrack_stuWidth_standard[0] << stu_params->stuTrack_stuWidth_standard[1] << stu_params->stuTrack_stuWidth_standard[2] << stu_params->stuTrack_stuWidth_standard[3];
+		fs << "]";
+
+		fs << "stuTrack_direct_range" << stu_params->stuTrack_direct_range;
+		fs << "stuTrack_standCount_threshold" << stu_params->stuTrack_standCount_threshold;
+		fs << "stuTrack_sitdownCount_threshold" << stu_params->stuTrack_sitdownCount_threshold;
+		fs << "stuTrack_moveDelayed_threshold" << stu_params->stuTrack_moveDelayed_threshold;
+		fs << "stuTrack_move_threshold" << stu_params->stuTrack_move_threshold;
+
+		fs << "stuTrack_vertex" << "[";
+		for (int i = 0; i < 4; i++)
+		{
+			fs << "{";
+			fs << "x" << stu_params->stuTrack_vertex[i].x;
+			fs << "y" << stu_params->stuTrack_vertex[i].y;
+			fs << "}";
+		}
+		fs << "]";
+
+		fs << "transformationMatrix" << "[";
+		for (int i = 0; i < 9; i++)
+		{
+			fs << stu_params->transformationMatrix[i];
+		}
+		fs << "]";
+
+		fs << "stretchingAB" << "[";
+		fs << stu_params->stretchingAB[0] << stu_params->stretchingAB[1];
+		fs << "]";
+
+		fs.release();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool DlgStu::load_local_Parameter(std::string filePath, StuITRACK_ClientParams_t* stu_params)
+{
+	cv::FileStorage fs(filePath, cv::FileStorage::READ);
+	if (fs.isOpened())
+	{
+		int i = 0;
+		fs["height"] >> stu_params->height;
+		fs["width"] >> stu_params->width;
+		fs["stuTrack_debugMsg_flag"] >> stu_params->stuTrack_debugMsg_flag;
+		fs["stuTrack_Draw_flag"] >> stu_params->stuTrack_Draw_flag;
+
+		cv::FileNode node = fs["stuTrack_direct_standard"];
+		if (node.type() != cv::FileNode::SEQ)
+		{
+			return false;
+		}
+		cv::FileNodeIterator it = node.begin(), it_end = node.end();
+		for (i = 0; it != it_end; ++it, i++)
+		{
+			stu_params->stuTrack_direct_standard[i] = *it;
+		}
+		if (i != 4)
+		{
+			::MessageBox(NULL, _T("角度方向参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+		}
+
+		node = fs["stuTrack_stuWidth_standard"];
+		if (node.type() != cv::FileNode::SEQ)
+		{
+			return false;
+		}
+		it = node.begin(), it_end = node.end();
+		for (i = 0; it != it_end; ++it, i++)
+		{
+			stu_params->stuTrack_stuWidth_standard[i] = *it;
+		}
+		if (i != 4)
+		{
+			::MessageBox(NULL, _T("学生宽度参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+		}
+
+		fs["stuTrack_direct_range"] >> stu_params->stuTrack_direct_range;
+		fs["stuTrack_standCount_threshold"] >> stu_params->stuTrack_standCount_threshold;
+		fs["stuTrack_sitdownCount_threshold"] >> stu_params->stuTrack_sitdownCount_threshold;
+		fs["stuTrack_moveDelayed_threshold"] >> stu_params->stuTrack_moveDelayed_threshold;
+		fs["stuTrack_move_threshold"] >> stu_params->stuTrack_move_threshold;
+
+		node = fs["stuTrack_vertex"];
+		if (node.type() != cv::FileNode::SEQ)
+		{
+			return false;
+		}
+		it = node.begin(), it_end = node.end();
+		for (i = 0; it != it_end; ++it, i++)
+		{
+			stu_params->stuTrack_vertex[i].x = (*it)["x"];
+			stu_params->stuTrack_vertex[i].y = (*it)["y"];
+		}
+		if (i != 4)
+		{
+			::MessageBox(NULL, _T("角点位置参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+		}
+
+		node = fs["transformationMatrix"];
+		if (node.type() != cv::FileNode::SEQ)
+		{
+			return false;
+		}
+		it = node.begin(), it_end = node.end();
+		for (i = 0; it != it_end; ++it, i++)
+		{
+			stu_params->transformationMatrix[i] = *it;
+		}
+		if (i != 9)
+		{
+			::MessageBox(NULL, _T("变换矩阵参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+		}
+
+		node = fs["stretchingAB"];
+		if (node.type() != cv::FileNode::SEQ)
+		{
+			return false;
+		}
+		it = node.begin(), it_end = node.end();
+		for (i = 0; it != it_end; ++it, i++)
+		{
+			stu_params->stretchingAB[i] = *it;
+		}
+		if (i != 2)
+		{
+			::MessageBox(NULL, _T("拉伸系数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+		}
+
+		fs.release();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void DlgStu::updateAngle()
 {
 	HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
@@ -434,5 +592,38 @@ void DlgStu::updateWidth()
 		break;
 	default:
 		break;
+	}
+}
+
+
+void DlgStu::OnBnClickedButton2()
+{
+	//保存到本地
+	CString fileName = _T("paraStu.yml");								//默认打开的文件名  
+	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
+	CFileDialog openFileDlg(FALSE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
+	if (openFileDlg.DoModal() == IDOK)
+	{
+		CString FilePathName = openFileDlg.GetPathName();
+		save_local_Parameter(FilePathName.GetBuffer(0), &stu_params);
+	}
+}
+
+
+void DlgStu::OnBnClickedButton3()
+{
+	//从本地加载
+	CString fileName = _T("paraStu.yml");								//默认打开的文件名  
+	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
+	CFileDialog openFileDlg(TRUE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
+	if (openFileDlg.DoModal() == IDOK)
+	{
+		CString FilePathName = openFileDlg.GetPathName();
+		StuITRACK_ClientParams_t temp;
+		memset(&temp, 0, sizeof(StuITRACK_ClientParams_t));
+		load_local_Parameter(FilePathName.GetBuffer(0), &temp);
+		HWND hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
+		pWnd->updateParamsFromStu(&temp);
 	}
 }
