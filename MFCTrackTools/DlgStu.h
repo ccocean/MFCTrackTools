@@ -2,6 +2,8 @@
 #include "stuTrack_settings_parameter.h"
 #include "afxwin.h"
 #include "track_client_commintication.h"
+#include "afxcmn.h"
+
 // DlgStu ¶Ô»°¿ò
 
 class DlgStu : public CDialog
@@ -49,4 +51,13 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CComboBox m_comboDly;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	CSliderCtrl m_sliderAngle;
+	CButton m_rdoAglLeftUp;
+	int m_radioAgl;
+	CString str;
+	CSliderCtrl m_sliderWidth;
+	int m_radioWid;
+	void updateAngle();
+	void updateWidth();
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 };

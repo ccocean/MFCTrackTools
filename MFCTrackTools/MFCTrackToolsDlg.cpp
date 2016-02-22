@@ -401,6 +401,8 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgStu.m_comboDly.InsertString(3, _T("2.0"));
 	dlgStu.m_comboDly.InsertString(4, _T("2.5"));
 	dlgStu.m_comboDly.InsertString(5, _T("3.0"));
+	dlgStu.m_sliderAngle.SetRange(0, 360);
+	dlgStu.m_sliderAngle.SetPos(180);
 
 	//初始化dlgCtrl中的控件
 	dlgCtrl.m_chk_multiple.SetCheck(TRUE);
@@ -1887,27 +1889,27 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 	updateParams(PARAM_WIDTH);
 
 	//载入四个角度值
-	int temp = 0;
+	//int temp = 0;
 
-	temp = pa.x - 10;
-	pA.x = pa.x + cos(params->stuTrack_direct_standard[0] * ITC_ANGLE_TO_RADIAN) * temp;
-	temp = pa.y - 10;
-	pA.y = pa.y + sin(params->stuTrack_direct_standard[0] * ITC_ANGLE_TO_RADIAN) * temp;
+	//temp = pa.x - 10;
+	pA.x = pa.x + cos(params->stuTrack_direct_standard[0] * ITC_ANGLE_TO_RADIAN) * 50;
+	//temp = pa.y - 10;
+	pA.y = pa.y + sin(params->stuTrack_direct_standard[0] * ITC_ANGLE_TO_RADIAN) * 50;
 
-	temp = pb.x - 10;
-	pB.x = pb.x + cos(params->stuTrack_direct_standard[1] * ITC_ANGLE_TO_RADIAN) * temp;
-	temp = pb.y - 10;
-	pB.y = pb.y + sin(params->stuTrack_direct_standard[1] * ITC_ANGLE_TO_RADIAN) * temp;
+	//temp = pb.x - 10;
+	pB.x = pb.x + cos(params->stuTrack_direct_standard[1] * ITC_ANGLE_TO_RADIAN) * 50;
+	//temp = pb.y - 10;
+	pB.y = pb.y + sin(params->stuTrack_direct_standard[1] * ITC_ANGLE_TO_RADIAN) * 50;
 
-	temp = pc.x - 10;
-	pC.x = pc.x + cos(params->stuTrack_direct_standard[2] * ITC_ANGLE_TO_RADIAN) * temp;
-	temp = pc.y - 10;
-	pC.y = pc.y + sin(params->stuTrack_direct_standard[2] * ITC_ANGLE_TO_RADIAN) * temp;
+	//temp = pc.x - 10;
+	pC.x = pc.x + cos(params->stuTrack_direct_standard[2] * ITC_ANGLE_TO_RADIAN) * 80;
+	//temp = pc.y - 10;
+	pC.y = pc.y + sin(params->stuTrack_direct_standard[2] * ITC_ANGLE_TO_RADIAN) * 80;
 
-	temp = pd.x - 10;
-	pD.x = pd.x + cos(params->stuTrack_direct_standard[3] * ITC_ANGLE_TO_RADIAN) * temp;
-	temp = pd.y - 10;
-	pD.y = pd.y + sin(params->stuTrack_direct_standard[3] * ITC_ANGLE_TO_RADIAN) * temp;
+	//temp = pd.x - 10;
+	pD.x = pd.x + cos(params->stuTrack_direct_standard[3] * ITC_ANGLE_TO_RADIAN) * 80;
+	//temp = pd.y - 10;
+	pD.y = pd.y + sin(params->stuTrack_direct_standard[3] * ITC_ANGLE_TO_RADIAN) * 80;
 
 	s.Format("%d", params->stuTrack_direct_standard[0]);
 	dlgStu.m_edtLeftUpAgl.SetWindowText(s);

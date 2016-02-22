@@ -6,14 +6,19 @@
 #include "DlgStu.h"
 #include "afxdialogex.h"
 #include "stuTrack_settings_parameter.h"
+#include "MFCTrackToolsDlg.h"
 
 
 // DlgStu 对话框
 
 IMPLEMENT_DYNAMIC(DlgStu, CDialog)
 
+
+
 DlgStu::DlgStu(CWnd* pParent /*=NULL*/)
 	: CDialog(DlgStu::IDD, pParent)
+	, m_radioAgl(0)
+	, m_radioWid(0)
 {
 
 }
@@ -42,12 +47,18 @@ void DlgStu::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDT_SIT_FRM, m_edtSitFrm);
 	DDX_Control(pDX, IDC_EDT_MOVE_DEV, m_edtMoveDev);
 	DDX_Control(pDX, IDC_COMBO_MOVE_DLY, m_comboDly);
+	DDX_Control(pDX, IDC_SLIDER_ANGLE, m_sliderAngle);
+	DDX_Control(pDX, IDC_RADIO_AGL_LEFTUP, m_rdoAglLeftUp);
+	DDX_Radio(pDX, IDC_RADIO_AGL_LEFTUP, m_radioAgl);
+	DDX_Control(pDX, IDC_SLIDER_WIDTH, m_sliderWidth);
+	DDX_Radio(pDX, IDC_RADIO_WIDTH_LEFTUP, m_radioWid);
 }
 
 
 BEGIN_MESSAGE_MAP(DlgStu, CDialog)
 	ON_BN_CLICKED(IDC_BTNSTUAPPLY, &DlgStu::OnBnClickedBtnstuapply)
 	ON_WM_SIZE()
+	ON_WM_HSCROLL()
 END_MESSAGE_MAP()
 
 
@@ -215,6 +226,21 @@ BOOL DlgStu::PreTranslateMessage(MSG* pMsg)
 	}
 	if (pMsg->message == WM_KEYDOWN&&pMsg->wParam == VK_RETURN)
 		return TRUE;
+
+	if (pMsg->message == WM_LBUTTONUP)
+	{
+		int agl;
+		int temp = 0;
+		if (pMsg->hwnd == GetDlgItem(IDC_SLIDER_ANGLE)->m_hWnd)
+		{
+			updateAngle();
+		}
+		if ((pMsg->hwnd == GetDlgItem(IDC_SLIDER_WIDTH)->m_hWnd))
+		{
+			updateWidth();
+		}
+	}
+
 	return CDialog::PreTranslateMessage(pMsg);
 }
 
@@ -224,4 +250,189 @@ void DlgStu::OnSize(UINT nType, int cx, int cy)
 	CDialog::OnSize(nType, cx, cy);
 
 	// TODO:  在此处添加消息处理程序代码
+}
+
+
+
+void DlgStu::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	if (pScrollBar != NULL)
+	{
+		CSliderCtrl* pSlider = (CSliderCtrl*)pScrollBar;
+		if (pSlider->GetDlgCtrlID() == IDC_SLIDER_ANGLE)
+		{
+			updateAngle();
+		}
+		if (pSlider->GetDlgCtrlID() == IDC_SLIDER_WIDTH)
+		{
+			updateWidth();
+		}
+	}
+
+	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
+}
+
+void DlgStu::updateAngle()
+{
+	HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+	CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
+
+	if (pWnd->pa.x == 0 && pWnd->pa.y == 0 && pWnd->pb.x == 0 && pWnd->pb.y && pWnd->pc.x && pWnd->pc.y && pWnd->pd.x && pWnd->pd.y)
+	{
+		MessageBox(_T("没有画出跟踪区域，请先设置跟踪区域。"));
+		return;
+	}
+
+	int agl, temp;
+
+	UpdateData(TRUE);
+	switch (m_radioAgl)
+	{
+	case 0:
+		agl = m_sliderAngle.GetPos();
+		str.Format(_T("%d"), agl);
+		GetDlgItem(IDC_EDT_LEFTUP_AGL)->SetWindowText(str);
+
+		//temp = pWnd->pa.x - 10;
+		pWnd->pA.x = pWnd->pa.x + cos(agl * ITC_ANGLE_TO_RADIAN) * 50;
+		//temp = pWnd->pa.y - 10;
+		pWnd->pA.y = pWnd->pa.y + sin(agl * ITC_ANGLE_TO_RADIAN) * 50;
+
+		break;
+	case 1:
+		agl = m_sliderAngle.GetPos();
+		str.Format(_T("%d"), agl);
+		GetDlgItem(IDC_EDT_RIGHTUP_AGL)->SetWindowText(str);
+
+		//temp = pWnd->pb.x - 10;
+		pWnd->pB.x = pWnd->pb.x + cos(agl * ITC_ANGLE_TO_RADIAN) * 50;
+		//temp = pWnd->pb.y - 10;
+		pWnd->pB.y = pWnd->pb.y + sin(agl * ITC_ANGLE_TO_RADIAN) * 50;
+
+		break;
+	case 2:
+		agl = m_sliderAngle.GetPos();
+		str.Format(_T("%d"), agl);
+		GetDlgItem(IDC_EDT_LEFTDN_AGL)->SetWindowText(str);
+
+		//temp = pWnd->pd.x - 10;
+		pWnd->pD.x = pWnd->pd.x + cos(agl * ITC_ANGLE_TO_RADIAN) * 80;
+		//temp = pWnd->pd.y - 10;
+		pWnd->pD.y = pWnd->pd.y + sin(agl * ITC_ANGLE_TO_RADIAN) * 80;
+
+		break;
+	case 3:
+		agl = m_sliderAngle.GetPos();
+		str.Format(_T("%d"), agl);
+		GetDlgItem(IDC_EDT_RIGHTDN_AGL)->SetWindowText(str);
+
+		//temp = pWnd->pc.x - 10;
+		pWnd->pC.x = pWnd->pc.x + cos(agl * ITC_ANGLE_TO_RADIAN) * 80;
+		//temp = pWnd->pc.y - 10;
+		pWnd->pC.y = pWnd->pc.y + sin(agl * ITC_ANGLE_TO_RADIAN) * 80;
+
+		break;
+	default:
+		break;
+	}
+}
+
+void DlgStu::updateWidth()
+{
+	HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+	CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
+
+	if (pWnd->pa.x == 0 && pWnd->pa.y == 0 && pWnd->pb.x == 0 && pWnd->pb.y && pWnd->pc.x && pWnd->pc.y && pWnd->pd.x && pWnd->pd.y)
+	{
+		MessageBox(_T("没有画出跟踪区域，请先设置跟踪区域。"));
+		return;
+	}
+
+	CPoint v1, v2;
+	int mod1 = 0, mod2 = 0;
+	v1 = pWnd->pb - pWnd->pa; v2 = pWnd->pd - pWnd->pc;
+	mod1 = sqrt(v1.x*v1.x + v1.y*v1.y);
+	mod2 = sqrt(v2.x*v2.x + v2.y*v2.y);
+	v1.x = v1.x / mod1; v1.y = v1.y / mod1;
+	v2.x = v2.x / mod2; v2.y = v2.y / mod2;
+	CString str;
+	int width;
+
+	UpdateData(TRUE);
+	switch (m_radioWid)
+	{
+	case 0:
+		m_sliderWidth.SetRange(0, mod1);
+		GetDlgItem(IDC_WIDTH_LEFT)->ShowWindow(TRUE);
+		GetDlgItem(IDC_WIDTH_RIGHT)->ShowWindow(TRUE);
+
+		str.Format(_T("%d"), mod1);
+		GetDlgItem(IDC_WIDTH_LEFT)->SetWindowText(_T("0"));
+		GetDlgItem(IDC_WIDTH_RIGHT)->SetWindowText(str);
+
+		width = m_sliderWidth.GetPos();
+		str.Format(_T("%d"), width);
+		GetDlgItem(IDC_EDT_LEFTUP_WID)->SetWindowText(str);
+
+		pWnd->ln1[0] = pWnd->pa;
+		pWnd->ln1[1].x = pWnd->pa.x + v1.x*width;
+		pWnd->ln1[1].y = pWnd->pa.y + v1.y*width;
+
+		break;
+	case 1:
+		m_sliderWidth.SetRange(0, mod1);
+		GetDlgItem(IDC_WIDTH_LEFT)->ShowWindow(TRUE);
+		GetDlgItem(IDC_WIDTH_RIGHT)->ShowWindow(TRUE);
+
+		str.Format(_T("%d"), mod1);
+		GetDlgItem(IDC_WIDTH_LEFT)->SetWindowText(_T("0"));
+		GetDlgItem(IDC_WIDTH_RIGHT)->SetWindowText(str);
+
+		width = m_sliderWidth.GetPos();
+		str.Format(_T("%d"), width);
+		GetDlgItem(IDC_EDT_RIGHTUP_WID)->SetWindowText(str);
+
+		pWnd->ln2[0] = pWnd->pb;
+		pWnd->ln2[1].x = pWnd->pb.x - v1.x*width;
+		pWnd->ln2[1].y = pWnd->pb.y - v1.y*width;
+		break;
+	case 2:
+		m_sliderWidth.SetRange(0, mod2);
+		GetDlgItem(IDC_WIDTH_LEFT)->ShowWindow(TRUE);
+		GetDlgItem(IDC_WIDTH_RIGHT)->ShowWindow(TRUE);
+
+		str.Format(_T("%d"), mod2);
+		GetDlgItem(IDC_WIDTH_LEFT)->SetWindowText(_T("0"));
+		GetDlgItem(IDC_WIDTH_RIGHT)->SetWindowText(str);
+
+		width = m_sliderWidth.GetPos();
+		str.Format(_T("%d"), width);
+		GetDlgItem(IDC_EDT_LEFTDN_WID)->SetWindowText(str);
+
+		pWnd->ln4[0] = pWnd->pd;
+		pWnd->ln4[1].x = pWnd->pd.x - v2.x*width;
+		pWnd->ln4[1].y = pWnd->pd.y - v2.y*width;
+		break;
+	case 3:
+		m_sliderWidth.SetRange(0, mod2);
+		GetDlgItem(IDC_WIDTH_LEFT)->ShowWindow(TRUE);
+		GetDlgItem(IDC_WIDTH_RIGHT)->ShowWindow(TRUE);
+
+		str.Format(_T("%d"), mod2);
+		GetDlgItem(IDC_WIDTH_LEFT)->SetWindowText(_T("0"));
+		GetDlgItem(IDC_WIDTH_RIGHT)->SetWindowText(str);
+
+		width = m_sliderWidth.GetPos();
+		str.Format(_T("%d"), width);
+		GetDlgItem(IDC_EDT_RIGHTDN_WID)->SetWindowText(str);
+
+		pWnd->ln3[0] = pWnd->pc;
+		pWnd->ln3[1].x = pWnd->pc.x + v2.x*width;
+		pWnd->ln3[1].y = pWnd->pc.y + v2.y*width;
+		
+		break;
+	default:
+		break;
+	}
 }
