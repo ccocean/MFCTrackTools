@@ -929,9 +929,9 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				}
 				if (mouseCnt==2)
 				{
-					p1.x = 0;//修改板书范围
-					//p2.x = pt.x;
-					p2.x = Frame_Width;
+					//p1.x = 0;//修改板书范围
+					p2.x = pt.x;
+					//p2.x = Frame_Width;
 				}
 				//p2.x = point.x - MARGIN_LEFT;
 				p2.y = point.y - pic_top;
@@ -1153,7 +1153,7 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 				}
 				if (whichRect == 2)
 				{
-					//blk.x += (point.x - pt.x);//修改板书框
+					blk.x += (point.x - pt.x);//修改板书框
 					blk.y += (point.y  - pt.y);
 					SetDlgItemInt(IDC_editX, blk.x);
 					SetDlgItemInt(IDC_editY, blk.y);
