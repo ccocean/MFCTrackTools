@@ -205,7 +205,7 @@ private:
 	void drawLine(CPoint a, CPoint b);
 	void drawEndRect(CPoint center,int size);
 	void drawLines(int flag);
-	int minimalDistance(CPoint in);
+	//int minimalDistance(CPoint in);
 	int getDistance(CPoint a, CPoint b);
 	void updateLines();
 	void updateParams(int flag);

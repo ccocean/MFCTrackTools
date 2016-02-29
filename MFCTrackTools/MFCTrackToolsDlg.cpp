@@ -777,27 +777,27 @@ void CMFCTrackToolsDlg::trackdraw()
 	}
 }
 
-int CMFCTrackToolsDlg::minimalDistance(CPoint in)
-{
-	int dist = getDistance(in, pa);
-	int rst = 0;
-	if (getDistance(in,pb)<dist)
-	{
-		dist = getDistance(in, pb);
-		rst = 1;
-	}
-	if (getDistance(in, pc) < dist)
-	{
-		dist = getDistance(in, pc);
-		rst = 2;
-	}
-	if (getDistance(in, pd) < dist)
-	{
-		dist = getDistance(in, pd);
-		rst = 3;
-	}
-	return rst;
-}
+//int CMFCTrackToolsDlg::minimalDistance(CPoint in)
+//{
+//	int dist = getDistance(in, pa);
+//	int rst = 0;
+//	if (getDistance(in,pb)<dist)
+//	{
+//		dist = getDistance(in, pb);
+//		rst = 1;
+//	}
+//	if (getDistance(in, pc) < dist)
+//	{
+//		dist = getDistance(in, pc);
+//		rst = 2;
+//	}
+//	if (getDistance(in, pd) < dist)
+//	{
+//		dist = getDistance(in, pd);
+//		rst = 3;
+//	}
+//	return rst;
+//}
 
 int CMFCTrackToolsDlg::getDistance(CPoint a, CPoint b)
 {
@@ -1295,10 +1295,7 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 	CDialogEx::OnMouseMove(nFlags, point);
 }
 
-void CMFCTrackToolsDlg::updateParamsFromStu(StuITRACK_ClientParams_t* params)
-{
-	loadParamsFromStu(params);
-}
+
 
 void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 {
@@ -1307,122 +1304,122 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 	{
 		if (CurSel == STU_TAB)
 		{
-			pt = { 0 };
-			if (pa.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pa.x + 10 && pa.y - 10 <= point.y - pic_top&&point.y - pic_top <= pa.y + 10)
-			{
-				if (pa.x != point.x&&pa.y != point.y)
-				{
-					p1 = pa;
-					mouseStatus = Mouse_RBDOWN;
-					//isRightButton = 1;
-				}
-			}
-			else if (pb.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pb.x + 10 && pb.y - 10 <= point.y - pic_top&&point.y - pic_top <= pb.y + 10)
-			{
-				if (pb.x != point.x&&pb.y != point.y)
-				{
-					p1 = pb;
-					mouseStatus = Mouse_RBDOWN;
-					//isRightButton = 1;
-				}
-			}
-			else if (pc.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pc.x + 10 && pc.y - 10 <= point.y - pic_top&&point.y - pic_top <= pc.y + 10)
-			{
-				if (pc.x != point.x&&pc.y != point.y)
-				{
-					p1 = pc;
-					mouseStatus = Mouse_RBDOWN;
-					//isRightButton = 1;
-				}
-			}
-			else if (pd.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pd.x + 10 && pd.y - 10 <= point.y - pic_top&&point.y - pic_top <= pd.y + 10)
-			{
-				if (pd.x != point.x&&pd.y != point.y)
-				{
-					p1 = pd;
-					mouseStatus = Mouse_RBDOWN;
-					//isRightButton = 1;
-				}
-			}
-			else if (pA.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pA.x + 10 && pA.y - 10 <= point.y - pic_top&&point.y - pic_top <= pA.y + 10)
-			{
-				if (pA.x>0&&pA.y>0)
-				{
-					pt = point;
-					p1 = pa;
-					mouseStatus = Mouse_RBDRAG;
-					whichVertex = -1;
-				}
-			}
-			else if (pB.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pB.x + 10 && pB.y - 10 <= point.y - pic_top&&point.y - pic_top <= pB.y + 10)
-			{
-				if (pB.x>0&&pB.y>0)
-				{
-					pt = point;
-					p1 = pb;
-					mouseStatus = Mouse_RBDRAG;
-					whichVertex = -1;
-				}
-			}
-			else if (pC.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pC.x + 10 && pC.y - 10 <= point.y - pic_top&&point.y - pic_top <= pC.y + 10)
-			{
-				if (pC.x > 0 && pC.y > 0)
-				{
-					pt = point;
-					p1 = pc;
-					mouseStatus = Mouse_RBDRAG;
-					whichVertex = -1;
-				}
-			}
-			else if (pD.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pD.x + 10 && pD.y - 10 <= point.y - pic_top&&point.y - pic_top <= pD.y + 10)
-			{
-				if (pD.x > 0 && pD.y > 0)
-				{
-					pt = point;
-					p1 = pd;
-					mouseStatus = Mouse_RBDRAG;
-					whichVertex = -1;
-				}
-			}
-			//调整四个顶点的宽度
-			else if (ln1[1].x - 5 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= ln1[1].x + 5 && ln1[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln1[1].y + 5)
-			{
-				pt = point;
-				//p2 = pa;
-				whichVertex = 0;
-				mouseStatus = Mouse_RBDRAG;
-			}
-			else if (ln2[1].x - 5 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= ln2[1].x + 5 && ln2[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln2[1].y + 5)
-			{
-				pt = point;
-				//p2 = pb;
-				whichVertex = 1;
-				mouseStatus = Mouse_RBDRAG;
-			}
-			else if (ln3[1].x - 5 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= ln3[1].x + 5 && ln3[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln3[1].y + 5)
-			{
-				pt = point;
-				//p2 = pc;
-				whichVertex = 2;
-				mouseStatus = Mouse_RBDRAG;
-			}
-			else if (ln4[1].x - 5 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= ln4[1].x + 5 && ln4[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln4[1].y + 5)
-			{
-				pt = point;
-				//p2 = pd;
-				whichVertex = 3;
-				mouseStatus = Mouse_RBDRAG;
-			}
-			else
-			{
-				pA = pB = pC = pD = { 0 };
-				p1 = p2 = pt = { 0 };
-				/*ln1[0] = ln1[1] = { 0 };
-				ln2[0] = ln2[1] = { 0 };
-				ln3[0] = ln3[1] = { 0 };
-				ln4[0] = ln4[1] = { 0 };*/
-				updateLines();
-			}
+			//pt = { 0 };
+			//if (pa.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pa.x + 10 && pa.y - 10 <= point.y - pic_top&&point.y - pic_top <= pa.y + 10)
+			//{
+			//	if (pa.x != point.x&&pa.y != point.y)
+			//	{
+			//		p1 = pa;
+			//		mouseStatus = Mouse_RBDOWN;
+			//		//isRightButton = 1;
+			//	}
+			//}
+			//else if (pb.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pb.x + 10 && pb.y - 10 <= point.y - pic_top&&point.y - pic_top <= pb.y + 10)
+			//{
+			//	if (pb.x != point.x&&pb.y != point.y)
+			//	{
+			//		p1 = pb;
+			//		mouseStatus = Mouse_RBDOWN;
+			//		//isRightButton = 1;
+			//	}
+			//}
+			//else if (pc.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pc.x + 10 && pc.y - 10 <= point.y - pic_top&&point.y - pic_top <= pc.y + 10)
+			//{
+			//	if (pc.x != point.x&&pc.y != point.y)
+			//	{
+			//		p1 = pc;
+			//		mouseStatus = Mouse_RBDOWN;
+			//		//isRightButton = 1;
+			//	}
+			//}
+			//else if (pd.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pd.x + 10 && pd.y - 10 <= point.y - pic_top&&point.y - pic_top <= pd.y + 10)
+			//{
+			//	if (pd.x != point.x&&pd.y != point.y)
+			//	{
+			//		p1 = pd;
+			//		mouseStatus = Mouse_RBDOWN;
+			//		//isRightButton = 1;
+			//	}
+			//}
+			//else if (pA.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pA.x + 10 && pA.y - 10 <= point.y - pic_top&&point.y - pic_top <= pA.y + 10)
+			//{
+			//	if (pA.x>0&&pA.y>0)
+			//	{
+			//		pt = point;
+			//		p1 = pa;
+			//		mouseStatus = Mouse_RBDRAG;
+			//		whichVertex = -1;
+			//	}
+			//}
+			//else if (pB.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pB.x + 10 && pB.y - 10 <= point.y - pic_top&&point.y - pic_top <= pB.y + 10)
+			//{
+			//	if (pB.x>0&&pB.y>0)
+			//	{
+			//		pt = point;
+			//		p1 = pb;
+			//		mouseStatus = Mouse_RBDRAG;
+			//		whichVertex = -1;
+			//	}
+			//}
+			//else if (pC.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pC.x + 10 && pC.y - 10 <= point.y - pic_top&&point.y - pic_top <= pC.y + 10)
+			//{
+			//	if (pC.x > 0 && pC.y > 0)
+			//	{
+			//		pt = point;
+			//		p1 = pc;
+			//		mouseStatus = Mouse_RBDRAG;
+			//		whichVertex = -1;
+			//	}
+			//}
+			//else if (pD.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pD.x + 10 && pD.y - 10 <= point.y - pic_top&&point.y - pic_top <= pD.y + 10)
+			//{
+			//	if (pD.x > 0 && pD.y > 0)
+			//	{
+			//		pt = point;
+			//		p1 = pd;
+			//		mouseStatus = Mouse_RBDRAG;
+			//		whichVertex = -1;
+			//	}
+			//}
+			////调整四个顶点的宽度
+			//else if (ln1[1].x - 5 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= ln1[1].x + 5 && ln1[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln1[1].y + 5)
+			//{
+			//	pt = point;
+			//	//p2 = pa;
+			//	whichVertex = 0;
+			//	mouseStatus = Mouse_RBDRAG;
+			//}
+			//else if (ln2[1].x - 5 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= ln2[1].x + 5 && ln2[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln2[1].y + 5)
+			//{
+			//	pt = point;
+			//	//p2 = pb;
+			//	whichVertex = 1;
+			//	mouseStatus = Mouse_RBDRAG;
+			//}
+			//else if (ln3[1].x - 5 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= ln3[1].x + 5 && ln3[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln3[1].y + 5)
+			//{
+			//	pt = point;
+			//	//p2 = pc;
+			//	whichVertex = 2;
+			//	mouseStatus = Mouse_RBDRAG;
+			//}
+			//else if (ln4[1].x - 5 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= ln4[1].x + 5 && ln4[1].y - 5 <= point.y - pic_top&&point.y - pic_top <= ln4[1].y + 5)
+			//{
+			//	pt = point;
+			//	//p2 = pd;
+			//	whichVertex = 3;
+			//	mouseStatus = Mouse_RBDRAG;
+			//}
+			//else
+			//{
+			//	pA = pB = pC = pD = { 0 };
+			//	p1 = p2 = pt = { 0 };
+			//	/*ln1[0] = ln1[1] = { 0 };
+			//	ln2[0] = ln2[1] = { 0 };
+			//	ln3[0] = ln3[1] = { 0 };
+			//	ln4[0] = ln4[1] = { 0 };*/
+			//	updateLines();
+			//}
 		}
 		else
 		{
@@ -1961,6 +1958,11 @@ void CMFCTrackToolsDlg::loadParamsFromPlc(Policy_Set_t* params)
 	dlgCtrl.m_chk_multiple.SetCheck(params->mut_pic_flag);
 	dlgCtrl.m_chk_stuOverview.SetCheck(params->stu_feature_flag);
 	str.Format(_T(""));
+}
+
+void CMFCTrackToolsDlg::updateParamsFromStu(StuITRACK_ClientParams_t* params)
+{
+	loadParamsFromStu(params);
 }
 
 static  inline char *get_track_cmd_name(int cmd)
