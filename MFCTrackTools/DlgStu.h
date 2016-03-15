@@ -69,4 +69,12 @@ private:
 public:
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
+	afx_msg void OnBnClickedRadioAglLeftup();
+	afx_msg void OnBnClickedRadioAglRightup();
+	afx_msg void OnBnClickedRadioAglLeftdn();
+	afx_msg void OnBnClickedRadioAglRightdn();
+	afx_msg void OnBnClickedRadioWidthLeftup();
+	afx_msg void OnBnClickedRadioWidthRightup();
+	afx_msg void OnBnClickedRadioWidthLeftdn();
+	afx_msg void OnBnClickedRadioWidthRightdn();
 };

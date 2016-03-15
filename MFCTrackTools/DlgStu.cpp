@@ -61,6 +61,14 @@ BEGIN_MESSAGE_MAP(DlgStu, CDialog)
 	ON_WM_HSCROLL()
 	ON_BN_CLICKED(IDC_BUTTON2, &DlgStu::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &DlgStu::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_RADIO_AGL_LEFTUP, &DlgStu::OnBnClickedRadioAglLeftup)
+	ON_BN_CLICKED(IDC_RADIO_AGL_RIGHTUP, &DlgStu::OnBnClickedRadioAglRightup)
+	ON_BN_CLICKED(IDC_RADIO_AGL_LEFTDN, &DlgStu::OnBnClickedRadioAglLeftdn)
+	ON_BN_CLICKED(IDC_RADIO_AGL_RIGHTDN, &DlgStu::OnBnClickedRadioAglRightdn)
+	ON_BN_CLICKED(IDC_RADIO_WIDTH_LEFTUP, &DlgStu::OnBnClickedRadioWidthLeftup)
+	ON_BN_CLICKED(IDC_RADIO_WIDTH_RIGHTUP, &DlgStu::OnBnClickedRadioWidthRightup)
+	ON_BN_CLICKED(IDC_RADIO_WIDTH_LEFTDN, &DlgStu::OnBnClickedRadioWidthLeftdn)
+	ON_BN_CLICKED(IDC_RADIO_WIDTH_RIGHTDN, &DlgStu::OnBnClickedRadioWidthRightdn)
 END_MESSAGE_MAP()
 
 
@@ -449,6 +457,7 @@ void DlgStu::updateAngle()
 	{
 	case 0:
 		agl = m_sliderAngle.GetPos();
+		stu_params.stuTrack_direct_standard[0] = agl;
 		str.Format(_T("%d"), agl);
 		GetDlgItem(IDC_EDT_LEFTUP_AGL)->SetWindowText(str);
 
@@ -460,6 +469,7 @@ void DlgStu::updateAngle()
 		break;
 	case 1:
 		agl = m_sliderAngle.GetPos();
+		stu_params.stuTrack_direct_standard[1] = agl;
 		str.Format(_T("%d"), agl);
 		GetDlgItem(IDC_EDT_RIGHTUP_AGL)->SetWindowText(str);
 
@@ -471,6 +481,7 @@ void DlgStu::updateAngle()
 		break;
 	case 2:
 		agl = m_sliderAngle.GetPos();
+		stu_params.stuTrack_direct_standard[3] = agl;
 		str.Format(_T("%d"), agl);
 		GetDlgItem(IDC_EDT_LEFTDN_AGL)->SetWindowText(str);
 
@@ -482,6 +493,7 @@ void DlgStu::updateAngle()
 		break;
 	case 3:
 		agl = m_sliderAngle.GetPos();
+		stu_params.stuTrack_direct_standard[2] = agl;
 		str.Format(_T("%d"), agl);
 		GetDlgItem(IDC_EDT_RIGHTDN_AGL)->SetWindowText(str);
 
@@ -531,6 +543,7 @@ void DlgStu::updateWidth()
 		GetDlgItem(IDC_WIDTH_RIGHT)->SetWindowText(str);
 
 		width = m_sliderWidth.GetPos();
+		stu_params.stuTrack_stuWidth_standard[0] = width;
 		str.Format(_T("%d"), width);
 		GetDlgItem(IDC_EDT_LEFTUP_WID)->SetWindowText(str);
 
@@ -549,6 +562,7 @@ void DlgStu::updateWidth()
 		GetDlgItem(IDC_WIDTH_RIGHT)->SetWindowText(str);
 
 		width = m_sliderWidth.GetPos();
+		stu_params.stuTrack_stuWidth_standard[1] = width;
 		str.Format(_T("%d"), width);
 		GetDlgItem(IDC_EDT_RIGHTUP_WID)->SetWindowText(str);
 
@@ -566,6 +580,7 @@ void DlgStu::updateWidth()
 		GetDlgItem(IDC_WIDTH_RIGHT)->SetWindowText(str);
 
 		width = m_sliderWidth.GetPos();
+		stu_params.stuTrack_stuWidth_standard[3] = width;
 		str.Format(_T("%d"), width);
 		GetDlgItem(IDC_EDT_LEFTDN_WID)->SetWindowText(str);
 
@@ -583,6 +598,7 @@ void DlgStu::updateWidth()
 		GetDlgItem(IDC_WIDTH_RIGHT)->SetWindowText(str);
 
 		width = m_sliderWidth.GetPos();
+		stu_params.stuTrack_stuWidth_standard[2] = width;
 		str.Format(_T("%d"), width);
 		GetDlgItem(IDC_EDT_RIGHTDN_WID)->SetWindowText(str);
 
@@ -627,4 +643,92 @@ void DlgStu::OnBnClickedButton3()
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 		pWnd->updateParamsFromStu(&temp);
 	}
+}
+
+
+void DlgStu::OnBnClickedRadioAglLeftup()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int pos;
+	CString strPos;
+	m_edtLeftUpAgl.GetWindowText(strPos);
+	pos = _ttoi(strPos);
+	m_sliderAngle.SetPos(pos);
+}
+
+
+void DlgStu::OnBnClickedRadioAglRightup()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int pos;
+	CString strPos;
+	m_edtRightUpAgl.GetWindowText(strPos);
+	pos = _ttoi(strPos);
+	m_sliderAngle.SetPos(pos);
+}
+
+
+void DlgStu::OnBnClickedRadioAglLeftdn()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int pos;
+	CString strPos;
+	m_edtLeftDnAgl.GetWindowText(strPos);
+	pos = _ttoi(strPos);
+	m_sliderAngle.SetPos(pos);
+}
+
+
+void DlgStu::OnBnClickedRadioAglRightdn()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int pos;
+	CString strPos;
+	m_edtRightDnAgl.GetWindowText(strPos);
+	pos = _ttoi(strPos);
+	m_sliderAngle.SetPos(pos);
+}
+
+
+void DlgStu::OnBnClickedRadioWidthLeftup()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int pos;
+	CString strPos;
+	m_edtLeftUpWid.GetWindowText(strPos);
+	pos = _ttoi(strPos);
+	m_sliderWidth.SetPos(pos);
+}
+
+
+void DlgStu::OnBnClickedRadioWidthRightup()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int pos;
+	CString strPos;
+	m_edtRightUpWid.GetWindowText(strPos);
+	pos = _ttoi(strPos);
+	m_sliderWidth.SetPos(pos);
+}
+
+
+void DlgStu::OnBnClickedRadioWidthLeftdn()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int pos;
+	CString strPos;
+	m_edtLeftDnWid.GetWindowText(strPos);
+	pos = _ttoi(strPos);
+	m_sliderWidth.SetPos(pos);
+}
+
+
+void DlgStu::OnBnClickedRadioWidthRightdn()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int pos;
+	CString strPos;
+	m_edtRightDnWid.GetWindowText(strPos);
+	pos = _ttoi(strPos);
+	m_sliderWidth.SetPos(pos);
 }

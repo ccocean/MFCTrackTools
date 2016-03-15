@@ -121,6 +121,7 @@ BEGIN_MESSAGE_MAP(CMFCTrackToolsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK1, &CMFCTrackToolsDlg::OnBnClickedCheck1)
 	ON_BN_CLICKED(IDC_CHECK2, &CMFCTrackToolsDlg::OnBnClickedCheck2)
 	ON_BN_CLICKED(IDC_BUTTON_ABOUT, &CMFCTrackToolsDlg::OnBnClickedButtonAbout)
+	ON_BN_CLICKED(IDC_BTN_SAVE, &CMFCTrackToolsDlg::OnBnClickedBtnSave)
 END_MESSAGE_MAP()
 
 
@@ -154,9 +155,9 @@ BOOL CMFCTrackToolsDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-	m_check_algFlag.SetCheck(FALSE);
-	m_check_stuFlag.SetCheck(FALSE);
-	m_isAlgActivity.isTchTrack = m_isAlgActivity.isStuTrack = FALSE;
+	//m_check_algFlag.SetCheck(FALSE);
+	//m_check_stuFlag.SetCheck(FALSE);
+	//m_isAlgActivity.isTchTrack = m_isAlgActivity.isStuTrack = FALSE;
 	// TODO:  在此添加额外的初始化代码
 	return initProgramControl();
 }
@@ -402,7 +403,47 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgStu.m_comboDly.InsertString(4, _T("2.5"));
 	dlgStu.m_comboDly.InsertString(5, _T("3.0"));
 	dlgStu.m_sliderAngle.SetRange(0, 360);
-	dlgStu.m_sliderAngle.SetPos(180);
+	/*int pos;
+	CString tempPos;
+	switch (dlgStu.m_radioAgl)
+	{
+	case 0:
+		dlgStu.m_edtRightUpAgl.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);
+		dlgStu.m_sliderAngle.SetPos(pos);
+	case 1:
+		dlgStu.m_edtRightUpAgl.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);
+		dlgStu.m_sliderAngle.SetPos(pos);
+	case 2:
+		dlgStu.m_edtLeftDnAgl.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);
+		dlgStu.m_sliderAngle.SetPos(pos);
+	case 3:
+		dlgStu.m_edtRightDnAgl.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);
+		dlgStu.m_sliderAngle.SetPos(pos);
+	}
+
+	switch (dlgStu.m_radioWid)
+	{
+	case 0:
+		dlgStu.m_edtRightUpWid.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);
+		dlgStu.m_sliderWidth.SetPos(pos);
+	case 1:
+		dlgStu.m_edtRightUpWid.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);
+		dlgStu.m_sliderWidth.SetPos(pos);
+	case 2:
+		dlgStu.m_edtLeftDnWid.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);
+		dlgStu.m_sliderWidth.SetPos(pos);
+	case 3:
+		dlgStu.m_edtRightDnWid.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);
+		dlgStu.m_sliderWidth.SetPos(pos);
+	}*/
 
 	//初始化dlgCtrl中的控件
 	dlgCtrl.m_chk_multiple.SetCheck(TRUE);
@@ -860,7 +901,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					pt.x = point.x;
 					pt.y = point.y;
 					mouseStatus = Mouse_ADJUST_A;
-					pA = pB = pC = pD = { 0 };
+					//pA = pB = pC = pD = { 0 };
 				}
 			}
 			else if (pb.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pb.x + 10 && pb.y - 10 <= point.y - pic_top&&point.y - pic_top <= pb.y + 10)
@@ -870,7 +911,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					pt.x = point.x;
 					pt.y = point.y;
 					mouseStatus = Mouse_ADJUST_B;
-					pA = pB = pC = pD = { 0 };
+					//pA = pB = pC = pD = { 0 };
 				}
 			}
 			else if (pc.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pc.x + 10 && pc.y - 10 <= point.y - pic_top&&point.y - pic_top <= pc.y + 10)
@@ -880,7 +921,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					pt.x = point.x;
 					pt.y = point.y;
 					mouseStatus = Mouse_ADJUST_C;
-					pA = pB = pC = pD = { 0 };
+					//pA = pB = pC = pD = { 0 };
 				}
 			}
 			else if (pd.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pd.x + 10 && pd.y - 10 <= point.y - pic_top&&point.y - pic_top <= pd.y + 10)
@@ -890,7 +931,7 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					pt.x = point.x;
 					pt.y = point.y;
 					mouseStatus = Mouse_ADJUST_D;
-					pA = pB = pC = pD = { 0 };
+					//pA = pB = pC = pD = { 0 };
 				}
 			}
 			else
@@ -1209,6 +1250,9 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 			{
 				pa.x += (point.x  - pt.x);
 				pa.y += (point.y  - pt.y);
+				pA.x += (point.x - pt.x);
+				pA.y += (point.x - pt.x);
+
 				pt.x = point.x;
 				pt.y = point.y;
 			}
@@ -1216,6 +1260,8 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 			{
 				pb.x += (point.x  - pt.x);
 				pb.y += (point.y  - pt.y);
+				pB.x += (point.x - pt.x);
+				pB.y += (point.y - pt.y);
 				pt.x = point.x;
 				pt.y = point.y;
 			}
@@ -1223,6 +1269,8 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 			{
 				pc.x += (point.x - pt.x);
 				pc.y += (point.y  - pt.y);
+				pC.x += (point.x - pt.x);
+				pC.y += (point.y - pt.y);
 				pt.x = point.x;
 				pt.y = point.y;
 			}
@@ -1230,6 +1278,8 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 			{
 				pd.x += (point.x  - pt.x);
 				pd.y += (point.y  - pt.y);
+				pD.x += (point.x - pt.x);
+				pD.y += (point.y - pt.y);
 				pt.x = point.x;
 				pt.y = point.y;
 			}
@@ -1294,8 +1344,6 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 	}
 	CDialogEx::OnMouseMove(nFlags, point);
 }
-
-
 
 void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 {
@@ -1516,125 +1564,125 @@ void CMFCTrackToolsDlg::OnRButtonUp(UINT nFlags, CPoint point)
 		}
 		else
 		{
-			if (p1 == pa)
-			{
-				p2.x = point.x - MARGIN_LEFT;
-				p2.y = point.y - pic_top;
-				CPoint p = p2 - p1;
-				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
-				angle = angle < 0 ? angle + 360 : angle;
-				s.Format("%d", angle);
-				if (pa.x>0 && pa.y > 0)
-				{
-					pA = p2;
-					p1 = p2 = { 0 };
-					dlgStu.m_edtLeftUpAgl.SetWindowText(s);
-					dlgStu.stu_params.stuTrack_direct_standard[0] = angle;
-				}
-				else
-				{
-					p2 = { 0 };
-				}
-			}
-			if (p1 == pb)
-			{
-				p2.x = point.x - MARGIN_LEFT;
-				p2.y = point.y - pic_top;
-				CPoint p = p2 - p1;
-				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
-				angle = angle < 0 ? angle + 360 : angle;
-				s.Format("%d", angle);
-				if (pb.x > 0 && pb.y > 0)
-				{
-					pB = p2;
-					p1 = p2 = { 0 };
-					dlgStu.m_edtRightUpAgl.SetWindowText(s);
-					dlgStu.stu_params.stuTrack_direct_standard[1] = angle;
-				}
-				else
-				{
-					p2 = { 0 };
-				}
-			}
-			if (p1 == pc)
-			{
-				p2.x = point.x - MARGIN_LEFT;
-				p2.y = point.y - pic_top;
-				CPoint p = p2 - p1;
-				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
-				angle = angle < 0 ? angle + 360 : angle;
-				s.Format("%d", angle);
-				if (pc.x > 0 && pc.y > 0)
-				{
-					pC = p2;
-					p1 = p2 = { 0 };
-					dlgStu.m_edtRightDnAgl.SetWindowText(s);
-					dlgStu.stu_params.stuTrack_direct_standard[2] = angle;
-				}
-				else
-				{
-					p2 = { 0 };
-				}
-			}
-			if (p1 == pd)
-			{
-				p2.x = point.x - MARGIN_LEFT;
-				p2.y = point.y - pic_top;
-				CPoint p = p2 - p1;
-				angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
-				angle = angle < 0 ? angle + 360 : angle;
-				s.Format("%d", angle);
-				if (pd.x > 0 && pd.y > 0)
-				{
-					pD = p2;
-					p1 = p2 = { 0 };
-					dlgStu.m_edtLeftDnAgl.SetWindowText(s);
-					dlgStu.stu_params.stuTrack_direct_standard[3] = angle;
-				}
-				else
-				{
-					p2 = { 0 };
-				}
-			}
-			if (whichVertex == 0)
-			{
-				ln1[1].x += (point.x - pt.x);
-				dist = getDistance(ln1[0], ln1[1]);
-				s.Format("%d", dist);
-				dlgStu.m_edtLeftUpWid.SetWindowText(s);
-				whichVertex = -1;
-				dlgStu.stu_params.stuTrack_stuWidth_standard[0] = dist;
-				//pt = point;
-			}
-			if (whichVertex == 1)
-			{
-				ln2[1].x += (point.x - pt.x);
-				dist = getDistance(ln2[0], ln2[1]);
-				s.Format("%d", dist);
-				dlgStu.m_edtRightUpWid.SetWindowText(s);
-				whichVertex = -1;
-				dlgStu.stu_params.stuTrack_stuWidth_standard[1] = dist;
-			}
-			if (whichVertex == 2)
-			{
-				ln3[1].x += (point.x - pt.x);
-				dist = getDistance(ln3[0], ln3[1]);
-				s.Format("%d", dist);
-				dlgStu.m_edtRightDnWid.SetWindowText(s);
-				whichVertex = -1;
-				dlgStu.stu_params.stuTrack_stuWidth_standard[2] = dist;
-			}
-			if (whichVertex == 3)
-			{
-				ln4[1].x += (point.x - pt.x);
-				dist = getDistance(ln4[0], ln4[1]);
-				s.Format("%d", dist);
-				dlgStu.m_edtLeftDnWid.SetWindowText(s);
-				whichVertex = -1;
-				dlgStu.stu_params.stuTrack_stuWidth_standard[3] = dist;
-			}
-			mouseStatus = Mouse_RBUP;
-			//isRightButton = 0;
+			//if (p1 == pa)
+			//{
+			//	p2.x = point.x - MARGIN_LEFT;
+			//	p2.y = point.y - pic_top;
+			//	CPoint p = p2 - p1;
+			//	angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
+			//	angle = angle < 0 ? angle + 360 : angle;
+			//	s.Format("%d", angle);
+			//	if (pa.x>0 && pa.y > 0)
+			//	{
+			//		pA = p2;
+			//		p1 = p2 = { 0 };
+			//		dlgStu.m_edtLeftUpAgl.SetWindowText(s);
+			//		dlgStu.stu_params.stuTrack_direct_standard[0] = angle;
+			//	}
+			//	else
+			//	{
+			//		p2 = { 0 };
+			//	}
+			//}
+			//if (p1 == pb)
+			//{
+			//	p2.x = point.x - MARGIN_LEFT;
+			//	p2.y = point.y - pic_top;
+			//	CPoint p = p2 - p1;
+			//	angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
+			//	angle = angle < 0 ? angle + 360 : angle;
+			//	s.Format("%d", angle);
+			//	if (pb.x > 0 && pb.y > 0)
+			//	{
+			//		pB = p2;
+			//		p1 = p2 = { 0 };
+			//		dlgStu.m_edtRightUpAgl.SetWindowText(s);
+			//		dlgStu.stu_params.stuTrack_direct_standard[1] = angle;
+			//	}
+			//	else
+			//	{
+			//		p2 = { 0 };
+			//	}
+			//}
+			//if (p1 == pc)
+			//{
+			//	p2.x = point.x - MARGIN_LEFT;
+			//	p2.y = point.y - pic_top;
+			//	CPoint p = p2 - p1;
+			//	angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
+			//	angle = angle < 0 ? angle + 360 : angle;
+			//	s.Format("%d", angle);
+			//	if (pc.x > 0 && pc.y > 0)
+			//	{
+			//		pC = p2;
+			//		p1 = p2 = { 0 };
+			//		dlgStu.m_edtRightDnAgl.SetWindowText(s);
+			//		dlgStu.stu_params.stuTrack_direct_standard[2] = angle;
+			//	}
+			//	else
+			//	{
+			//		p2 = { 0 };
+			//	}
+			//}
+			//if (p1 == pd)
+			//{
+			//	p2.x = point.x - MARGIN_LEFT;
+			//	p2.y = point.y - pic_top;
+			//	CPoint p = p2 - p1;
+			//	angle = (int)(atan2(p.y, p.x) * ITC_RADIAN_TO_ANGLE);
+			//	angle = angle < 0 ? angle + 360 : angle;
+			//	s.Format("%d", angle);
+			//	if (pd.x > 0 && pd.y > 0)
+			//	{
+			//		pD = p2;
+			//		p1 = p2 = { 0 };
+			//		dlgStu.m_edtLeftDnAgl.SetWindowText(s);
+			//		dlgStu.stu_params.stuTrack_direct_standard[3] = angle;
+			//	}
+			//	else
+			//	{
+			//		p2 = { 0 };
+			//	}
+			//}
+			//if (whichVertex == 0)
+			//{
+			//	ln1[1].x += (point.x - pt.x);
+			//	dist = getDistance(ln1[0], ln1[1]);
+			//	s.Format("%d", dist);
+			//	dlgStu.m_edtLeftUpWid.SetWindowText(s);
+			//	whichVertex = -1;
+			//	dlgStu.stu_params.stuTrack_stuWidth_standard[0] = dist;
+			//	//pt = point;
+			//}
+			//if (whichVertex == 1)
+			//{
+			//	ln2[1].x += (point.x - pt.x);
+			//	dist = getDistance(ln2[0], ln2[1]);
+			//	s.Format("%d", dist);
+			//	dlgStu.m_edtRightUpWid.SetWindowText(s);
+			//	whichVertex = -1;
+			//	dlgStu.stu_params.stuTrack_stuWidth_standard[1] = dist;
+			//}
+			//if (whichVertex == 2)
+			//{
+			//	ln3[1].x += (point.x - pt.x);
+			//	dist = getDistance(ln3[0], ln3[1]);
+			//	s.Format("%d", dist);
+			//	dlgStu.m_edtRightDnWid.SetWindowText(s);
+			//	whichVertex = -1;
+			//	dlgStu.stu_params.stuTrack_stuWidth_standard[2] = dist;
+			//}
+			//if (whichVertex == 3)
+			//{
+			//	ln4[1].x += (point.x - pt.x);
+			//	dist = getDistance(ln4[0], ln4[1]);
+			//	s.Format("%d", dist);
+			//	dlgStu.m_edtLeftDnWid.SetWindowText(s);
+			//	whichVertex = -1;
+			//	dlgStu.stu_params.stuTrack_stuWidth_standard[3] = dist;
+			//}
+			//mouseStatus = Mouse_RBUP;
+			////isRightButton = 0;
 		}
 	}
 	CDialogEx::OnRButtonUp(nFlags, point);
@@ -1745,7 +1793,7 @@ void CMFCTrackToolsDlg::updateParams(int flag)
 	}
 	else
 	{
-		dist = getDistance(ln1[0], ln1[1]);
+		/*dist = getDistance(ln1[0], ln1[1]);
 		s.Format("%d", dist);
 		dlgStu.m_edtLeftUpWid.SetWindowText(s);
 		dlgStu.stu_params.stuTrack_stuWidth_standard[0] = dist;
@@ -1763,7 +1811,49 @@ void CMFCTrackToolsDlg::updateParams(int flag)
 		dist = getDistance(ln4[0], ln4[1]);
 		s.Format("%d", dist);
 		dlgStu.m_edtLeftDnWid.SetWindowText(s);
-		dlgStu.stu_params.stuTrack_stuWidth_standard[3] = dist;
+		dlgStu.stu_params.stuTrack_stuWidth_standard[3] = dist;*/
+
+		CPoint v1, v2;
+		int mod1 = 0, mod2 = 0;
+		double v1x, v1y, v2x, v2y;
+		v1 = pb - pa; v2 = pd - pc;
+		mod1 = sqrt(v1.x*v1.x + v1.y*v1.y);
+		mod2 = sqrt(v2.x*v2.x + v2.y*v2.y);
+		v1x = ((double)v1.x) / mod1; v1y = ((double)v1.y) / mod1;
+		v2x = ((double)v2.x) / mod2; v2y = ((double)v2.y) / mod2;
+		int width;
+
+		//GetDlgItem(IDC_EDT_LEFTUP_WID)->GetWindowText(str);
+		width = dlgStu.stu_params.stuTrack_stuWidth_standard[0];
+		s.Format("%d", width);
+		dlgStu.m_edtLeftUpWid.SetWindowText(s);
+		ln1[0] = pa;
+		ln1[1].x = (int)(pa.x + v1x*width + 0.5);
+		ln1[1].y = (int)(pa.y + v1y*width + 0.5);
+
+		//GetDlgItem(IDC_EDT_RIGHTUP_WID)->GetWindowText(str);
+		width = dlgStu.stu_params.stuTrack_stuWidth_standard[1];
+		s.Format("%d", width);
+		dlgStu.m_edtRightUpWid.SetWindowText(s);
+		ln2[0] = pb;
+		ln2[1].x = (int)(pb.x - v1x*width + 0.5);
+		ln2[1].y = (int)(pb.y - v1y*width + 0.5);
+
+		//GetDlgItem(IDC_EDT_LEFTDN_WID)->GetWindowText(str);
+		width = dlgStu.stu_params.stuTrack_stuWidth_standard[3];
+		s.Format("%d", width);
+		dlgStu.m_edtLeftDnWid.SetWindowText(s);
+		ln4[0] = pd;
+		ln4[1].x = (int)(pd.x - v2x*width + 0.5);
+		ln4[1].y = (int)(pd.y - v2y*width + 0.5);
+
+		//GetDlgItem(IDC_EDT_RIGHTDN_WID)->GetWindowText(str);
+		width = dlgStu.stu_params.stuTrack_stuWidth_standard[2];
+		s.Format("%d", width);
+		dlgStu.m_edtRightDnWid.SetWindowText(s);
+		ln3[0] = pc;
+		ln3[1].x = (int)(pc.x + v2x*width + 0.5);
+		ln3[1].y = (int)(pc.y + v2y*width + 0.5);
 	}
 }
 void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
@@ -1887,8 +1977,25 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 		ln4[1].y = pd.y - v2.y*params->stuTrack_stuWidth_standard[3];
 	}
 	
-	updateParams(PARAM_POSITION);
-	updateParams(PARAM_WIDTH);
+	
+
+	/*switch (dlgStu.m_radioWid)
+	{
+	case 0:
+	dlgStu.m_sliderWidth.SetPos(params->stuTrack_stuWidth_standard[0]);
+	break;
+	case 1:
+	dlgStu.m_sliderWidth.SetPos(params->stuTrack_stuWidth_standard[1]);
+	break;
+	case 2:
+	dlgStu.m_sliderWidth.SetPos(params->stuTrack_stuWidth_standard[3]);
+	break;
+	case 3:
+	dlgStu.m_sliderWidth.SetPos(params->stuTrack_stuWidth_standard[2]);
+	break;
+	default:
+	break;
+	}*/
 
 	//载入四个角度值
 	//int temp = 0;
@@ -1941,7 +2048,59 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 	s.Format("%.1f", params->stuTrack_moveDelayed_threshold/1000.0);
 	dlgStu.m_comboDly.SetWindowText(s);
 
+	/*int pos;
+	CString tempPos;*/
+	switch (dlgStu.m_radioAgl)
+	{
+	case 0:
+		/*dlgStu.m_edtRightUpAgl.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);*/
+		dlgStu.m_sliderAngle.SetPos(params->stuTrack_direct_standard[0]);
+		break;
+	case 1:
+		/*dlgStu.m_edtRightUpAgl.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);*/
+		dlgStu.m_sliderAngle.SetPos(params->stuTrack_direct_standard[1]);
+		break;
+	case 2:
+		/*dlgStu.m_edtLeftDnAgl.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);*/
+		dlgStu.m_sliderAngle.SetPos(params->stuTrack_direct_standard[3]);
+		break;
+	case 3:
+		/*dlgStu.m_edtRightDnAgl.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);*/
+		dlgStu.m_sliderAngle.SetPos(params->stuTrack_direct_standard[2]);
+		break;
+	}
+
+	switch (dlgStu.m_radioWid)
+	{
+	case 0:
+		/*dlgStu.m_edtRightUpWid.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);*/
+		dlgStu.m_sliderWidth.SetPos(params->stuTrack_stuWidth_standard[0]);
+		break;
+	case 1:
+		/*dlgStu.m_edtRightUpWid.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);*/
+		dlgStu.m_sliderWidth.SetPos(params->stuTrack_stuWidth_standard[1]);
+		break;
+	case 2:
+		/*dlgStu.m_edtLeftDnWid.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);*/
+		dlgStu.m_sliderWidth.SetPos(params->stuTrack_stuWidth_standard[3]);
+		break;
+	case 3:
+		/*dlgStu.m_edtRightDnWid.GetWindowText(tempPos);
+		pos = _ttoi(tempPos);*/
+		dlgStu.m_sliderWidth.SetPos(params->stuTrack_stuWidth_standard[2]);
+		break;
+	}
+
 	dlgStu.setParams(params);
+	updateParams(PARAM_POSITION);
+	updateParams(PARAM_WIDTH);
 }
 
 void CMFCTrackToolsDlg::loadParamsFromPlc(Policy_Set_t* params)
@@ -2455,4 +2614,112 @@ void CMFCTrackToolsDlg::OnBnClickedButtonAbout()
 	// TODO:  在此添加控件通知处理程序代码
 	CAboutDlg dlgAbout;
 	dlgAbout.DoModal();
+}
+
+
+void CMFCTrackToolsDlg::OnBnClickedBtnSave()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	//保存到本地
+	CString fileName = _T("parameters.yml");								//默认打开的文件名  
+	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
+	CFileDialog openFileDlg(FALSE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
+	if (openFileDlg.DoModal() == IDOK)
+	{
+		CString FilePathName = openFileDlg.GetPathName();
+		save_Parameter(FilePathName.GetBuffer(0)/*, &dlgStu.stu_params, &dlgTch.tch_params, &dlgCtrl.ctrl_params*/);
+	}
+}
+
+bool CMFCTrackToolsDlg::save_Parameter(std::string filePath/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/)
+{
+	cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
+	if (fs.isOpened())
+	{
+		if (CurSel==TCH_TAB)
+		{
+			//存储教师的参数
+			fs << "tch_height" << dlgTch.tch_params.tch.height;
+			fs << "tch_width" << dlgTch.tch_params.tch.width;
+			fs << "tch_x" << dlgTch.tch_params.tch.x;
+			fs << "tch_y" << dlgTch.tch_params.tch.y;
+
+			fs << "blk_height" << dlgTch.tch_params.blk.height;
+			fs << "blk_width" << dlgTch.tch_params.blk.width;
+			fs << "blk_x" << dlgTch.tch_params.blk.x;
+			fs << "blk_y" << dlgTch.tch_params.blk.y;
+
+			fs << "numOfPos" << dlgTch.tch_params.numOfPos;
+			fs << "numOfSlide" << dlgTch.tch_params.numOfSlide;
+			fs << "outside" << dlgTch.tch_params.threshold.outside;
+			fs << "stand" << dlgTch.tch_params.threshold.stand;
+			fs << "targetArea" << dlgTch.tch_params.threshold.targetArea;
+			fs.release();
+			return true;
+		}
+		
+		if (CurSel==STU_TAB)
+		{
+			//存储学生参数
+			fs << "height" << dlgStu.stu_params.height;
+			fs << "width" << dlgStu.stu_params.width;
+			fs << "stuTrack_debugMsg_flag" << dlgStu.stu_params.stuTrack_debugMsg_flag;
+			fs << "stuTrack_Draw_flag" << dlgStu.stu_params.stuTrack_Draw_flag;
+
+			fs << "stuTrack_direct_standard" << "[";
+			fs << dlgStu.stu_params.stuTrack_direct_standard[0] << dlgStu.stu_params.stuTrack_direct_standard[1] << dlgStu.stu_params.stuTrack_direct_standard[2] << dlgStu.stu_params.stuTrack_direct_standard[3];
+			fs << "]";
+
+			fs << "stuTrack_stuWidth_standard" << "[";
+			fs << dlgStu.stu_params.stuTrack_stuWidth_standard[0] << dlgStu.stu_params.stuTrack_stuWidth_standard[1] << dlgStu.stu_params.stuTrack_stuWidth_standard[2] << dlgStu.stu_params.stuTrack_stuWidth_standard[3];
+			fs << "]";
+
+			fs << "stuTrack_direct_range" << dlgStu.stu_params.stuTrack_direct_range;
+			fs << "stuTrack_standCount_threshold" << dlgStu.stu_params. stuTrack_standCount_threshold;
+			fs << "stuTrack_sitdownCount_threshold" << dlgStu.stu_params.stuTrack_sitdownCount_threshold;
+			fs << "stuTrack_moveDelayed_threshold" << dlgStu.stu_params.stuTrack_moveDelayed_threshold;
+			fs << "stuTrack_move_threshold" << dlgStu.stu_params.stuTrack_move_threshold;
+
+			fs << "stuTrack_vertex" << "[";
+			for (int i = 0; i < 4; i++)
+			{
+				fs << "{";
+				fs << "x" << dlgStu.stu_params.stuTrack_vertex[i].x;
+				fs << "y" << dlgStu.stu_params.stuTrack_vertex[i].y;
+				fs << "}";
+			}
+			fs << "]";
+
+			fs << "transformationMatrix" << "[";
+			for (int i = 0; i < 9; i++)
+			{
+				fs << dlgStu.stu_params.transformationMatrix[i];
+			}
+			fs << "]";
+
+			fs << "stretchingAB" << "[";
+			fs << dlgStu.stu_params.stretchingAB[0] << dlgStu.stu_params.stretchingAB[1];
+			fs << "]";
+			fs.release();
+			return true;
+		}
+		
+		if (CurSel==CTRL_TAB)
+		{
+			fs << "mut_pic_flag" << dlgCtrl.ctrl_params.mut_pic_flag;
+			fs << "stu_feature_flag" << dlgCtrl.ctrl_params.stu_feature_flag;
+			fs << "blb_time_min" << dlgCtrl.ctrl_params.time.blb_time_min;
+			fs << "ppt_time_min" << dlgCtrl.ctrl_params.time.ppt_time_min;
+			fs << "stu_time_min" << dlgCtrl.ctrl_params.time.stu_time_min;
+			fs << "tea_time_min" << dlgCtrl.ctrl_params.time.tea_time_min;
+			fs.release();
+			return true;
+		}
+		
+	}
+	else
+	{
+		fs.release();
+		return true;
+	}
 }
