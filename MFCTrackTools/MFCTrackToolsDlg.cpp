@@ -122,6 +122,7 @@ BEGIN_MESSAGE_MAP(CMFCTrackToolsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK2, &CMFCTrackToolsDlg::OnBnClickedCheck2)
 	ON_BN_CLICKED(IDC_BUTTON_ABOUT, &CMFCTrackToolsDlg::OnBnClickedButtonAbout)
 	ON_BN_CLICKED(IDC_BTN_SAVE, &CMFCTrackToolsDlg::OnBnClickedBtnSave)
+	ON_BN_CLICKED(IDC_BTN_LOAD, &CMFCTrackToolsDlg::OnBnClickedBtnLoad)
 END_MESSAGE_MAP()
 
 
@@ -374,7 +375,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	dlgCtrl.ShowWindow(FALSE);
 	
 	
-	m_tabTrack.SetCurSel(0);
+	m_tabTrack.SetCurSel(TCH_TAB);
 
 	dlgTch.tch_params = { 0 };
 	dlgStu.stu_params = { 0 };
@@ -671,18 +672,19 @@ void CMFCTrackToolsDlg::trackdraw()
 			//	cvLine(srcImg, cvPoint(i, 0), cvPoint(i, Frame_Height), cvScalar(0, 0, 255));
 			//	cvRectangle(srcImg, cvPoint(camPosSlide.left*(Frame_Width / int_pos), 0), cvPoint((camPosSlide.right + 1) * (Frame_Width / int_pos), Frame_Height), cvScalar(255, 0, 0));//画预置位滑框
 			//}
-			if (int_pos > 0)
+			if (!m_isAlgActivity.isTchTrack)
 			{
-				pOldPen = pDC->SelectObject(&penDB);
-				drawRectangle(CPoint(camPosSlide.left*(WIDTH / int_pos), tch.y), CPoint((camPosSlide.right + 1) * (WIDTH / int_pos), tch.y + tch.height));
+				if (int_pos > 0)
+				{
+					pOldPen = pDC->SelectObject(&penDB);
+					drawRectangle(CPoint(camPosSlide.left*(WIDTH / int_pos), tch.y), CPoint((camPosSlide.right + 1) * (WIDTH / int_pos), tch.y + tch.height));
 
-				pOldPen = pDC->SelectObject(&penY);
-				drawEndRect(CPoint((WIDTH / int_pos )/ 2, tch.y + tch.height / 2), 10);
-				drawEndRect(CPoint(WIDTH - (WIDTH / int_pos) / 2, tch.y + tch.height / 2), 10);
+					pOldPen = pDC->SelectObject(&penY);
+					drawEndRect(CPoint((WIDTH / int_pos) / 2, tch.y + tch.height / 2), 10);
+					drawEndRect(CPoint(WIDTH - (WIDTH / int_pos) / 2, tch.y + tch.height / 2), 10);
+				}
 			}
 			
-
-
 			//绘制特写镜头的十字光标
 			pOldPen = pDC->SelectObject(&penR);
 			pDC->MoveTo(CPoint(centre_pt2.x, centre_pt2.y - 10));
@@ -1861,8 +1863,14 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 	g_drawPS = 1;
 	int_pos = params->numOfPos;
 	int_slide = params->numOfSlide;
-	tch = params->tch;
-	blk = params->blk;
+	tch.x = params->tch.x;
+	tch.y = params->tch.y;
+	tch.width = params->tch.width;
+	tch.height = params->tch.height;
+	blk.x = params->blk.x;
+	blk.y = params->blk.y;
+	blk.width = params->blk.width;
+	blk.height = params->blk.height;
 	s.Format("%d", params->threshold.outside);
 	dlgTch.m_editOutSide.SetWindowText(s);
 	s.Format("%d", (int)(params->threshold.stand/1000));
@@ -2399,7 +2407,7 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 
 	switch (CurSel)
 	{
-	case 0:
+	case TCH_TAB:
 		dlgTch.ShowWindow(TRUE);
 		dlgStu.ShowWindow(FALSE);
 		dlgCtrl.ShowWindow(FALSE);
@@ -2433,7 +2441,7 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUTTON5)->ShowWindow(FALSE);
 		ctrlClient_get_teach_params(m_track_clientHandle);
 		break;
-	case 1:
+	case STU_TAB:
 		dlgTch.ShowWindow(FALSE);
 		dlgStu.ShowWindow(TRUE);
 		dlgCtrl.ShowWindow(FALSE);
@@ -2465,7 +2473,7 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUTTON5)->ShowWindow(TRUE);
 		ctrlClient_get_stu_params(m_track_clientHandle);
 		break;
-	case 2:
+	case CTRL_TAB:
 		pa = pb = pc = pd = { -10 };
 		pA = pB = pC = pD = { -10 };
 		ln1[0] = ln2[0] = ln3[0] = ln4[0] = { -10 };
@@ -2616,29 +2624,52 @@ void CMFCTrackToolsDlg::OnBnClickedButtonAbout()
 	dlgAbout.DoModal();
 }
 
-
+using namespace inifile;
 void CMFCTrackToolsDlg::OnBnClickedBtnSave()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	//保存到本地
-	CString fileName = _T("parameters.yml");								//默认打开的文件名  
+	CString fileName;
+	switch (CurSel)
+	{
+	case TCH_TAB:
+		fileName = _T("tch_params.yml");
+		break;
+	case STU_TAB:
+		fileName = _T("stu_params.yml");
+		break;
+	case CTRL_TAB:
+		fileName = _T("plc_params.yml");
+		break;
+	}
+	//CString fileName = _T("params.yml");//默认打开的文件名  
 	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
-	CFileDialog openFileDlg(FALSE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
+	CFileDialog openFileDlg(FALSE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "", NULL);
 	if (openFileDlg.DoModal() == IDOK)
 	{
 		CString FilePathName = openFileDlg.GetPathName();
-		save_Parameter(FilePathName.GetBuffer(0)/*, &dlgStu.stu_params, &dlgTch.tch_params, &dlgCtrl.ctrl_params*/);
+		save_Parameter(FilePathName.GetBuffer(0),fileName.GetBuffer(0)/*, &dlgStu.stu_params, &dlgTch.tch_params, &dlgCtrl.ctrl_params*/);
 	}
 }
 
-bool CMFCTrackToolsDlg::save_Parameter(std::string filePath/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/)
+void CMFCTrackToolsDlg::save_Parameter(std::string filePath, std::string fileName/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/)
 {
-	cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
-	if (fs.isOpened())
+	int tch_pos = fileName.find("tch");
+	int stu_pos = fileName.find("stu");
+	int plc_pos = fileName.find("plc");
+	int params_type = 0;
+	params_type = tch_pos > -1 ? 1 : params_type;
+	params_type = stu_pos > -1 ? 2 : params_type;
+	params_type = plc_pos > -1 ? 3 : params_type;
+	
+	//cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
+	if ((CurSel == TCH_TAB&&CurSel == params_type-1))
 	{
-		if (CurSel==TCH_TAB)
+		cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
+		if (fs.isOpened())
 		{
 			//存储教师的参数
+			fs << "Parameter type" << TCH_TAB + 1;
 			fs << "tch_height" << dlgTch.tch_params.tch.height;
 			fs << "tch_width" << dlgTch.tch_params.tch.width;
 			fs << "tch_x" << dlgTch.tch_params.tch.x;
@@ -2655,12 +2686,21 @@ bool CMFCTrackToolsDlg::save_Parameter(std::string filePath/*, StuITRACK_ClientP
 			fs << "stand" << dlgTch.tch_params.threshold.stand;
 			fs << "targetArea" << dlgTch.tch_params.threshold.targetArea;
 			fs.release();
-			return true;
 		}
-		
-		if (CurSel==STU_TAB)
+		else
+		{
+			fs.release();
+			MessageBox(_T("打开文件失败！"));
+		}
+		//return true;
+	}
+	else if ((CurSel == STU_TAB&&CurSel == params_type-1))
+	{
+		cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
+		if (fs.isOpened())
 		{
 			//存储学生参数
+			fs << "Parameter type" << STU_TAB + 1;
 			fs << "height" << dlgStu.stu_params.height;
 			fs << "width" << dlgStu.stu_params.width;
 			fs << "stuTrack_debugMsg_flag" << dlgStu.stu_params.stuTrack_debugMsg_flag;
@@ -2675,7 +2715,7 @@ bool CMFCTrackToolsDlg::save_Parameter(std::string filePath/*, StuITRACK_ClientP
 			fs << "]";
 
 			fs << "stuTrack_direct_range" << dlgStu.stu_params.stuTrack_direct_range;
-			fs << "stuTrack_standCount_threshold" << dlgStu.stu_params. stuTrack_standCount_threshold;
+			fs << "stuTrack_standCount_threshold" << dlgStu.stu_params.stuTrack_standCount_threshold;
 			fs << "stuTrack_sitdownCount_threshold" << dlgStu.stu_params.stuTrack_sitdownCount_threshold;
 			fs << "stuTrack_moveDelayed_threshold" << dlgStu.stu_params.stuTrack_moveDelayed_threshold;
 			fs << "stuTrack_move_threshold" << dlgStu.stu_params.stuTrack_move_threshold;
@@ -2701,11 +2741,20 @@ bool CMFCTrackToolsDlg::save_Parameter(std::string filePath/*, StuITRACK_ClientP
 			fs << dlgStu.stu_params.stretchingAB[0] << dlgStu.stu_params.stretchingAB[1];
 			fs << "]";
 			fs.release();
-			return true;
 		}
-		
-		if (CurSel==CTRL_TAB)
+		else
 		{
+			fs.release();
+			MessageBox(_T("打开文件失败！"));
+		}
+		//return true;
+	}
+	else if ((CurSel == CTRL_TAB&&CurSel == params_type-1))
+	{
+		cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
+		if (fs.isOpened())
+		{
+			fs << "Parameter type" << CTRL_TAB + 1;
 			fs << "mut_pic_flag" << dlgCtrl.ctrl_params.mut_pic_flag;
 			fs << "stu_feature_flag" << dlgCtrl.ctrl_params.stu_feature_flag;
 			fs << "blb_time_min" << dlgCtrl.ctrl_params.time.blb_time_min;
@@ -2713,13 +2762,196 @@ bool CMFCTrackToolsDlg::save_Parameter(std::string filePath/*, StuITRACK_ClientP
 			fs << "stu_time_min" << dlgCtrl.ctrl_params.time.stu_time_min;
 			fs << "tea_time_min" << dlgCtrl.ctrl_params.time.tea_time_min;
 			fs.release();
+		}
+		else
+		{
+			fs.release();
+			MessageBox(_T("打开文件失败！"));
+		}
+		//return true;
+	}
+	else
+	{
+		MessageBox(_T("写入参数类型错误！"));
+	}
+	
+}
+
+bool CMFCTrackToolsDlg::load_Parameter(std::string filePath)
+{
+	cv::FileStorage fs(filePath, cv::FileStorage::READ);
+	if (fs.isOpened())
+	{
+		int param_type;
+		fs["Parameter type"] >> param_type;
+		param_type--;
+		if (CurSel == param_type)
+		{
+			if (param_type == TCH_TAB)
+			{
+				TeaITRACK_Params tch_params;
+				//memset(&tch_params, 0, sizeof(TeaITRACK_Params));
+				fs["tch_height"] >> tch_params.tch.height;
+				fs["tch_width"] >> tch_params.tch.width;
+				fs["tch_x"] >> tch_params.tch.x;
+				fs["tch_y"] >> tch_params.tch.y;
+				fs["blk_height"] >> tch_params.blk.height;
+				fs["blk_width"] >> tch_params.blk.width;
+				fs["blk_x"] >> tch_params.blk.x;
+				fs["blk_y"] >> tch_params.blk.y;
+				fs["numOfPos"] >> tch_params.numOfPos;
+				fs["numOfSlide"] >> tch_params.numOfSlide;
+				fs["outside"] >> tch_params.threshold.outside;
+				fs["stand"] >> tch_params.threshold.stand;
+				fs["targetArea"] >> tch_params.threshold.targetArea;
+				fs.release();
+				loadParamsFromTch(&tch_params);
+			}
+			if (param_type == STU_TAB)
+			{
+				StuITRACK_ClientParams_t stu_params;
+				int i = 0;
+				fs["height"] >> stu_params.height;
+				fs["width"] >> stu_params.width;
+				fs["stuTrack_debugMsg_flag"] >> stu_params.stuTrack_debugMsg_flag;
+				fs["stuTrack_Draw_flag"] >> stu_params.stuTrack_Draw_flag;
+
+				cv::FileNode node = fs["stuTrack_direct_standard"];
+				if (node.type() != cv::FileNode::SEQ)
+				{
+					return false;
+				}
+				cv::FileNodeIterator it = node.begin(), it_end = node.end();
+				for (i = 0; it != it_end; ++it, i++)
+				{
+					stu_params.stuTrack_direct_standard[i] = *it;
+				}
+				if (i != 4)
+				{
+					::MessageBox(NULL, _T("角度方向参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+				}
+
+				node = fs["stuTrack_stuWidth_standard"];
+				if (node.type() != cv::FileNode::SEQ)
+				{
+					return false;
+				}
+				it = node.begin(), it_end = node.end();
+				for (i = 0; it != it_end; ++it, i++)
+				{
+					stu_params.stuTrack_stuWidth_standard[i] = *it;
+				}
+				if (i != 4)
+				{
+					::MessageBox(NULL, _T("学生宽度参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+				}
+
+				fs["stuTrack_direct_range"] >> stu_params.stuTrack_direct_range;
+				fs["stuTrack_standCount_threshold"] >> stu_params.stuTrack_standCount_threshold;
+				fs["stuTrack_sitdownCount_threshold"] >> stu_params.stuTrack_sitdownCount_threshold;
+				fs["stuTrack_moveDelayed_threshold"] >> stu_params.stuTrack_moveDelayed_threshold;
+				fs["stuTrack_move_threshold"] >> stu_params.stuTrack_move_threshold;
+
+				node = fs["stuTrack_vertex"];
+				if (node.type() != cv::FileNode::SEQ)
+				{
+					return false;
+				}
+				it = node.begin(), it_end = node.end();
+				for (i = 0; it != it_end; ++it, i++)
+				{
+					stu_params.stuTrack_vertex[i].x = (*it)["x"];
+					stu_params.stuTrack_vertex[i].y = (*it)["y"];
+				}
+				if (i != 4)
+				{
+					::MessageBox(NULL, _T("角点位置参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+				}
+
+				node = fs["transformationMatrix"];
+				if (node.type() != cv::FileNode::SEQ)
+				{
+					return false;
+				}
+				it = node.begin(), it_end = node.end();
+				for (i = 0; it != it_end; ++it, i++)
+				{
+					stu_params.transformationMatrix[i] = *it;
+				}
+				if (i != 9)
+				{
+					::MessageBox(NULL, _T("变换矩阵参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+				}
+
+				node = fs["stretchingAB"];
+				if (node.type() != cv::FileNode::SEQ)
+				{
+					return false;
+				}
+				it = node.begin(), it_end = node.end();
+				for (i = 0; it != it_end; ++it, i++)
+				{
+					stu_params.stretchingAB[i] = *it;
+				}
+				if (i != 2)
+				{
+					::MessageBox(NULL, _T("拉伸系数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+				}
+				fs.release();
+				loadParamsFromStu(&stu_params);
+			}
+			if (param_type == CTRL_TAB)
+			{
+				Policy_Set_t plc;
+				fs["mut_pic_flag"] >> plc.mut_pic_flag;
+				fs["stu_feature_flag"] >> plc.stu_feature_flag;
+				fs["blb_time_min"] >> plc.time.blb_time_min;
+				fs["ppt_time_min"] >> plc.time.ppt_time_min;
+				fs["stu_time_min"] >> plc.time.stu_time_min;
+				fs["tea_time_min"] >> plc.time.tea_time_min;
+				fs.release();
+				loadParamsFromPlc(&plc);
+			}
 			return true;
 		}
-		
+		else
+		{
+			MessageBox("载入文件错误！");
+			fs.release();
+			return false;
+		}
 	}
 	else
 	{
 		fs.release();
-		return true;
+		return false;
+	}
+}
+
+
+void CMFCTrackToolsDlg::OnBnClickedBtnLoad()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CString fileName;
+	switch (CurSel)
+	{
+	case TCH_TAB:
+		fileName = _T("tch_params.yml");
+		break;
+	case STU_TAB:
+		fileName = _T("stu_params.yml");
+		break;
+	case CTRL_TAB:
+		fileName = _T("plc_params.yml");
+		break;
+	default:
+		break;
+	}
+	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
+	CFileDialog openFileDlg(TRUE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
+	if (openFileDlg.DoModal() == IDOK)
+	{
+		CString FilePathName = openFileDlg.GetPathName();
+		load_Parameter(FilePathName.GetBuffer(0));
 	}
 }

@@ -20,6 +20,7 @@
 #include <cmath>
 #include "decode.h"
 #include "itcCamera.h"
+#include "inifile.h"
 
 
 #define SKINNAME "\\skin\\Longhorn.ssk"
@@ -216,8 +217,8 @@ private:
 	BOOL connectCam();
 
 	//从本地加载或保存设置参数
-	bool save_Parameter(std::string filePath/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/);
-	bool load_Parameter(std::string filePath, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params);
+	void save_Parameter(std::string filePath, std::string fileName/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/);
+	bool load_Parameter(std::string filePath/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/);
 	
 public:
 	int video_display(Decode_Info_t *pInfo);
@@ -256,4 +257,5 @@ public:
 	afx_msg void OnBnClickedButtonAbout();
 	Login_t m_loginInfo;
 	afx_msg void OnBnClickedBtnSave();
+	afx_msg void OnBnClickedBtnLoad();
 };
