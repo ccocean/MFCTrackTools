@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "TrackTools.h"
+#include "MFCTrackTools.h"
 #include "GlobalContrl.h"
 #include "afxdialogex.h"
 

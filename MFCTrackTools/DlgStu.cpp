@@ -97,7 +97,9 @@ void DlgStu::setParams(StuITRACK_ClientParams_t* params)
 	stu_params.stuTrack_direct_standard[3] = params->stuTrack_direct_standard[3];
 	stu_params.stuTrack_Draw_flag = params->stuTrack_Draw_flag;
 	stu_params.stuTrack_move_threshold = params->stuTrack_move_threshold;
+	stu_params.stuTrack_standup_threshold = params->stuTrack_standup_threshold;
 	stu_params.stuTrack_moveDelayed_threshold = params->stuTrack_moveDelayed_threshold;
+	stu_params.stuTrack_deleteTime_threshold = params->stuTrack_deleteTime_threshold;
 	stu_params.stuTrack_sitdownCount_threshold = params->stuTrack_sitdownCount_threshold;
 	stu_params.stuTrack_standCount_threshold = params->stuTrack_standCount_threshold;
 	stu_params.stuTrack_stuWidth_standard[0] = params->stuTrack_stuWidth_standard[0];
@@ -305,7 +307,9 @@ bool DlgStu::save_local_Parameter(std::string filePath, StuITRACK_ClientParams_t
 		fs << "stuTrack_standCount_threshold" << stu_params->stuTrack_standCount_threshold;
 		fs << "stuTrack_sitdownCount_threshold" << stu_params->stuTrack_sitdownCount_threshold;
 		fs << "stuTrack_moveDelayed_threshold" << stu_params->stuTrack_moveDelayed_threshold;
+		fs << "stuTrack_deleteTime_threshold" << stu_params->stuTrack_deleteTime_threshold;
 		fs << "stuTrack_move_threshold" << stu_params->stuTrack_move_threshold;
+		fs << "stuTrack_standup_threshold" << stu_params->stuTrack_standup_threshold;
 
 		fs << "stuTrack_vertex" << "[";
 		for (int i = 0; i < 4; i++)
@@ -382,7 +386,9 @@ bool DlgStu::load_local_Parameter(std::string filePath, StuITRACK_ClientParams_t
 		fs["stuTrack_standCount_threshold"] >> stu_params->stuTrack_standCount_threshold;
 		fs["stuTrack_sitdownCount_threshold"] >> stu_params->stuTrack_sitdownCount_threshold;
 		fs["stuTrack_moveDelayed_threshold"] >> stu_params->stuTrack_moveDelayed_threshold;
+		fs["stuTrack_deleteTime_threshold"] >> stu_params->stuTrack_deleteTime_threshold;
 		fs["stuTrack_move_threshold"] >> stu_params->stuTrack_move_threshold;
+		fs["stuTrack_standup_threshold"] >> stu_params->stuTrack_standup_threshold;
 
 		node = fs["stuTrack_vertex"];
 		if (node.type() != cv::FileNode::SEQ)

@@ -2634,7 +2634,6 @@ void CMFCTrackToolsDlg::OnBnClickedButtonAbout()
 	dlgAbout.DoModal();
 }
 
-using namespace inifile;
 void CMFCTrackToolsDlg::OnBnClickedBtnSave()
 {
 	// TODO:  在此添加控件通知处理程序代码
@@ -2728,7 +2727,9 @@ void CMFCTrackToolsDlg::save_Parameter(std::string filePath, std::string fileNam
 			fs << "stuTrack_standCount_threshold" << dlgStu.stu_params.stuTrack_standCount_threshold;
 			fs << "stuTrack_sitdownCount_threshold" << dlgStu.stu_params.stuTrack_sitdownCount_threshold;
 			fs << "stuTrack_moveDelayed_threshold" << dlgStu.stu_params.stuTrack_moveDelayed_threshold;
+			fs << "stuTrack_deleteTime_threshold" << dlgStu.stu_params.stuTrack_deleteTime_threshold;
 			fs << "stuTrack_move_threshold" << dlgStu.stu_params.stuTrack_move_threshold;
+			fs << "stuTrack_standup_threshold" << dlgStu.stu_params.stuTrack_standup_threshold;
 
 			fs << "stuTrack_vertex" << "[";
 			for (int i = 0; i < 4; i++)
@@ -2860,7 +2861,9 @@ bool CMFCTrackToolsDlg::load_Parameter(std::string filePath)
 				fs["stuTrack_standCount_threshold"] >> stu_params.stuTrack_standCount_threshold;
 				fs["stuTrack_sitdownCount_threshold"] >> stu_params.stuTrack_sitdownCount_threshold;
 				fs["stuTrack_moveDelayed_threshold"] >> stu_params.stuTrack_moveDelayed_threshold;
+				fs["stuTrack_deleteTime_threshold"] >> stu_params.stuTrack_deleteTime_threshold;
 				fs["stuTrack_move_threshold"] >> stu_params.stuTrack_move_threshold;
+				fs["stuTrack_standup_threshold"] >> stu_params.stuTrack_standup_threshold;
 
 				node = fs["stuTrack_vertex"];
 				if (node.type() != cv::FileNode::SEQ)

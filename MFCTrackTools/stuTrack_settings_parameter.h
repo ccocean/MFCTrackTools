@@ -33,43 +33,33 @@ typedef struct _StuITRACK_ClientParams
 	int stuTrack_standCount_threshold;			//判定为起立的帧数阈值
 	int stuTrack_sitdownCount_threshold;		//判定为坐下的帧数阈值
 	int stuTrack_moveDelayed_threshold;			//移动目标保持跟踪的延时，超过这个时间无运动，则放弃跟踪(单位：毫秒)
+	int stuTrack_deleteTime_threshold;			//目标保持跟踪的最长时间时，超过这个时间删除目标(单位：秒)
 	double stuTrack_move_threshold;				//判定是移动目标的偏离阈值（比值）
+	double stuTrack_standup_threshold;			//判定是起立目标的偏离阈值（比值）
 	TrackPrarms_Point_t stuTrack_vertex[4];		//学生区域四个顶点位置
 
 	double transformationMatrix[9];				//图像坐标与云台相机的变换矩阵
-	double stretchingAB[2];					//拉伸系数
+	double stretchingAB[2];						//拉伸系数
 }StuITRACK_ClientParams_t;
 
 //---------------------------------------------------------------------输出参数相关
-#define RESULT_STUTRACK_NEWCHANGE_FLAG		(1<<30)
-#define RESULT_STUTRACK_IF_NEWCHANGE(n)	((n & RESULT_STUTRACK_NEWCHANGE_FLAG)== RESULT_STUTRACK_NEWCHANGE_FLAG)	//判断是否有变化
 
-//变化状态宏
-#define RESULT_STUTRACK_NULL_FLAG		0
-#define	RESULT_STUTRACK_STANDUP_FLAG	1
-#define	RESULT_STUTRACK_SITDOWN_FLAG	2
-#define	RESULT_STUTRACK_MOVE_FLAG		4
-#define RESULT_STUTRACK_STOPMOVE_FLAG	8
 
-#define RESULT_STUTRACK_IF_STANDUP(n)		((n & RESULT_STUTRACK_STANDUP_FLAG)== RESULT_STUTRACK_STANDUP_FLAG)	//判断是否有起立
-#define RESULT_STUTRACK_IF_SITDOWN(n)		((n & RESULT_STUTRACK_SITDOWN_FLAG)== RESULT_STUTRACK_SITDOWN_FLAG)	//判断是否有坐下
-#define RESULT_STUTRACK_IF_MOVE(n)			((n & RESULT_STUTRACK_MOVE_FLAG)== RESULT_STUTRACK_MOVE_FLAG)			//判断是否有移动目标
-#define RESULT_STUTRACK_IF_STOPMOVE(n)		((n & RESULT_STUTRACK_STOPMOVE_FLAG)== RESULT_STUTRACK_STOPMOVE_FLAG)	//判断是否有移动目标停止运动
+//-----------------------------------------------------------------------
+
+#define RESULT_STUTRAKC_NULL_CAMERA				0			//表示可以结束学生画面了
+#define RESULT_STUTRAKC_MOVE_CAMERA				1			//移动镜头
+#define RESULT_STUTRAKC_FEATURE_CAMERA			2			//切学生特写
+#define RESULT_STUTRAKC_PAN0RAMA_CAMERA			4			//学生全景
+#define RESULT_STUTRAKC_noTCH_FEATURE_CAMERA	8			//需要老师不在讲台上再切特写
+#define RESULT_STUTRAKC_noTCH_PAN0RAMA_CAMERA	16			//需要老师无动作时切全景
 
 typedef struct _StuITRACK_OutParams
 {
-	int result_flag;							//当前帧变化状态
-	unsigned int count_trackObj_stand;			//起立目标个数
-	unsigned int count_trackObj_bigMove;		//移动目标个数
-	TrackPrarms_Point_t stand_position;			//起立目标位置
-	TrackPrarms_Point_t move_position;			//移动目标位置
-	TrackPrarms_Size_t standObj_size;			//起立目标大小
-	TrackPrarms_Size_t moveObj_size;			//移动目标大小
-
-	int stretchingCoefficient_stand;
-	int stretchingCoefficient_bigMove;
+	int result_flag;						//当前需要的状态
+	TrackPrarms_Point_t position;			//目标位置
+	int stretchingCoefficient;				//拉伸系数
 }StuITRACK_OutParams_t;
-//-----------------------------------------------------------------------
 
 #ifdef  __cplusplus  
 }
