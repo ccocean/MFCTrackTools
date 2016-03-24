@@ -18,12 +18,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MFCTrackTools.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MFCTrackToolsDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -84,17 +78,14 @@
     <ClInclude Include="track_ctrl_params.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="inifile.h">
+    <ClInclude Include="MFCTrackTools.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCTrackToolsDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MFCTrackTools.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MFCTrackToolsDlg.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -140,7 +131,10 @@
     <ClCompile Include="CMyLock.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="inifile.cpp">
+    <ClCompile Include="MFCTrackTools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCTrackToolsDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

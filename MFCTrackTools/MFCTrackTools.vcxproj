@@ -14,6 +14,7 @@
     <ProjectGuid>{F9EFE0AE-0DCB-4FAF-8821-C3727D72D2BB}</ProjectGuid>
     <RootNamespace>MFCTrackTools</RootNamespace>
     <Keyword>MFCProj</Keyword>
+    <ProjectName>MFCTrackTools</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -122,7 +123,6 @@
     <ClInclude Include="DlgStu.h" />
     <ClInclude Include="DlgTch.h" />
     <ClInclude Include="GlobalContrl.h" />
-    <ClInclude Include="inifile.h" />
     <ClInclude Include="itcCamera.h" />
     <ClInclude Include="MFCTrackTools.h" />
     <ClInclude Include="MFCTrackToolsDlg.h" />
@@ -147,7 +147,6 @@
     <ClCompile Include="DlgStu.cpp" />
     <ClCompile Include="DlgTch.cpp" />
     <ClCompile Include="GlobalContrl.cpp" />
-    <ClCompile Include="inifile.cpp" />
     <ClCompile Include="itcCamera.cpp" />
     <ClCompile Include="MFCTrackTools.cpp" />
     <ClCompile Include="MFCTrackToolsDlg.cpp" />

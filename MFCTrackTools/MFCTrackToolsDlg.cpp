@@ -856,6 +856,11 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		//if (p1.x<point.x - MARGIN_LEFT && point.x - MARGIN_LEFT<p2.x&&p1.y<point.y - pic_top&&point.y - pic_top<p2.y)
 		if (CurSel==TCH_TAB)
 		{
+			if (m_check_algFlag.GetCheck())
+			{
+				MessageBox(_T("请先关闭教师跟踪！"));
+				return;
+			}
 			if ((tch.x < point.x - MARGIN_LEFT && point.x - MARGIN_LEFT < tch.x + tch.width&&tch.y < point.y - pic_top&&point.y - pic_top < tch.y + tch.height))
 			{
 				pt.x = point.x;
@@ -1473,9 +1478,14 @@ void CMFCTrackToolsDlg::OnRButtonDown(UINT nFlags, CPoint point)
 		}
 		else
 		{
+			if (m_check_algFlag.GetCheck())
+			{
+				MessageBox(_T("请先关闭教师跟踪！"));
+				return;
+			}
 			if (tch.x<point.x&&point.x<tch.x+tch.width&&tch.y<point.y&&point.y<tch.y+tch.height+pic_top)
 			{
-				if (isKeyDown==CTRL_KEY_UP)
+				if (isKeyDown == CTRL_KEY_UP)
 				{
 					p3 = p4 = { 0 };
 					pt = { 0 };
@@ -2916,7 +2926,7 @@ bool CMFCTrackToolsDlg::load_Parameter(std::string filePath)
 		}
 		else
 		{
-			MessageBox("载入文件错误！");
+			MessageBox("载入参数类型错误！");
 			fs.release();
 			return false;
 		}
