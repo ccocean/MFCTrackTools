@@ -20,7 +20,6 @@
 #include <cmath>
 #include "decode.h"
 #include "itcCamera.h"
-#include "inifile.h"
 
 
 #define SKINNAME "\\skin\\Longhorn.ssk"
