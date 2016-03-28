@@ -2638,21 +2638,36 @@ void CMFCTrackToolsDlg::OnBnClickedBtnSave()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	//保存到本地
+	CString filter;
 	CString fileName;
 	switch (CurSel)
 	{
+		/*case TCH_TAB:
+			fileName = _T("tch_params.yml");
+			break;
+			case STU_TAB:
+			fileName = _T("stu_params.yml");
+			break;
+			case CTRL_TAB:
+			fileName = _T("plc_params.yml");
+			break;*/
 	case TCH_TAB:
-		fileName = _T("tch_params.yml");
+		fileName = _T("tch_params.tch");
+		filter = _T("文件 (*.tch)|*.tch||");
 		break;
 	case STU_TAB:
-		fileName = _T("stu_params.yml");
+		fileName = _T("stu_params.stu");
+		filter = _T("文件 (*.stu)|*.stu||");
 		break;
 	case CTRL_TAB:
-		fileName = _T("plc_params.yml");
+		fileName = _T("plc_params.plc");
+		filter = _T("文件 (*.plc)|*.plc||");
+		break;
+	default:
 		break;
 	}
 	//CString fileName = _T("params.yml");//默认打开的文件名  
-	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
+	//CString filter = _T("文件 (*.yml)|*.yml|文件（*.zml)|*.zml||");		//文件过虑的类型  
 	CFileDialog openFileDlg(FALSE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "", NULL);
 	if (openFileDlg.DoModal() == IDOK)
 	{
@@ -2946,21 +2961,25 @@ void CMFCTrackToolsDlg::OnBnClickedBtnLoad()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	CString fileName;
+	CString filter;
 	switch (CurSel)
 	{
 	case TCH_TAB:
-		fileName = _T("tch_params.yml");
+		fileName = _T("tch_params.tch");
+		filter = _T("文件 (*.tch)|*.tch||");
 		break;
 	case STU_TAB:
-		fileName = _T("stu_params.yml");
+		fileName = _T("stu_params.stu");
+		filter = _T("文件 (*.stu)|*.stu||");
 		break;
 	case CTRL_TAB:
-		fileName = _T("plc_params.yml");
+		fileName = _T("plc_params.plc");
+		filter = _T("文件 (*.plc)|*.plc||");
 		break;
 	default:
 		break;
 	}
-	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
+	//CString filter = _T("文件 (*.yml)|*.yml|文件（*.zml)|*.zzml||");		//文件过虑的类型  
 	CFileDialog openFileDlg(TRUE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
 	if (openFileDlg.DoModal() == IDOK)
 	{
