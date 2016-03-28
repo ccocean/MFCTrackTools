@@ -1139,6 +1139,10 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				}
 				pb.x = pc.x; pb.y = pa.y;
 				pd.x = pa.x; pd.y = pc.y;
+				pA = pa;
+				pB = pb;
+				pC = pc;
+				pD = pd;
 
 				updateParams(PARAM_POSITION);
 				updateLines();
@@ -1259,7 +1263,6 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 				pa.y += (point.y  - pt.y);
 				pA.x += (point.x - pt.x);
 				pA.y += (point.x - pt.x);
-
 				pt.x = point.x;
 				pt.y = point.y;
 			}
@@ -2257,7 +2260,7 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	{
 		if (head->total_len != sizeof(StuITRACK_ClientParams_t))
 		{
-
+			
 		}
 		else
 		{
@@ -2638,169 +2641,123 @@ void CMFCTrackToolsDlg::OnBnClickedBtnSave()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	//保存到本地
-	CString filter;
-	CString fileName;
-	switch (CurSel)
-	{
-		/*case TCH_TAB:
-			fileName = _T("tch_params.yml");
-			break;
-			case STU_TAB:
-			fileName = _T("stu_params.yml");
-			break;
-			case CTRL_TAB:
-			fileName = _T("plc_params.yml");
-			break;*/
-	case TCH_TAB:
-		fileName = _T("tch_params.tch");
-		filter = _T("文件 (*.tch)|*.tch||");
-		break;
-	case STU_TAB:
-		fileName = _T("stu_params.stu");
-		filter = _T("文件 (*.stu)|*.stu||");
-		break;
-	case CTRL_TAB:
-		fileName = _T("plc_params.plc");
-		filter = _T("文件 (*.plc)|*.plc||");
-		break;
-	default:
-		break;
-	}
-	//CString fileName = _T("params.yml");//默认打开的文件名  
-	//CString filter = _T("文件 (*.yml)|*.yml|文件（*.zml)|*.zml||");		//文件过虑的类型  
-	CFileDialog openFileDlg(FALSE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "", NULL);
+	//CString filter;
+	//CString fileName;
+	//switch (CurSel)
+	//{
+	//	/*case TCH_TAB:
+	//		fileName = _T("tch_params.yml");
+	//		break;
+	//		case STU_TAB:
+	//		fileName = _T("stu_params.yml");
+	//		break;
+	//		case CTRL_TAB:
+	//		fileName = _T("plc_params.yml");
+	//		break;*/
+	//case TCH_TAB:
+	//	fileName = _T("tch_params.tch");
+	//	filter = _T("文件 (*.tch)|*.tch||");
+	//	break;
+	//case STU_TAB:
+	//	fileName = _T("stu_params.stu");
+	//	filter = _T("文件 (*.stu)|*.stu||");
+	//	break;
+	//case CTRL_TAB:
+	//	fileName = _T("plc_params.plc");
+	//	filter = _T("文件 (*.plc)|*.plc||");
+	//	break;
+	//default:
+	//	break;
+	//}
+	CString fileName = _T("params.yml");//默认打开的文件名  
+	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
+	CFileDialog openFileDlg(FALSE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
 	if (openFileDlg.DoModal() == IDOK)
 	{
 		CString FilePathName = openFileDlg.GetPathName();
-		save_Parameter(FilePathName.GetBuffer(0),fileName.GetBuffer(0)/*, &dlgStu.stu_params, &dlgTch.tch_params, &dlgCtrl.ctrl_params*/);
+		save_Parameter(FilePathName.GetBuffer(0)/*, &dlgStu.stu_params, &dlgTch.tch_params, &dlgCtrl.ctrl_params*/);
 	}
 }
 
-void CMFCTrackToolsDlg::save_Parameter(std::string filePath, std::string fileName/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/)
+void CMFCTrackToolsDlg::save_Parameter(std::string filePath/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/)
 {
-	int tch_pos = fileName.find("tch");
-	int stu_pos = fileName.find("stu");
-	int plc_pos = fileName.find("plc");
-	int params_type = 0;
-	params_type = tch_pos > -1 ? 1 : params_type;
-	params_type = stu_pos > -1 ? 2 : params_type;
-	params_type = plc_pos > -1 ? 3 : params_type;
-	
-	//cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
-	if ((CurSel == TCH_TAB&&CurSel == params_type-1))
+	cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
+	if (fs.isOpened())
 	{
-		cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
-		if (fs.isOpened())
+		//存储教师的参数
+		fs << "tch_height" << dlgTch.tch_params.tch.height;
+		fs << "tch_width" << dlgTch.tch_params.tch.width;
+		fs << "tch_x" << dlgTch.tch_params.tch.x;
+		fs << "tch_y" << dlgTch.tch_params.tch.y;
+
+		fs << "blk_height" << dlgTch.tch_params.blk.height;
+		fs << "blk_width" << dlgTch.tch_params.blk.width;
+		fs << "blk_x" << dlgTch.tch_params.blk.x;
+		fs << "blk_y" << dlgTch.tch_params.blk.y;
+
+		fs << "numOfPos" << dlgTch.tch_params.numOfPos;
+		fs << "numOfSlide" << dlgTch.tch_params.numOfSlide;
+		fs << "outside" << dlgTch.tch_params.threshold.outside;
+		fs << "stand" << dlgTch.tch_params.threshold.stand;
+		fs << "targetArea" << dlgTch.tch_params.threshold.targetArea;
+
+
+		//存储学生参数
+		fs << "height" << dlgStu.stu_params.height;
+		fs << "width" << dlgStu.stu_params.width;
+		fs << "stuTrack_debugMsg_flag" << dlgStu.stu_params.stuTrack_debugMsg_flag;
+		fs << "stuTrack_Draw_flag" << dlgStu.stu_params.stuTrack_Draw_flag;
+
+		fs << "stuTrack_direct_standard" << "[";
+		fs << dlgStu.stu_params.stuTrack_direct_standard[0] << dlgStu.stu_params.stuTrack_direct_standard[1] << dlgStu.stu_params.stuTrack_direct_standard[2] << dlgStu.stu_params.stuTrack_direct_standard[3];
+		fs << "]";
+
+		fs << "stuTrack_stuWidth_standard" << "[";
+		fs << dlgStu.stu_params.stuTrack_stuWidth_standard[0] << dlgStu.stu_params.stuTrack_stuWidth_standard[1] << dlgStu.stu_params.stuTrack_stuWidth_standard[2] << dlgStu.stu_params.stuTrack_stuWidth_standard[3];
+		fs << "]";
+
+		fs << "stuTrack_direct_range" << dlgStu.stu_params.stuTrack_direct_range;
+		fs << "stuTrack_standCount_threshold" << dlgStu.stu_params.stuTrack_standCount_threshold;
+		fs << "stuTrack_sitdownCount_threshold" << dlgStu.stu_params.stuTrack_sitdownCount_threshold;
+		fs << "stuTrack_moveDelayed_threshold" << dlgStu.stu_params.stuTrack_moveDelayed_threshold;
+		fs << "stuTrack_deleteTime_threshold" << dlgStu.stu_params.stuTrack_deleteTime_threshold;
+		fs << "stuTrack_move_threshold" << dlgStu.stu_params.stuTrack_move_threshold;
+		fs << "stuTrack_standup_threshold" << dlgStu.stu_params.stuTrack_standup_threshold;
+
+		fs << "stuTrack_vertex" << "[";
+		for (int i = 0; i < 4; i++)
 		{
-			//存储教师的参数
-			fs << "Parameter type" << TCH_TAB + 1;
-			fs << "tch_height" << dlgTch.tch_params.tch.height;
-			fs << "tch_width" << dlgTch.tch_params.tch.width;
-			fs << "tch_x" << dlgTch.tch_params.tch.x;
-			fs << "tch_y" << dlgTch.tch_params.tch.y;
-
-			fs << "blk_height" << dlgTch.tch_params.blk.height;
-			fs << "blk_width" << dlgTch.tch_params.blk.width;
-			fs << "blk_x" << dlgTch.tch_params.blk.x;
-			fs << "blk_y" << dlgTch.tch_params.blk.y;
-
-			fs << "numOfPos" << dlgTch.tch_params.numOfPos;
-			fs << "numOfSlide" << dlgTch.tch_params.numOfSlide;
-			fs << "outside" << dlgTch.tch_params.threshold.outside;
-			fs << "stand" << dlgTch.tch_params.threshold.stand;
-			fs << "targetArea" << dlgTch.tch_params.threshold.targetArea;
-			fs.release();
+			fs << "{";
+			fs << "x" << dlgStu.stu_params.stuTrack_vertex[i].x;
+			fs << "y" << dlgStu.stu_params.stuTrack_vertex[i].y;
+			fs << "}";
 		}
-		else
+		fs << "]";
+
+		fs << "transformationMatrix" << "[";
+		for (int i = 0; i < 9; i++)
 		{
-			fs.release();
-			MessageBox(_T("打开文件失败！"));
+			fs << dlgStu.stu_params.transformationMatrix[i];
 		}
-		//return true;
-	}
-	else if ((CurSel == STU_TAB&&CurSel == params_type-1))
-	{
-		cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
-		if (fs.isOpened())
-		{
-			//存储学生参数
-			fs << "Parameter type" << STU_TAB + 1;
-			fs << "height" << dlgStu.stu_params.height;
-			fs << "width" << dlgStu.stu_params.width;
-			fs << "stuTrack_debugMsg_flag" << dlgStu.stu_params.stuTrack_debugMsg_flag;
-			fs << "stuTrack_Draw_flag" << dlgStu.stu_params.stuTrack_Draw_flag;
+		fs << "]";
 
-			fs << "stuTrack_direct_standard" << "[";
-			fs << dlgStu.stu_params.stuTrack_direct_standard[0] << dlgStu.stu_params.stuTrack_direct_standard[1] << dlgStu.stu_params.stuTrack_direct_standard[2] << dlgStu.stu_params.stuTrack_direct_standard[3];
-			fs << "]";
+		fs << "stretchingAB" << "[";
+		fs << dlgStu.stu_params.stretchingAB[0] << dlgStu.stu_params.stretchingAB[1];
+		fs << "]";
 
-			fs << "stuTrack_stuWidth_standard" << "[";
-			fs << dlgStu.stu_params.stuTrack_stuWidth_standard[0] << dlgStu.stu_params.stuTrack_stuWidth_standard[1] << dlgStu.stu_params.stuTrack_stuWidth_standard[2] << dlgStu.stu_params.stuTrack_stuWidth_standard[3];
-			fs << "]";
-
-			fs << "stuTrack_direct_range" << dlgStu.stu_params.stuTrack_direct_range;
-			fs << "stuTrack_standCount_threshold" << dlgStu.stu_params.stuTrack_standCount_threshold;
-			fs << "stuTrack_sitdownCount_threshold" << dlgStu.stu_params.stuTrack_sitdownCount_threshold;
-			fs << "stuTrack_moveDelayed_threshold" << dlgStu.stu_params.stuTrack_moveDelayed_threshold;
-			fs << "stuTrack_deleteTime_threshold" << dlgStu.stu_params.stuTrack_deleteTime_threshold;
-			fs << "stuTrack_move_threshold" << dlgStu.stu_params.stuTrack_move_threshold;
-			fs << "stuTrack_standup_threshold" << dlgStu.stu_params.stuTrack_standup_threshold;
-
-			fs << "stuTrack_vertex" << "[";
-			for (int i = 0; i < 4; i++)
-			{
-				fs << "{";
-				fs << "x" << dlgStu.stu_params.stuTrack_vertex[i].x;
-				fs << "y" << dlgStu.stu_params.stuTrack_vertex[i].y;
-				fs << "}";
-			}
-			fs << "]";
-
-			fs << "transformationMatrix" << "[";
-			for (int i = 0; i < 9; i++)
-			{
-				fs << dlgStu.stu_params.transformationMatrix[i];
-			}
-			fs << "]";
-
-			fs << "stretchingAB" << "[";
-			fs << dlgStu.stu_params.stretchingAB[0] << dlgStu.stu_params.stretchingAB[1];
-			fs << "]";
-			fs.release();
-		}
-		else
-		{
-			fs.release();
-			MessageBox(_T("打开文件失败！"));
-		}
-		//return true;
-	}
-	else if ((CurSel == CTRL_TAB&&CurSel == params_type-1))
-	{
-		cv::FileStorage fs(filePath, cv::FileStorage::WRITE);
-		if (fs.isOpened())
-		{
-			fs << "Parameter type" << CTRL_TAB + 1;
-			fs << "mut_pic_flag" << dlgCtrl.ctrl_params.mut_pic_flag;
-			fs << "stu_feature_flag" << dlgCtrl.ctrl_params.stu_feature_flag;
-			fs << "blb_time_min" << dlgCtrl.ctrl_params.time.blb_time_min;
-			fs << "ppt_time_min" << dlgCtrl.ctrl_params.time.ppt_time_min;
-			fs << "stu_time_min" << dlgCtrl.ctrl_params.time.stu_time_min;
-			fs << "tea_time_min" << dlgCtrl.ctrl_params.time.tea_time_min;
-			fs.release();
-		}
-		else
-		{
-			fs.release();
-			MessageBox(_T("打开文件失败！"));
-		}
-		//return true;
+		fs << "mut_pic_flag" << dlgCtrl.ctrl_params.mut_pic_flag;
+		fs << "stu_feature_flag" << dlgCtrl.ctrl_params.stu_feature_flag;
+		fs << "blb_time_min" << dlgCtrl.ctrl_params.time.blb_time_min;
+		fs << "ppt_time_min" << dlgCtrl.ctrl_params.time.ppt_time_min;
+		fs << "stu_time_min" << dlgCtrl.ctrl_params.time.stu_time_min;
+		fs << "tea_time_min" << dlgCtrl.ctrl_params.time.tea_time_min;
+		fs.release();
 	}
 	else
 	{
-		MessageBox(_T("写入参数类型错误！"));
+		MessageBox(_T("文件打开错误！"));
+		fs.release();
 	}
-	
 }
 
 bool CMFCTrackToolsDlg::load_Parameter(std::string filePath)
@@ -2808,146 +2765,134 @@ bool CMFCTrackToolsDlg::load_Parameter(std::string filePath)
 	cv::FileStorage fs(filePath, cv::FileStorage::READ);
 	if (fs.isOpened())
 	{
-		int param_type;
-		fs["Parameter type"] >> param_type;
-		param_type--;
-		if (CurSel == param_type)
+		if (CurSel == TCH_TAB)
 		{
-			if (param_type == TCH_TAB)
-			{
-				TeaITRACK_Params tch_params;
-				//memset(&tch_params, 0, sizeof(TeaITRACK_Params));
-				fs["tch_height"] >> tch_params.tch.height;
-				fs["tch_width"] >> tch_params.tch.width;
-				fs["tch_x"] >> tch_params.tch.x;
-				fs["tch_y"] >> tch_params.tch.y;
-				fs["blk_height"] >> tch_params.blk.height;
-				fs["blk_width"] >> tch_params.blk.width;
-				fs["blk_x"] >> tch_params.blk.x;
-				fs["blk_y"] >> tch_params.blk.y;
-				fs["numOfPos"] >> tch_params.numOfPos;
-				fs["numOfSlide"] >> tch_params.numOfSlide;
-				fs["outside"] >> tch_params.threshold.outside;
-				fs["stand"] >> tch_params.threshold.stand;
-				fs["targetArea"] >> tch_params.threshold.targetArea;
-				fs.release();
-				loadParamsFromTch(&tch_params);
-			}
-			if (param_type == STU_TAB)
-			{
-				StuITRACK_ClientParams_t stu_params;
-				int i = 0;
-				fs["height"] >> stu_params.height;
-				fs["width"] >> stu_params.width;
-				fs["stuTrack_debugMsg_flag"] >> stu_params.stuTrack_debugMsg_flag;
-				fs["stuTrack_Draw_flag"] >> stu_params.stuTrack_Draw_flag;
-
-				cv::FileNode node = fs["stuTrack_direct_standard"];
-				if (node.type() != cv::FileNode::SEQ)
-				{
-					return false;
-				}
-				cv::FileNodeIterator it = node.begin(), it_end = node.end();
-				for (i = 0; it != it_end; ++it, i++)
-				{
-					stu_params.stuTrack_direct_standard[i] = *it;
-				}
-				if (i != 4)
-				{
-					::MessageBox(NULL, _T("角度方向参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
-				}
-
-				node = fs["stuTrack_stuWidth_standard"];
-				if (node.type() != cv::FileNode::SEQ)
-				{
-					return false;
-				}
-				it = node.begin(), it_end = node.end();
-				for (i = 0; it != it_end; ++it, i++)
-				{
-					stu_params.stuTrack_stuWidth_standard[i] = *it;
-				}
-				if (i != 4)
-				{
-					::MessageBox(NULL, _T("学生宽度参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
-				}
-
-				fs["stuTrack_direct_range"] >> stu_params.stuTrack_direct_range;
-				fs["stuTrack_standCount_threshold"] >> stu_params.stuTrack_standCount_threshold;
-				fs["stuTrack_sitdownCount_threshold"] >> stu_params.stuTrack_sitdownCount_threshold;
-				fs["stuTrack_moveDelayed_threshold"] >> stu_params.stuTrack_moveDelayed_threshold;
-				fs["stuTrack_deleteTime_threshold"] >> stu_params.stuTrack_deleteTime_threshold;
-				fs["stuTrack_move_threshold"] >> stu_params.stuTrack_move_threshold;
-				fs["stuTrack_standup_threshold"] >> stu_params.stuTrack_standup_threshold;
-
-				node = fs["stuTrack_vertex"];
-				if (node.type() != cv::FileNode::SEQ)
-				{
-					return false;
-				}
-				it = node.begin(), it_end = node.end();
-				for (i = 0; it != it_end; ++it, i++)
-				{
-					stu_params.stuTrack_vertex[i].x = (*it)["x"];
-					stu_params.stuTrack_vertex[i].y = (*it)["y"];
-				}
-				if (i != 4)
-				{
-					::MessageBox(NULL, _T("角点位置参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
-				}
-
-				node = fs["transformationMatrix"];
-				if (node.type() != cv::FileNode::SEQ)
-				{
-					return false;
-				}
-				it = node.begin(), it_end = node.end();
-				for (i = 0; it != it_end; ++it, i++)
-				{
-					stu_params.transformationMatrix[i] = *it;
-				}
-				if (i != 9)
-				{
-					::MessageBox(NULL, _T("变换矩阵参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
-				}
-
-				node = fs["stretchingAB"];
-				if (node.type() != cv::FileNode::SEQ)
-				{
-					return false;
-				}
-				it = node.begin(), it_end = node.end();
-				for (i = 0; it != it_end; ++it, i++)
-				{
-					stu_params.stretchingAB[i] = *it;
-				}
-				if (i != 2)
-				{
-					::MessageBox(NULL, _T("拉伸系数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
-				}
-				fs.release();
-				loadParamsFromStu(&stu_params);
-			}
-			if (param_type == CTRL_TAB)
-			{
-				Policy_Set_t plc;
-				fs["mut_pic_flag"] >> plc.mut_pic_flag;
-				fs["stu_feature_flag"] >> plc.stu_feature_flag;
-				fs["blb_time_min"] >> plc.time.blb_time_min;
-				fs["ppt_time_min"] >> plc.time.ppt_time_min;
-				fs["stu_time_min"] >> plc.time.stu_time_min;
-				fs["tea_time_min"] >> plc.time.tea_time_min;
-				fs.release();
-				loadParamsFromPlc(&plc);
-			}
-			return true;
-		}
-		else
-		{
-			MessageBox("载入参数类型错误！");
+			TeaITRACK_Params tch_params;
+			//memset(&tch_params, 0, sizeof(TeaITRACK_Params));
+			fs["tch_height"] >> tch_params.tch.height;
+			fs["tch_width"] >> tch_params.tch.width;
+			fs["tch_x"] >> tch_params.tch.x;
+			fs["tch_y"] >> tch_params.tch.y;
+			fs["blk_height"] >> tch_params.blk.height;
+			fs["blk_width"] >> tch_params.blk.width;
+			fs["blk_x"] >> tch_params.blk.x;
+			fs["blk_y"] >> tch_params.blk.y;
+			fs["numOfPos"] >> tch_params.numOfPos;
+			fs["numOfSlide"] >> tch_params.numOfSlide;
+			fs["outside"] >> tch_params.threshold.outside;
+			fs["stand"] >> tch_params.threshold.stand;
+			fs["targetArea"] >> tch_params.threshold.targetArea;
 			fs.release();
-			return false;
+			loadParamsFromTch(&tch_params);
 		}
+		if (CurSel == STU_TAB)
+		{
+			StuITRACK_ClientParams_t stu_params;
+			int i = 0;
+			fs["height"] >> stu_params.height;
+			fs["width"] >> stu_params.width;
+			fs["stuTrack_debugMsg_flag"] >> stu_params.stuTrack_debugMsg_flag;
+			fs["stuTrack_Draw_flag"] >> stu_params.stuTrack_Draw_flag;
+
+			cv::FileNode node = fs["stuTrack_direct_standard"];
+			if (node.type() != cv::FileNode::SEQ)
+			{
+				return false;
+			}
+			cv::FileNodeIterator it = node.begin(), it_end = node.end();
+			for (i = 0; it != it_end; ++it, i++)
+			{
+				stu_params.stuTrack_direct_standard[i] = *it;
+			}
+			if (i != 4)
+			{
+				::MessageBox(NULL, _T("角度方向参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+			}
+
+			node = fs["stuTrack_stuWidth_standard"];
+			if (node.type() != cv::FileNode::SEQ)
+			{
+				return false;
+			}
+			it = node.begin(), it_end = node.end();
+			for (i = 0; it != it_end; ++it, i++)
+			{
+				stu_params.stuTrack_stuWidth_standard[i] = *it;
+			}
+			if (i != 4)
+			{
+				::MessageBox(NULL, _T("学生宽度参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+			}
+
+			fs["stuTrack_direct_range"] >> stu_params.stuTrack_direct_range;
+			fs["stuTrack_standCount_threshold"] >> stu_params.stuTrack_standCount_threshold;
+			fs["stuTrack_sitdownCount_threshold"] >> stu_params.stuTrack_sitdownCount_threshold;
+			fs["stuTrack_moveDelayed_threshold"] >> stu_params.stuTrack_moveDelayed_threshold;
+			fs["stuTrack_deleteTime_threshold"] >> stu_params.stuTrack_deleteTime_threshold;
+			fs["stuTrack_move_threshold"] >> stu_params.stuTrack_move_threshold;
+			fs["stuTrack_standup_threshold"] >> stu_params.stuTrack_standup_threshold;
+
+			node = fs["stuTrack_vertex"];
+			if (node.type() != cv::FileNode::SEQ)
+			{
+				return false;
+			}
+			it = node.begin(), it_end = node.end();
+			for (i = 0; it != it_end; ++it, i++)
+			{
+				stu_params.stuTrack_vertex[i].x = (*it)["x"];
+				stu_params.stuTrack_vertex[i].y = (*it)["y"];
+			}
+			if (i != 4)
+			{
+				::MessageBox(NULL, _T("角点位置参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+			}
+
+			node = fs["transformationMatrix"];
+			if (node.type() != cv::FileNode::SEQ)
+			{
+				return false;
+			}
+			it = node.begin(), it_end = node.end();
+			for (i = 0; it != it_end; ++it, i++)
+			{
+				stu_params.transformationMatrix[i] = *it;
+			}
+			if (i != 9)
+			{
+				::MessageBox(NULL, _T("变换矩阵参数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+			}
+
+			node = fs["stretchingAB"];
+			if (node.type() != cv::FileNode::SEQ)
+			{
+				return false;
+			}
+			it = node.begin(), it_end = node.end();
+			for (i = 0; it != it_end; ++it, i++)
+			{
+				stu_params.stretchingAB[i] = *it;
+			}
+			if (i != 2)
+			{
+				::MessageBox(NULL, _T("拉伸系数载入出错！"), NULL, MB_OK | MB_ICONWARNING);
+			}
+			fs.release();
+			loadParamsFromStu(&stu_params);
+		}
+		if (CurSel == CTRL_TAB)
+		{
+			Policy_Set_t plc;
+			fs["mut_pic_flag"] >> plc.mut_pic_flag;
+			fs["stu_feature_flag"] >> plc.stu_feature_flag;
+			fs["blb_time_min"] >> plc.time.blb_time_min;
+			fs["ppt_time_min"] >> plc.time.ppt_time_min;
+			fs["stu_time_min"] >> plc.time.stu_time_min;
+			fs["tea_time_min"] >> plc.time.tea_time_min;
+			fs.release();
+			loadParamsFromPlc(&plc);
+		}
+		return true;
 	}
 	else
 	{
@@ -2960,9 +2905,8 @@ bool CMFCTrackToolsDlg::load_Parameter(std::string filePath)
 void CMFCTrackToolsDlg::OnBnClickedBtnLoad()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	CString fileName;
-	CString filter;
-	switch (CurSel)
+	//CString fileName = _T("params.yml");
+	/*switch (CurSel)
 	{
 	case TCH_TAB:
 		fileName = _T("tch_params.tch");
@@ -2978,9 +2922,9 @@ void CMFCTrackToolsDlg::OnBnClickedBtnLoad()
 		break;
 	default:
 		break;
-	}
-	//CString filter = _T("文件 (*.yml)|*.yml|文件（*.zml)|*.zzml||");		//文件过虑的类型  
-	CFileDialog openFileDlg(TRUE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
+	}*/
+	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
+	CFileDialog openFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
 	if (openFileDlg.DoModal() == IDOK)
 	{
 		CString FilePathName = openFileDlg.GetPathName();

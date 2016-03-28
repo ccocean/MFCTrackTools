@@ -68,7 +68,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 		m_comboSpeed.GetWindowText(str);
 		speed = _ttoi(str);
 		m_CameraControl_tch.setMoveSpeed(speed, speed);
-		HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+		HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_UP)->m_hWnd)
 		{
@@ -140,7 +140,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 	}
 	if (pMsg->message == WM_LBUTTONUP)
 	{
-		HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+		HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
 		if (pWnd->CurSel == TCH_TAB)
 		{
@@ -218,7 +218,7 @@ void DlgCam::OnBnClickedButtonHome()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	//HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_HOME, m_comboSpeed.GetCurSel());
-	HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+	HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 	CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
 	m_comboSpeed.GetWindowText(str);
 	speed = _ttoi(str);
@@ -609,7 +609,7 @@ void DlgCam::OnBnClickedButton5()
 	//计算标定参数
 	if ((countCalib&CALIBRATION_FLAG_ALL) == CALIBRATION_FLAG_ALL)
 	{
-		HWND hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+		HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 
 		//StuITRACK_ClientParams_t &stu_params = ((CMFCTrackToolsDlg*)GetDlgItem(IDD_MFCTRACKTOOLS_DIALOG))->dlgStu.stu_params;

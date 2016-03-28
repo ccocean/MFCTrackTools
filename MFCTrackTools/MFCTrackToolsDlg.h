@@ -216,7 +216,7 @@ private:
 	BOOL connectCam();
 
 	//从本地加载或保存设置参数
-	void save_Parameter(std::string filePath, std::string fileName/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/);
+	void save_Parameter(std::string filePath/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/);
 	bool load_Parameter(std::string filePath/*, StuITRACK_ClientParams_t* stu_params, TeaITRACK_Params* tch_params, Policy_Set_t* ctrl_params*/);
 	
 public:

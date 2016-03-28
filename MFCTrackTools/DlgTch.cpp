@@ -167,7 +167,7 @@ void DlgTch::OnBnClickedbtnapply()
 	{
 		if (m_Connect_clientHandle)
 		{
-			HWND hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+			HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 			CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 			pWnd->dlgCam.setNumOfPreset(tch_params.numOfPos);
 			pWnd->g_drawPS = 1;

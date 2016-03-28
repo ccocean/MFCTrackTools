@@ -447,10 +447,10 @@ bool DlgStu::load_local_Parameter(std::string filePath, StuITRACK_ClientParams_t
 
 void DlgStu::updateAngle()
 {
-	HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+	HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 	CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
 
-	if (pWnd->pa.x == 0 && pWnd->pa.y == 0 && pWnd->pb.x == 0 && pWnd->pb.y && pWnd->pc.x && pWnd->pc.y && pWnd->pd.x && pWnd->pd.y)
+	if (pWnd->pa.x == 0 && pWnd->pa.y == 0 && pWnd->pb.x == 0 && pWnd->pb.y ==0 && pWnd->pc.x == 0 && pWnd->pc.y == 0 && pWnd->pd.x == 0 && pWnd->pd.y == 0)
 	{
 		MessageBox(_T("没有画出跟踪区域，请先设置跟踪区域。"));
 		return;
@@ -516,7 +516,7 @@ void DlgStu::updateAngle()
 
 void DlgStu::updateWidth()
 {
-	HWND p_hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+	HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 	CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
 
 	if (pWnd->pa.x == 0 && pWnd->pa.y == 0 && pWnd->pb.x == 0 && pWnd->pb.y && pWnd->pc.x && pWnd->pc.y && pWnd->pd.x && pWnd->pd.y)
@@ -645,7 +645,7 @@ void DlgStu::OnBnClickedButton3()
 		StuITRACK_ClientParams_t temp;
 		memset(&temp, 0, sizeof(StuITRACK_ClientParams_t));
 		load_local_Parameter(FilePathName.GetBuffer(0), &temp);
-		HWND hWnd = ::FindWindow(NULL, _T("MFCTrackTools"));
+		HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 		pWnd->updateParamsFromStu(&temp);
 	}
