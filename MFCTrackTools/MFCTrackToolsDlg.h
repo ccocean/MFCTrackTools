@@ -35,6 +35,7 @@
 #define Mouse_ADJUST_C 8
 #define Mouse_ADJUST_D 9
 
+#define SHIFT_KEY_DOWN 2
 #define CTRL_KEY_DOWN 1
 #define CTRL_KEY_UP 0
 
