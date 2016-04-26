@@ -1937,6 +1937,7 @@ void CMFCTrackToolsDlg::updateParams(int flag)
 }
 void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 {
+	int index;
 	g_drawPS = 1;
 	int_pos = params->numOfPos;
 	int_slide = params->numOfSlide;
@@ -1950,10 +1951,21 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 	blk.height = params->blk.height;
 	s.Format("%d", params->threshold.outside);
 	dlgTch.m_editOutSide.SetWindowText(s);
+
 	s.Format("%d", (int)(params->threshold.stand/1000));
-	dlgTch.m_comboStand.SetWindowText(s);
+	index=dlgTch.m_comboStand.FindString(0, s);
+	if (index!=CB_ERR)
+	{
+		dlgTch.m_comboStand.SetCurSel(index);
+	}
+
 	s.Format("%d", params->numOfSlide);
-	dlgTch.m_comboSlide.SetWindowText(s);
+	index = dlgTch.m_comboSlide.FindString(0, s);
+	if (index != CB_ERR)
+	{
+		dlgTch.m_comboSlide.SetCurSel(index);
+	}
+
 	s.Format("%d", int_pos);
 	dlgTch.m_editPos.SetWindowText(s);
 	s.Format("%d", params->threshold.targetArea);
@@ -2014,6 +2026,7 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 }
 void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 {
+	int index;
 	g_drawPS = 0;
 	//先载入四个顶角位置
 	pa.x = params->stuTrack_vertex[0].x;
@@ -2131,7 +2144,12 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 	dlgStu.m_edtMoveDev.SetWindowText(s);
 
 	s.Format("%.1f", params->stuTrack_moveDelayed_threshold/1000.0);
-	dlgStu.m_comboDly.SetWindowText(s);
+	index=dlgStu.m_comboDly.FindString(0, s);
+	if (index!=CB_ERR)
+	{
+		dlgStu.m_comboDly.SetCurSel(index);
+	}
+	
 
 	/*int pos;
 	CString tempPos;*/

@@ -122,6 +122,11 @@ int DlgTch::checkParameters()
 			AfxMessageBox(_T("预置位或滑框数据不正确。"));
 			return -1;
 		}
+		else if (int_pos>255)
+		{
+			AfxMessageBox(_T("预置位个数不能超过255个！"));
+			return -1;
+		}
 		else
 		{
 			tch_params.numOfPos = int_pos;
