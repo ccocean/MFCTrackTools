@@ -478,7 +478,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	centre_pt.y = showRectFeature.top + showRectFeature.Height() / 2;
 	//SetTimer(1,40, NULL);
 
-	GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
+	/*GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
 	CString str(m_pExeDir);
 	int n = str.ReverseFind('\\');
 	str = str.Left(n);
@@ -486,7 +486,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	memcpy(m_pExeDir, str.GetString(), MAX_PATH);
 	m_strSkin = m_pExeDir;
 	m_strSkin += SKINNAME;
-	skinppLoadSkin((char*)m_strSkin.GetString());
+	skinppLoadSkin((char*)m_strSkin.GetString());*/
 	return initNetCommuntication();
 
 }

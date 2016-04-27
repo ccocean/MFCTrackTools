@@ -159,8 +159,8 @@ int DlgStu::checkParameters()
 	else
 	{
 		_standAgl = _ttoi(standAgl);
-		_standFrm = _ttoi(standFrm);
-		_sitFrm = _ttoi(sitFrm);
+		_standFrm = 5;
+		_sitFrm = 5;
 		_moveDev = _ttof(moveDev)/100;
 		_moveDly = (int)(_ttof(moveDly)*1000);
 		if (_standAgl<0)
