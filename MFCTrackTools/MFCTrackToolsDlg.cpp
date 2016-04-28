@@ -677,11 +677,11 @@ void CMFCTrackToolsDlg::trackdraw()
 				if (int_pos > 0)
 				{
 					pOldPen = pDC->SelectObject(&penDB);
-					drawRectangle(CPoint(camPosSlide.left*(WIDTH / int_pos), tch.y), CPoint((camPosSlide.right + 1) * (WIDTH / int_pos), tch.y + tch.height));
+					drawRectangle(CPoint(camPosSlide.left*(tch.width / int_pos)+tch.x, tch.y), CPoint((camPosSlide.right + 1) * (tch.width / int_pos)+tch.x, tch.y + tch.height));
 
 					pOldPen = pDC->SelectObject(&penY);
-					drawEndRect(CPoint((WIDTH / int_pos) / 2, tch.y + tch.height / 2), 10);
-					drawEndRect(CPoint(WIDTH - (WIDTH / int_pos) / 2, tch.y + tch.height / 2), 10);
+					drawEndRect(CPoint((tch.width / int_pos) / 2+tch.x, tch.y + tch.height / 2), 10);
+					drawEndRect(CPoint(tch.width - (tch.width / int_pos) / 2+tch.x, tch.y + tch.height / 2), 10);
 				}
 			}
 			
@@ -863,6 +863,12 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			if ((tch.x < point.x - MARGIN_LEFT && point.x - MARGIN_LEFT < tch.x + tch.width&&tch.y < point.y - pic_top&&point.y - pic_top < tch.y + tch.height))
 			{
+				if (isKeyDown==KEY_ERROR)
+				{
+					MessageBox("组合键错误，不可同时按下CTRL和SHIFT！");
+					isKeyDown = CTRL_KEY_UP;
+					return;
+				}
 				if (isKeyDown==CTRL_KEY_DOWN)
 				{
 					p3 = p4 = { 0 };
@@ -991,8 +997,9 @@ void CMFCTrackToolsDlg::OnLButtonUp(UINT nFlags, CPoint point)
 					mouseCnt++;
 					if (mouseCnt == 1)
 					{
-						p1.x = 0;
-						p2.x = Frame_Width;
+						/*p1.x = 0;
+						p2.x = Frame_Width;*/
+						p2.x = pt.x;
 					}
 					if (mouseCnt == 2)
 					{
@@ -1937,6 +1944,7 @@ void CMFCTrackToolsDlg::updateParams(int flag)
 }
 void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 {
+	dlgTch.tch_params = *params;
 	int index;
 	g_drawPS = 1;
 	int_pos = params->numOfPos;
@@ -2026,6 +2034,7 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 }
 void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 {
+	dlgStu.stu_params = *params;
 	int index;
 	g_drawPS = 0;
 	//先载入四个顶角位置
@@ -2205,20 +2214,29 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 	updateParams(PARAM_POSITION);
 	updateParams(PARAM_WIDTH);
 }
-
 void CMFCTrackToolsDlg::loadParamsFromPlc(Policy_Set_t* params)
 {
 	str.Format(_T("%d"), params->time.blb_time_min);
 	dlgCtrl.m_edt_timeBlk.SetWindowText(str);
+	dlgCtrl.ctrl_params.time.blb_time_min = params->time.blb_time_min;
+
 	str.Format(_T("%d"), params->time.stu_time_min);
 	dlgCtrl.m_edt_timeStu.SetWindowText(str);
+	dlgCtrl.ctrl_params.time.stu_time_min = params->time.stu_time_min;
+
 	str.Format(_T("%d"), params->time.tea_time_min);
 	dlgCtrl.m_edt_timeTch.SetWindowText(str);
+	dlgCtrl.ctrl_params.time.tea_time_min = params->time.tea_time_min;
+
 	str.Format(_T("%d"), params->time.ppt_time_min);
 	dlgCtrl.m_edt_timeVGA.SetWindowText(str);
+	dlgCtrl.ctrl_params.time.ppt_time_min = params->time.ppt_time_min;
+
 
 	dlgCtrl.m_chk_multiple.SetCheck(params->mut_pic_flag);
+	dlgCtrl.ctrl_params.mut_pic_flag = params->mut_pic_flag;
 	dlgCtrl.m_chk_stuOverview.SetCheck(params->stu_feature_flag);
+	dlgCtrl.ctrl_params.stu_feature_flag = params->stu_feature_flag;
 	str.Format(_T(""));
 }
 
@@ -2443,10 +2461,11 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 		Login_t * pLogin_info = (Login_t*)msg;
 		ctrlClient_set_track_debug(1, m_track_clientHandle);
 		ctrlClient_init_Stream();
-		ctrlClient_get_teach_params(m_track_clientHandle);
 		ctrlClient_get_track_status(m_track_clientHandle);
 		ctrlClient_get_camera_params(m_track_clientHandle);
 		ctrlClient_get_policy_params(m_track_clientHandle);
+		ctrlClient_get_stu_params(m_track_clientHandle);
+		ctrlClient_get_teach_params(m_track_clientHandle);
 		::PostMessage(m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 		break;
 	}
@@ -2623,6 +2642,15 @@ BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 	{
 		isKeyDown = CTRL_KEY_UP;
 	}
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (GetKeyState(VK_CONTROL) < 0 && GetKeyState(VK_SHIFT) < 0)
+		{
+			isKeyDown = KEY_ERROR;
+			return TRUE;
+		}
+	}
+
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 

@@ -159,8 +159,8 @@ int DlgStu::checkParameters()
 	else
 	{
 		_standAgl = _ttoi(standAgl);
-		_standFrm = 5;
-		_sitFrm = 5;
+		/*_standFrm = 5;
+		_sitFrm = 5;*/
 		_moveDev = _ttof(moveDev)/100;
 		_moveDly = (int)(_ttof(moveDly)*1000);
 		if (_standAgl<0)
@@ -168,16 +168,16 @@ int DlgStu::checkParameters()
 			MessageBox("起立角度偏移数据错误！");
 			return -1;
 		}
-		if (_standFrm<=0)
+		/*if (_standFrm<=0)
 		{
-			MessageBox("起立阈值数据错误！");
-			return -1;
+		MessageBox("起立阈值数据错误！");
+		return -1;
 		}
 		if (_sitFrm <= 0)
 		{
-			MessageBox("坐下阈值数据错误！");
-			return -1;
-		}
+		MessageBox("坐下阈值数据错误！");
+		return -1;
+		}*/
 		if (_moveDev <= 0)
 		{
 			MessageBox("移动偏离数据错误！");
@@ -195,8 +195,8 @@ int DlgStu::checkParameters()
 		return -1;
 	}
 	stu_params.stuTrack_direct_range = _standAgl;
-	stu_params.stuTrack_standCount_threshold = _standFrm;
-	stu_params.stuTrack_sitdownCount_threshold = _sitFrm;
+	//stu_params.stuTrack_standCount_threshold = _standFrm;
+	//stu_params.stuTrack_sitdownCount_threshold = _sitFrm;
 	stu_params.stuTrack_move_threshold = _moveDev;
 	stu_params.stuTrack_moveDelayed_threshold = _moveDly;
 	stu_params.width = WIDTH;
