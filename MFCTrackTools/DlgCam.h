@@ -59,8 +59,8 @@ public:
 	int speed;
 	CComboBox m_comboSpeed;
 
-	
-
+	void setConnectHandle(Commutication_Handle_t pConnect_clientHandle);
+	Commutication_Handle_t m_Connect_clientHandle;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CButton m_btnUp;
 	CButton m_btnLeft;
@@ -81,4 +81,5 @@ public:
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedButton4();
 	afx_msg void OnBnClickedButton5();
+	CButton m_checkCam;
 };

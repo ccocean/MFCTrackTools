@@ -32,6 +32,7 @@ void DlgCam::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_LEFT, m_btnLeft);
 	DDX_Control(pDX, IDC_grpBoxCam, m_grpBoxCam);
 	DDX_Control(pDX, IDC_txtPreset, m_txtPreset);
+	DDX_Control(pDX, IDC_CHECK_CAM, m_checkCam);
 }
 
 
@@ -50,6 +51,11 @@ END_MESSAGE_MAP()
 
 
 // DlgCam 消息处理程序
+
+void DlgCam::setConnectHandle(Commutication_Handle_t pConnect_clientHandle)
+{
+	m_Connect_clientHandle = pConnect_clientHandle;
+}
 
 BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 {
@@ -70,70 +76,209 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 		m_CameraControl_tch.setMoveSpeed(speed, speed);
 		HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
+
+		Serial_Param_t cam_param;
+		memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
+		int isComControl = m_checkCam.GetCheck();
+
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_UP)->m_hWnd)
 		{
 			if (pWnd->CurSel==TCH_TAB)
 			{
-				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_UP);
+				if (isComControl)
+				{
+					cam_param.move_type = GOUP;
+					cam_param.port_type = TEA_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_UP);
+				}
 			}
 			else
 			{
-				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_UP);
+				if (isComControl)
+				{
+					cam_param.move_type = GOUP;
+					cam_param.port_type = STU_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_UP);
+				}
 			}
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_LEFT)->m_hWnd)
 		{
 			if (pWnd->CurSel == TCH_TAB)
 			{
-				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_LEFT);
+				if (isComControl)
+				{
+					cam_param.move_type = GOLEFT;
+					cam_param.port_type = TEA_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_LEFT);
+				}
 			}
 			else
 			{
-				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_LEFT);
+				if (isComControl)
+				{
+					cam_param.move_type = GOLEFT;
+					cam_param.port_type = STU_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_LEFT);
+				}
 			}
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_RIGHT)->m_hWnd)
 		{
 			if (pWnd->CurSel == TCH_TAB)
 			{
-				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_RIGHT);
+				if (isComControl)
+				{
+					cam_param.move_type = GORIGHT;
+					cam_param.port_type = TEA_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_RIGHT);
+				}
 			}
 			else
 			{
-				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_RIGHT);
+				if (isComControl)
+				{
+					cam_param.move_type = GORIGHT;
+					cam_param.port_type = STU_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_RIGHT);
+				}
+				
 			}
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_DOWN)->m_hWnd)
 		{
 			if (pWnd->CurSel == TCH_TAB)
 			{
-				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_DOWN);
+				if (isComControl)
+				{
+					cam_param.move_type = GODOWN;
+					cam_param.port_type = TEA_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_DOWN);
+				}
+				
 			}
 			else
 			{
-				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_DOWN);
+				if (isComControl)
+				{
+					cam_param.move_type = GODOWN;
+					cam_param.port_type = STU_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_DOWN);
+				}
 			}
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMIN)->m_hWnd)
 		{
 			if (pWnd->CurSel == TCH_TAB)
 			{
-				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMIN);
+				if (isComControl)
+				{
+					cam_param.move_type = GONEAR;
+					cam_param.port_type = TEA_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMIN);
+				}
 			}
 			else
 			{
-				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMIN);
+				if (isComControl)
+				{
+					cam_param.move_type = GONEAR;
+					cam_param.port_type = STU_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMIN);
+				}
 			}
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMOUT)->m_hWnd)
 		{
 			if (pWnd->CurSel == TCH_TAB)
 			{
-				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
+				if (isComControl)
+				{
+					cam_param.move_type = GOFAR;
+					cam_param.port_type = TEA_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
+				}
 			}
 			else
 			{
-				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
+				if (isComControl)
+				{
+					cam_param.move_type = GOFAR;
+					cam_param.port_type = STU_PORT;
+					cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMOUT);
+				}
 			}
 		}
 		//m_btnUp.SetState(TRUE);
@@ -142,15 +287,47 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 	{
 		HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
+
+		Serial_Param_t cam_param;
+		memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
+		int isComControl = m_checkCam.GetCheck();
+
 		if (pWnd->CurSel == TCH_TAB)
 		{
-			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
-			m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
+			if (isComControl)
+			{
+				cam_param.move_type = STOPTURN;
+				cam_param.port_type = TEA_PORT;
+				//cam_param.speed = speed;
+				cam_param.type = CAM_MOVE;
+				ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				cam_param.move_type = STOPZ;
+				ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+			}
+			else
+			{
+				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
+				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
+			}
+			
 		}
 		else
 		{
-			m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
-			m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
+			if (isComControl)
+			{
+				cam_param.move_type = STOPTURN;
+				cam_param.port_type = STU_PORT;
+				//cam_param.speed = speed;
+				cam_param.type = CAM_MOVE;
+				ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				cam_param.move_type = STOPZ;
+				ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+			}
+			else
+			{
+				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
+				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
+			}
 		}
 	}
 		
@@ -222,18 +399,43 @@ void DlgCam::OnBnClickedButtonHome()
 	CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
 	m_comboSpeed.GetWindowText(str);
 	speed = _ttoi(str);
+	Serial_Param_t cam_param;
+	memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
 	switch (pWnd->CurSel)
 	{
 	case TCH_TAB:
-		m_CameraControl_tch.setMoveSpeed(speed, speed);
-		m_CameraControl_tch.home();
+		if (m_checkCam.GetCheck())
+		{
+			cam_param.move_type = GOHOME;
+			cam_param.port_type = TEA_PORT;
+			cam_param.speed = speed;
+			cam_param.type = CAM_MOVE;
+			ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+		}
+		else
+		{
+			m_CameraControl_tch.setMoveSpeed(speed, speed);
+			m_CameraControl_tch.home();
+		}
+		break;
 	case STU_TAB:
-		m_CameraControl_stu.setMoveSpeed(speed, speed);
-		m_CameraControl_stu.home();
+		if (m_checkCam.GetCheck())
+		{
+			cam_param.move_type = GOHOME;
+			cam_param.port_type = STU_PORT;
+			cam_param.speed = speed;
+			cam_param.type = CAM_MOVE;
+			ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+		}
+		else
+		{
+			m_CameraControl_stu.setMoveSpeed(speed, speed);
+			m_CameraControl_stu.home();
+		}
+		break;
 	default:
 		break;
 	}
-	
 }
 
 
@@ -247,7 +449,19 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 	}
 	if (1==right)
 	{
-		m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		if (m_checkCam.GetCheck())
+		{
+			Serial_Position_t cam_pos;
+			memset(&cam_pos, 0, sizeof(Serial_Position_t));
+			cam_pos.port = TEA_PORT;
+			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
+			m_get_panPosit = cam_pos.posit_pan;
+			m_get_tiltPosit = cam_pos.posit_tilt;
+		}
+		else
+		{
+			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		}
 		if (m_get_panPosit>0)
 		{
 			MessageBox("相机位置不在左端。");
@@ -268,7 +482,20 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 	}
 	else
 	{
-		m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		if (m_checkCam.GetCheck())
+		{
+			Serial_Position_t cam_pos;
+			memset(&cam_pos, 0, sizeof(Serial_Position_t));
+			cam_pos.port = TEA_PORT;
+			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
+			m_get_panPosit = cam_pos.posit_pan;
+			m_get_tiltPosit = cam_pos.posit_tilt;
+		}
+		else
+		{
+			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		}
+		
 		if (m_get_panPosit > 0)
 		{
 			MessageBox("相机位置不在左端。");
@@ -290,7 +517,19 @@ void DlgCam::OnBnClickedButtonRightPreset()
 	}
 	if (1==left)
 	{
-		m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		if (m_checkCam.GetCheck())
+		{
+			Serial_Position_t cam_pos;
+			memset(&cam_pos, 0, sizeof(Serial_Position_t));
+			cam_pos.port = TEA_PORT;
+			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
+			m_get_panPosit = cam_pos.posit_pan;
+			m_get_tiltPosit = cam_pos.posit_tilt;
+		}
+		else
+		{
+			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		}
 		if (m_get_panPosit < 0)
 		{
 			MessageBox("相机位置不在右端。");
@@ -312,7 +551,19 @@ void DlgCam::OnBnClickedButtonRightPreset()
 	}
 	else
 	{
-		m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		if (m_checkCam.GetCheck())
+		{
+			Serial_Position_t cam_pos;
+			memset(&cam_pos, 0, sizeof(Serial_Position_t));
+			cam_pos.port = TEA_PORT;
+			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
+			m_get_panPosit = cam_pos.posit_pan;
+			m_get_tiltPosit = cam_pos.posit_tilt;
+		}
+		else
+		{
+			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		}
 		if (m_get_panPosit < 0)
 		{
 			MessageBox("相机位置不在右端。");
@@ -397,8 +648,19 @@ DWORD WINAPI DlgCam::automaticPreset(LPVOID pParam)
 		{
 			while (pDlg->m_get_panPosit != i + fix)
 			{
-				pDlg->m_CameraControl_tch.getPosit(&pDlg->m_get_panPosit, &pDlg->m_get_tiltPosit, 500);
-				pDlg->m_CameraControl_tch.move(i + fix, pDlg->m_get_tiltPosit, FALSE);
+				if (pDlg->m_checkCam.GetCheck())
+				{
+					Serial_Position_t cam_pos;
+					cam_pos.port = STU_PORT;
+					ctrlClient_get_Camera_position(&cam_pos, pDlg->m_Connect_clientHandle);
+					pDlg->m_get_panPosit = cam_pos.posit_pan;
+					pDlg->m_get_tiltPosit = cam_pos.posit_tilt;
+				}
+				else
+				{
+					pDlg->m_CameraControl_tch.getPosit(&pDlg->m_get_panPosit, &pDlg->m_get_tiltPosit, 500);
+					pDlg->m_CameraControl_tch.move(i + fix, pDlg->m_get_tiltPosit, FALSE);
+				}
 			}
 		}
 		else
@@ -409,7 +671,6 @@ DWORD WINAPI DlgCam::automaticPreset(LPVOID pParam)
 				pDlg->m_CameraControl_tch.move(i, pDlg->m_get_tiltPosit, FALSE);
 			}
 		}
-
 
 		pDlg->m_CameraControl_tch.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num + 10);
 		Sleep(500);

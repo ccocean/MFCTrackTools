@@ -18,6 +18,32 @@ int ctrlClient_set_teach_params(TeaITRACK_Params * tec_param, Commutication_Hand
 	return 0;
 }
 
+int ctrlClient_set_Camera_params(Serial_Param_t * cam_param, Commutication_Handle_t ptrack_clientHandle)
+{
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
+		return -1;
+	}
+	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
+	head.cmd = CAM_SET_CMD;
+	communtication_send_clientMsg(&head, (char *)(cam_param), sizeof(Serial_Param_t), ptrack_clientHandle);
+	return 0;
+}
+
+int ctrlClient_get_Camera_position(Serial_Position_t * cam_pos, Commutication_Handle_t ptrack_clientHandle)
+{
+	if (ptrack_clientHandle == NULL) {
+		AfxMessageBox(TEXT("客户端连接失败"));
+		return -1;
+	}
+	Communtication_Head_t head;
+	commutication_init_head(&head, C_CONTROL_TRACK);
+	head.cmd = CAM_GET_CMD;
+	communtication_send_clientMsg(&head, (char *)(cam_pos), sizeof(Serial_Param_t), ptrack_clientHandle);
+	return 0;
+}
+
 int ctrlClient_set_policy_params(Policy_Set_t * policy_param, Commutication_Handle_t ptrack_clientHandle)
 {
 	if (ptrack_clientHandle == NULL) {

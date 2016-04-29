@@ -21,6 +21,8 @@ using namespace std;
 #define GET_TRACK_DEBUG_CMD   0x109
 #define SET_TRACK_DEBUG_CMD   0x10a
 #define TRACK_LOGIN   0x10b
+#define CAM_SET_CMD 0x10c
+#define CAM_GET_CMD 0x10d
 #define TIMEOUT 500
 
 #define TEACH_STREAM_PORT 21301
@@ -40,6 +42,56 @@ using namespace std;
 
 #define CAM_USER "admin"
 #define CAM_PSWD "admin"
+
+typedef enum
+{
+	CAM_MOVE = 0,
+	CAM_SITE = 1
+}Track_type_t;
+
+typedef enum
+{
+	GOHOME = 0,
+	GONEAR = 1,
+	GOFAR = 2,
+	STOPZ = 3,
+	GOUP = 4,
+	GODOWN = 5,
+	GOLEFT = 6,
+	GORIGHT = 7,
+	STOPTURN = 8
+}Move_Type_t;
+
+typedef enum
+{
+	STU_PORT = 0,
+	TEA_PORT = 1,
+}Comport_Type_t;
+
+typedef enum
+{
+	SET = 0,
+	DEL = 1,
+	CALL = 2
+}Presion_Type_t;
+
+typedef struct Param_t
+{
+	Move_Type_t move_type;
+	Comport_Type_t port_type;
+	Presion_Type_t site_type;
+	int speed;
+	int index;
+	Track_type_t  type;
+} Serial_Param_t;
+
+typedef struct Pos_t
+{
+	int posit_pan;
+	int posit_tilt;
+	int coefficient;
+	Comport_Type_t port;
+} Serial_Position_t;
 
 typedef struct
 {
@@ -126,6 +178,8 @@ int ctrlClient_get_track_status(Commutication_Handle_t ptrack_clientHandle);
 
 int ctrlClient_set_track_debug(int debug, Commutication_Handle_t ptrack_clientHandle);
 int ctrlClient_set_stream_display(void* pStream_StuclientHandle, void* pStream_TeaclientHandle, int chanenel);
+int ctrlClient_set_Camera_params(Serial_Param_t * cam_param, Commutication_Handle_t ptrack_clientHandle);
 
 int ctrlClient_login(Login_t* logininfo, Commutication_Handle_t ptrack_clientHandle);
+int ctrlClient_get_Camera_position(Serial_Position_t * cam_pos, Commutication_Handle_t ptrack_clientHandle);
 #endif

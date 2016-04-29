@@ -2303,6 +2303,7 @@ static int ctrl_connect_status(Connect_Status status, void * param)
 	pTrackDlg->dlgTch.setConnectHandle(pTrackDlg->m_track_clientHandle);
 	pTrackDlg->dlgStu.setConnectHandle(pTrackDlg->m_track_clientHandle);
 	pTrackDlg->dlgCtrl.setConnectHandle(pTrackDlg->m_track_clientHandle);
+	pTrackDlg->dlgCam.setConnectHandle(pTrackDlg->m_track_clientHandle);
 	return  0;
 }
 //回调函数处理
@@ -2468,6 +2469,16 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 		ctrlClient_get_teach_params(m_track_clientHandle);
 		::PostMessage(m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 		break;
+	}
+	case CAM_SET_CMD:
+	{
+						//登陆成功，开启跟踪调试
+						break;
+	}
+	case CAM_GET_CMD:
+	{
+						Serial_Position_t *pCamPos = (Serial_Position_t *)msg;
+							break;
 	}
 	default:
 	{
