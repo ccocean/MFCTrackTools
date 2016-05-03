@@ -476,6 +476,8 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	GetDlgItem(IDC_picFeature)->GetClientRect(&showRectFeature);
 	centre_pt.x = showRectFeature.left + showRectFeature.Width() / 2;
 	centre_pt.y = showRectFeature.top + showRectFeature.Height() / 2;
+
+	dlgCam.m_txtPreset.SetWindowText("");
 	//SetTimer(1,40, NULL);
 
 	/*GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
@@ -682,6 +684,12 @@ void CMFCTrackToolsDlg::trackdraw()
 					pOldPen = pDC->SelectObject(&penY);
 					drawEndRect(CPoint((tch.width / int_pos) / 2+tch.x, tch.y + tch.height / 2), 10);
 					drawEndRect(CPoint(tch.width - (tch.width / int_pos) / 2+tch.x, tch.y + tch.height / 2), 10);
+
+					if (p4.x > 0 && p4.y > 0)
+					{
+						pOldPen = pDC->SelectObject(&penPink);
+						drawRectangle(p3, p4);
+					}
 				}
 			}
 			
@@ -701,11 +709,7 @@ void CMFCTrackToolsDlg::trackdraw()
 		drawRectangle(CPoint(blk.x, blk.y), CPoint(blk.x + blk.width, blk.y + blk.height));
 		pOldPen = pDC->SelectObject(&penPurple);
 		drawLine(pl, pr);
-		if (p4.x>0&&p4.y>0)
-		{
-			pOldPen = pDC->SelectObject(&penPink);
-			drawRectangle(p3, p4);
-		}
+		
 		/*pOldPen = pDC->SelectObject(&penPurple);
 		drawLine(pl, pr);*/
 		if (mouseStatus == Mouse_LBDOWN)
@@ -1255,7 +1259,7 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 
 				if (whichRect == 1)
 				{
-					//tch.x += (point.x - pt.x);
+					tch.x += (point.x - pt.x);
 					tch.y += (point.y  - pt.y);
 					pl.y += (point.y - pt.y);
 					pr.y += (point.y - pt.y);
@@ -2478,6 +2482,10 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	case CAM_GET_CMD:
 	{
 						Serial_Position_t *pCamPos = (Serial_Position_t *)msg;
+						dlgCam.m_get_panPosit = pCamPos->posit_pan;
+						dlgCam.m_get_tiltPosit = pCamPos->posit_tilt;
+						//MessageBox(temp);
+						::SetEvent(dlgCam.camEvent);
 							break;
 	}
 	default:

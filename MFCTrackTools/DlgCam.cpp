@@ -447,6 +447,8 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 		MessageBox("没有设置预置位个数！");
 		return;
 	}
+	HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
+	CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 	if (1==right)
 	{
 		if (m_checkCam.GetCheck())
@@ -455,18 +457,20 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 			memset(&cam_pos, 0, sizeof(Serial_Position_t));
 			cam_pos.port = TEA_PORT;
 			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
-			m_get_panPosit = cam_pos.posit_pan;
-			m_get_tiltPosit = cam_pos.posit_tilt;
 		}
 		else
 		{
 			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		}
+		m_txtPreset.SetWindowText("等待获取位置...");
+		WaitForSingleObject(camEvent, INFINITE);
+		m_txtPreset.SetWindowText("");
 		if (m_get_panPosit>0)
 		{
 			MessageBox("相机位置不在左端。");
 			return;
 		}
+		::ResetEvent(camEvent);
 		m_leftPreset = m_get_panPosit;
 		DWORD *pParams = new DWORD[2];
 		int *params = new int[3];
@@ -488,19 +492,25 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 			memset(&cam_pos, 0, sizeof(Serial_Position_t));
 			cam_pos.port = TEA_PORT;
 			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
-			m_get_panPosit = cam_pos.posit_pan;
-			m_get_tiltPosit = cam_pos.posit_tilt;
+			m_txtPreset.SetWindowText("等待获取位置...");
+			WaitForSingleObject(camEvent, INFINITE);
+			m_txtPreset.SetWindowText("获取成功，请设置最右端！");
+			CString temp;
+			temp.Format("pan:%d, til:%d", m_get_panPosit, m_get_tiltPosit);
+			m_txtPreset.SetWindowText(temp);
+			/*m_get_panPosit = cam_pos.posit_pan;
+			m_get_tiltPosit = cam_pos.posit_tilt*/;
 		}
 		else
 		{
 			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		}
-		
 		if (m_get_panPosit > 0)
 		{
 			MessageBox("相机位置不在左端。");
 			return;
 		}
+		::ResetEvent(camEvent);
 		m_leftPreset = m_get_panPosit;
 		left = 1;
 	}
@@ -651,10 +661,11 @@ DWORD WINAPI DlgCam::automaticPreset(LPVOID pParam)
 				if (pDlg->m_checkCam.GetCheck())
 				{
 					Serial_Position_t cam_pos;
-					cam_pos.port = STU_PORT;
+					cam_pos.port = TEA_PORT;
 					ctrlClient_get_Camera_position(&cam_pos, pDlg->m_Connect_clientHandle);
-					pDlg->m_get_panPosit = cam_pos.posit_pan;
-					pDlg->m_get_tiltPosit = cam_pos.posit_tilt;
+					pDlg->m_txtPreset.SetWindowText("等待获取位置...");
+					WaitForSingleObject(pDlg->camEvent, INFINITE);
+					pDlg->m_txtPreset.SetWindowText("");
 				}
 				else
 				{

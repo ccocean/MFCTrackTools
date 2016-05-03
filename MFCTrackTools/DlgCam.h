@@ -44,7 +44,7 @@ public:
 	CPoint m_calibPt[4];
 	int m_zoom[4];
 
-	
+	CEvent camEvent;
 	//云台相机控制
 	PanAndTiltCameraControl m_CameraControl_tch;
 	PanAndTiltCameraControl m_CameraControl_stu;
