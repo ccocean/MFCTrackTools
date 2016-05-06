@@ -1,7 +1,7 @@
 #pragma once
 #include "afxwin.h"
 #include "client_cameraControl.h"
-#include "MFCTrackToolsDlg.h"
+//#include "MFCTrackToolsDlg.h"
 
 // DlgCam ¶Ô»°¿ò
 
@@ -12,6 +12,8 @@
 #define PreSet_NO 0
 
 #define WM_USER_THREADEND WM_USER + 1
+
+class CMFCTrackToolsDlg;
 
 class DlgCam : public CDialog
 {
@@ -58,7 +60,9 @@ public:
 	CString str;
 	int speed;
 	CComboBox m_comboSpeed;
+	CMFCTrackToolsDlg *m_pDlg;
 
+	void setMainDlg(CMFCTrackToolsDlg *pDlg){ m_pDlg = pDlg; }
 	void setConnectHandle(Commutication_Handle_t pConnect_clientHandle);
 	Commutication_Handle_t m_Connect_clientHandle;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
@@ -82,4 +86,5 @@ public:
 	afx_msg void OnBnClickedButton4();
 	afx_msg void OnBnClickedButton5();
 	CButton m_checkCam;
+	afx_msg void OnBnClickedButtonUp();
 };

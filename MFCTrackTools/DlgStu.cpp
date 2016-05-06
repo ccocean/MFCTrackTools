@@ -124,8 +124,8 @@ void DlgStu::setParams(StuITRACK_ClientParams_t* params)
 
 int DlgStu::checkParameters()
 {
-	CString standAgl, standFrm, sitFrm, moveDev, moveDly;
-	int _standAgl, _standFrm, _sitFrm,  _moveDly;
+	CString standAgl,  moveDev, moveDly;
+	int _standAgl,  _moveDly;
 	double _moveDev;
 	if (stu_params.stuTrack_vertex[0].x <= 0 || stu_params.stuTrack_vertex[0].y <= 0)
 	{
@@ -145,13 +145,13 @@ int DlgStu::checkParameters()
 		return -1;
 	}
 	m_edtStandAgl.GetWindowText(standAgl);
-	m_edtStandFrm.GetWindowText(standFrm);
-	m_edtSitFrm.GetWindowText(sitFrm);
+	//m_edtStandFrm.GetWindowText(standFrm);
+	//m_edtSitFrm.GetWindowText(sitFrm);
 	m_edtMoveDev.GetWindowText(moveDev);
 	/*_moveDly = m_comboDly.GetCurSel();*/
 	m_comboDly.GetWindowText(moveDly);
 	//m_edtMoveDly.GetWindowText(moveDly);
-	if (standAgl.IsEmpty()||standFrm.IsEmpty()||sitFrm.IsEmpty()||moveDev.IsEmpty()||moveDly.IsEmpty())
+	if (standAgl.IsEmpty()||moveDev.IsEmpty()||moveDly.IsEmpty())
 	{
 		MessageBox("数据不能为空！");
 		return -1;
@@ -168,16 +168,7 @@ int DlgStu::checkParameters()
 			MessageBox("起立角度偏移数据错误！");
 			return -1;
 		}
-		/*if (_standFrm<=0)
-		{
-		MessageBox("起立阈值数据错误！");
-		return -1;
-		}
-		if (_sitFrm <= 0)
-		{
-		MessageBox("坐下阈值数据错误！");
-		return -1;
-		}*/
+		
 		if (_moveDev <= 0)
 		{
 			MessageBox("移动偏离数据错误！");
@@ -210,18 +201,103 @@ void DlgStu::setConnectHandle(Commutication_Handle_t pConnect_clientHandle)
 {
 	m_Connect_clientHandle = pConnect_clientHandle;
 }
+#define CHECH_STURRACK_RESULT_OK 0
+static int stuTrack_check_clientParams(StuITRACK_ClientParams_t* clientParams_p)
+{
+	if (clientParams_p->height <= 0 || clientParams_p->width <= 0)
+	{
+		clientParams_p->width = WIDTH_STUTRACK_IMG_;
+		clientParams_p->height = HEIGHT_STUTRACK_IMG_;
+	}
+
+	if (clientParams_p->stuTrack_debugMsg_flag < 0)
+	{
+		clientParams_p->stuTrack_debugMsg_flag = 0;
+	}
+
+	if (clientParams_p->stuTrack_direct_range <= 0)
+	{
+		//起立时允许的角度偏离范围
+		clientParams_p->stuTrack_direct_range = RANGE_STUTRACK_STANDDIRECT_DEFALUT_PARAMS;
+	}
+
+	if (clientParams_p->stuTrack_standCount_threshold <= 0)
+	{
+		//起立计数
+		clientParams_p->stuTrack_standCount_threshold = THRESHOLD_STUTRACK_STANDCOUNT_DEFALUT_PARAMS;
+	}
+
+	if (clientParams_p->stuTrack_sitdownCount_threshold <= 0)
+	{
+		//坐下计数
+		clientParams_p->stuTrack_sitdownCount_threshold = THRESHOLD_STUTRACK_SITDOWNCOUNT_DEFALUT_PARAMS;
+	}
+
+	if (clientParams_p->stuTrack_moveDelayed_threshold <= 0)
+	{
+		//移动目标保持跟踪的延时，超过这个时间无运动，则放弃跟踪(单位：毫秒)
+		clientParams_p->stuTrack_moveDelayed_threshold = THRESHOLD_STUTRACK_MOVEDELAYED_DEFALUT_TIME;
+	}
+
+	if (clientParams_p->stuTrack_deleteTime_threshold <= 0)
+	{
+		//目标保持跟踪的最长时间时，超过这个时间删除目标(单位：秒)
+		clientParams_p->stuTrack_deleteTime_threshold = THRESHOLD_STURECK_ALL_DELETE_TIME / 1000;
+	}
+
+	if ((clientParams_p->stuTrack_move_threshold - 0.1) <= 0)
+	{
+		//移动阈值
+		clientParams_p->stuTrack_move_threshold = THRESHOLD_STUTRACK_MOVE_DEFALUT_PARAMS;
+	}
+
+	if ((clientParams_p->stuTrack_standup_threshold - 0.1) <= 0)
+	{
+		//起立阈值
+		clientParams_p->stuTrack_standup_threshold = THRESHOLD_STUTRACK_STANDUP_DEFALUT_PARAMS;
+	}
+
+	/*if (clientParams_p->stuTrack_vertex[0].x < 0 ||
+		clientParams_p->stuTrack_vertex[1].x < 0 ||
+		clientParams_p->stuTrack_vertex[2].x < 0 ||
+		clientParams_p->stuTrack_vertex[3].x < 0 ||
+		clientParams_p->stuTrack_vertex[0].y < 0 ||
+		clientParams_p->stuTrack_vertex[1].y < 0 ||
+		clientParams_p->stuTrack_vertex[2].y < 0 ||
+		clientParams_p->stuTrack_vertex[3].y < 0)
+		{
+		clientParams_p->stuTrack_vertex[0].x = 0;
+		clientParams_p->stuTrack_vertex[0].y = 0;
+		clientParams_p->stuTrack_vertex[1].x = clientParams_p->width;
+		clientParams_p->stuTrack_vertex[1].y = 0;
+		clientParams_p->stuTrack_vertex[2].x = clientParams_p->width;
+		clientParams_p->stuTrack_vertex[2].y = clientParams_p->height;
+		clientParams_p->stuTrack_vertex[3].x = 0;
+		clientParams_p->stuTrack_vertex[3].y = clientParams_p->height;
+		}*/
+
+	return CHECH_STURRACK_RESULT_OK;
+}
+
 void DlgStu::OnBnClickedBtnstuapply()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	if (checkParameters()==0)
 	{
+		HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
+		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 		if (m_Connect_clientHandle)
 		{
-			ctrlClient_set_stu_params(&stu_params, m_Connect_clientHandle);
+			if (stuTrack_check_clientParams(&stu_params) == CHECH_STURRACK_RESULT_OK)
+			{
+				ctrlClient_set_stu_params(&stu_params, m_Connect_clientHandle);
+				pWnd->SetFocus();
+			}
 		}
 		else
 		{
 			MessageBox("未连接服务器！");
+			pWnd->SetFocus();
 		}
 		
 	}

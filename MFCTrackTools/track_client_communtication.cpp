@@ -250,7 +250,7 @@ static int  track_process_data(RH_FRAMEHEAD_t *fh, void *pEmptyBufInfo, void *ar
 		{
 			free(data);
 		}
-		OutputDebugString("helllo \n");
+		//OutputDebugString("helllo \n");
 		return 0;
 	}
 	Stream_Message_t* pStream_message = (Stream_Message_t*)malloc(sizeof(*pStream_message));
@@ -365,7 +365,7 @@ static void* stream_pop_thread(void* arg)
 			pStream_messgage = pClient_handle->list_Handle.front();
 			pClient_handle->list_Handle.pop_front();
 
-			OutputDebugString("stream============\n");
+			//OutputDebugString("stream============\n");
 			H264_To_RGB((unsigned char*)(pStream_messgage->stream_data), pStream_messgage->fh.nFrameLength,
 				pClient_handle->streamDecode.data, &(pClient_handle->decoder));
 			pClient_handle->streamDecode.height = pStream_messgage->fh.nHight;

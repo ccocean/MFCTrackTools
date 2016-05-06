@@ -47,6 +47,7 @@ BEGIN_MESSAGE_MAP(DlgCam, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON3, &DlgCam::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &DlgCam::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON5, &DlgCam::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON_UP, &DlgCam::OnBnClickedButtonUp)
 END_MESSAGE_MAP()
 
 
@@ -74,8 +75,8 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 		m_comboSpeed.GetWindowText(str);
 		speed = _ttoi(str);
 		m_CameraControl_tch.setMoveSpeed(speed, speed);
-		HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
-		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
+		/*HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
+		CMFCTrackToolsDlg *m_pDlg = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);*/
 
 		Serial_Param_t cam_param;
 		memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
@@ -83,7 +84,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_UP)->m_hWnd)
 		{
-			if (pWnd->CurSel==TCH_TAB)
+			if (m_pDlg->CurSel==TCH_TAB)
 			{
 				if (isComControl)
 				{
@@ -116,7 +117,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_LEFT)->m_hWnd)
 		{
-			if (pWnd->CurSel == TCH_TAB)
+			if (m_pDlg->CurSel == TCH_TAB)
 			{
 				if (isComControl)
 				{
@@ -149,7 +150,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_RIGHT)->m_hWnd)
 		{
-			if (pWnd->CurSel == TCH_TAB)
+			if (m_pDlg->CurSel == TCH_TAB)
 			{
 				if (isComControl)
 				{
@@ -183,7 +184,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_DOWN)->m_hWnd)
 		{
-			if (pWnd->CurSel == TCH_TAB)
+			if (m_pDlg->CurSel == TCH_TAB)
 			{
 				if (isComControl)
 				{
@@ -217,7 +218,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMIN)->m_hWnd)
 		{
-			if (pWnd->CurSel == TCH_TAB)
+			if (m_pDlg->CurSel == TCH_TAB)
 			{
 				if (isComControl)
 				{
@@ -250,7 +251,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 		}
 		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMOUT)->m_hWnd)
 		{
-			if (pWnd->CurSel == TCH_TAB)
+			if (m_pDlg->CurSel == TCH_TAB)
 			{
 				if (isComControl)
 				{
@@ -282,17 +283,18 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 			}
 		}
 		//m_btnUp.SetState(TRUE);
+		
 	}
 	if (pMsg->message == WM_LBUTTONUP)
 	{
-		HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
-		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
+		/*HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
+		CMFCTrackToolsDlg *m_pDlg = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);*/
 
 		Serial_Param_t cam_param;
 		memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
 		int isComControl = m_checkCam.GetCheck();
 
-		if (pWnd->CurSel == TCH_TAB)
+		if (m_pDlg->CurSel == TCH_TAB)
 		{
 			if (isComControl)
 			{
@@ -330,7 +332,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 			}
 		}
 	}
-		
+	//m_pDlg->SetFocus();
 	return CDialog::PreTranslateMessage(pMsg);
 }
 
@@ -395,13 +397,13 @@ void DlgCam::OnBnClickedButtonHome()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	//HI_NET_DEV_PTZ_Ctrl_Standard(m_uiHandle, HI_NET_DEV_CTRL_PTZ_HOME, m_comboSpeed.GetCurSel());
-	HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
-	CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);
+	/*HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
+	CMFCTrackToolsDlg *m_pDlg = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);*/
 	m_comboSpeed.GetWindowText(str);
 	speed = _ttoi(str);
 	Serial_Param_t cam_param;
 	memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
-	switch (pWnd->CurSel)
+	switch (m_pDlg->CurSel)
 	{
 	case TCH_TAB:
 		if (m_checkCam.GetCheck())
@@ -442,13 +444,13 @@ void DlgCam::OnBnClickedButtonHome()
 void DlgCam::OnBnClickedButtonLeftPreset()
 {
 	// TODO:  在此添加控件通知处理程序代码
+	/*HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
+	CMFCTrackToolsDlg *m_pDlg = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);*/
 	if (numPos <= 0)
 	{
 		MessageBox("没有设置预置位个数！");
 		return;
 	}
-	HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
-	CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 	if (1==right)
 	{
 		if (m_checkCam.GetCheck())
@@ -520,6 +522,8 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 void DlgCam::OnBnClickedButtonRightPreset()
 {
 	// TODO:  在此添加控件通知处理程序代码
+	/*HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
+	CMFCTrackToolsDlg *m_pDlg = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);*/
 	if (numPos<=0)
 	{
 		MessageBox("没有设置预置位个数！");
@@ -881,19 +885,19 @@ void DlgCam::OnBnClickedButton5()
 	//计算标定参数
 	if ((countCalib&CALIBRATION_FLAG_ALL) == CALIBRATION_FLAG_ALL)
 	{
-		HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
-		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
+		/*HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
+		CMFCTrackToolsDlg *m_pDlg = (CMFCTrackToolsDlg *)FromHandle(hWnd);*/
 
 		//StuITRACK_ClientParams_t &stu_params = ((CMFCTrackToolsDlg*)GetDlgItem(IDD_MFCTRACKTOOLS_DIALOG))->dlgStu.stu_params;
 		cv::Point2f ptSrc[4];
-		ptSrc[0].x = pWnd->dlgStu.stu_params.stuTrack_vertex[0].x;
-		ptSrc[0].y = pWnd->dlgStu.stu_params.stuTrack_vertex[0].y;
-		ptSrc[1].x = pWnd->dlgStu.stu_params.stuTrack_vertex[1].x;
-		ptSrc[1].y = pWnd->dlgStu.stu_params.stuTrack_vertex[1].y;
-		ptSrc[2].x = pWnd->dlgStu.stu_params.stuTrack_vertex[2].x;
-		ptSrc[2].y = pWnd->dlgStu.stu_params.stuTrack_vertex[2].y;
-		ptSrc[3].x = pWnd->dlgStu.stu_params.stuTrack_vertex[3].x;
-		ptSrc[3].y = pWnd->dlgStu.stu_params.stuTrack_vertex[3].y;
+		ptSrc[0].x = m_pDlg->dlgStu.stu_params.stuTrack_vertex[0].x;
+		ptSrc[0].y = m_pDlg->dlgStu.stu_params.stuTrack_vertex[0].y;
+		ptSrc[1].x = m_pDlg->dlgStu.stu_params.stuTrack_vertex[1].x;
+		ptSrc[1].y = m_pDlg->dlgStu.stu_params.stuTrack_vertex[1].y;
+		ptSrc[2].x = m_pDlg->dlgStu.stu_params.stuTrack_vertex[2].x;
+		ptSrc[2].y = m_pDlg->dlgStu.stu_params.stuTrack_vertex[2].y;
+		ptSrc[3].x = m_pDlg->dlgStu.stu_params.stuTrack_vertex[3].x;
+		ptSrc[3].y = m_pDlg->dlgStu.stu_params.stuTrack_vertex[3].y;
 
 		cv::Point2f m_ptDst[4];
 		m_ptDst[0].x = m_calibPt[0].x;
@@ -907,31 +911,31 @@ void DlgCam::OnBnClickedButton5()
 		cv::Mat transM;
 		transM.create(3, 3, CV_64FC1);
 		transM = getPerspectiveTransform(ptSrc, m_ptDst);
-		pWnd->dlgStu.stu_params.transformationMatrix[0] = transM.at<double>(0, 0);
-		pWnd->dlgStu.stu_params.transformationMatrix[1] = transM.at<double>(0, 1);
-		pWnd->dlgStu.stu_params.transformationMatrix[2] = transM.at<double>(0, 2);
-		pWnd->dlgStu.stu_params.transformationMatrix[3] = transM.at<double>(1, 0);
-		pWnd->dlgStu.stu_params.transformationMatrix[4] = transM.at<double>(1, 1);
-		pWnd->dlgStu.stu_params.transformationMatrix[5] = transM.at<double>(1, 2);
-		pWnd->dlgStu.stu_params.transformationMatrix[6] = transM.at<double>(2, 0);
-		pWnd->dlgStu.stu_params.transformationMatrix[7] = transM.at<double>(2, 1);
-		pWnd->dlgStu.stu_params.transformationMatrix[8] = transM.at<double>(2, 2);
+		m_pDlg->dlgStu.stu_params.transformationMatrix[0] = transM.at<double>(0, 0);
+		m_pDlg->dlgStu.stu_params.transformationMatrix[1] = transM.at<double>(0, 1);
+		m_pDlg->dlgStu.stu_params.transformationMatrix[2] = transM.at<double>(0, 2);
+		m_pDlg->dlgStu.stu_params.transformationMatrix[3] = transM.at<double>(1, 0);
+		m_pDlg->dlgStu.stu_params.transformationMatrix[4] = transM.at<double>(1, 1);
+		m_pDlg->dlgStu.stu_params.transformationMatrix[5] = transM.at<double>(1, 2);
+		m_pDlg->dlgStu.stu_params.transformationMatrix[6] = transM.at<double>(2, 0);
+		m_pDlg->dlgStu.stu_params.transformationMatrix[7] = transM.at<double>(2, 1);
+		m_pDlg->dlgStu.stu_params.transformationMatrix[8] = transM.at<double>(2, 2);
 
 		int zoom1 = (m_zoom[0] + m_zoom[1]) / 2;
 		int zoom2 = (m_zoom[2] + m_zoom[3]) / 2;
-		int width1 = (pWnd->dlgStu.stu_params.stuTrack_stuWidth_standard[0] + pWnd->dlgStu.stu_params.stuTrack_stuWidth_standard[1]) / 2;
-		int width2 = (pWnd->dlgStu.stu_params.stuTrack_stuWidth_standard[2] + pWnd->dlgStu.stu_params.stuTrack_stuWidth_standard[3]) / 2;
+		int width1 = (m_pDlg->dlgStu.stu_params.stuTrack_stuWidth_standard[0] + m_pDlg->dlgStu.stu_params.stuTrack_stuWidth_standard[1]) / 2;
+		int width2 = (m_pDlg->dlgStu.stu_params.stuTrack_stuWidth_standard[2] + m_pDlg->dlgStu.stu_params.stuTrack_stuWidth_standard[3]) / 2;
 		if (width1 != width2)
 		{
-			pWnd->dlgStu.stu_params.stretchingAB[0] = ((double)(zoom1 - zoom2)) / (width1 - width2);
-			pWnd->dlgStu.stu_params.stretchingAB[1] = zoom1 - pWnd->dlgStu.stu_params.stretchingAB[0] * width1;
+			m_pDlg->dlgStu.stu_params.stretchingAB[0] = ((double)(zoom1 - zoom2)) / (width1 - width2);
+			m_pDlg->dlgStu.stu_params.stretchingAB[1] = zoom1 - m_pDlg->dlgStu.stu_params.stretchingAB[0] * width1;
 		}
 		else
 		{
-			pWnd->dlgStu.stu_params.stretchingAB[0] = 0;
-			pWnd->dlgStu.stu_params.stretchingAB[1] = MIN(zoom1, zoom2);
+			m_pDlg->dlgStu.stu_params.stretchingAB[0] = 0;
+			m_pDlg->dlgStu.stu_params.stretchingAB[1] = MIN(zoom1, zoom2);
 		}
-		pWnd->dlgStu.isSetCam = TRUE;
+		m_pDlg->dlgStu.isSetCam = TRUE;
 		MessageBox("标定成功，但未保存！");
 	}
 	else
@@ -945,4 +949,10 @@ void DlgCam::OnBnClickedButton5()
 		else if ((countCalib&CALIBRATION_FLAG_LEFT_DOWN) != CALIBRATION_FLAG_LEFT_DOWN)
 			MessageBox("左下角未设标定点！");
 	}
+}
+
+
+void DlgCam::OnBnClickedButtonUp()
+{
+	// TODO:  在此添加控件通知处理程序代码
 }

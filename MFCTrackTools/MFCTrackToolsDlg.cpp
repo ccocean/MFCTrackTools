@@ -1950,7 +1950,7 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 {
 	dlgTch.tch_params = *params;
 	int index;
-	g_drawPS = 1;
+	//g_drawPS = 1;
 	int_pos = params->numOfPos;
 	int_slide = params->numOfSlide;
 	tch.x = params->tch.x;
@@ -1990,7 +1990,7 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 
 	if (int_pos!=0)
 	{
-		centre_pt2.x = (camPosSlide.left + int_slide / 2 + 0.5)*(WIDTH / int_pos);
+		centre_pt2.x = (camPosSlide.left + int_slide / 2 + 0.5)*(tch.width / int_pos) + tch.x;
 		centre_pt2.y = tch.y + tch.height / 2;
 	}	
 
@@ -2040,7 +2040,7 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 {
 	dlgStu.stu_params = *params;
 	int index;
-	g_drawPS = 0;
+	//g_drawPS = 0;
 	//先载入四个顶角位置
 	pa.x = params->stuTrack_vertex[0].x;
 	pa.y = params->stuTrack_vertex[0].y;
@@ -2243,12 +2243,10 @@ void CMFCTrackToolsDlg::loadParamsFromPlc(Policy_Set_t* params)
 	dlgCtrl.ctrl_params.stu_feature_flag = params->stu_feature_flag;
 	str.Format(_T(""));
 }
-
 void CMFCTrackToolsDlg::updateParamsFromStu(StuITRACK_ClientParams_t* params)
 {
 	loadParamsFromStu(params);
 }
-
 static  inline char *get_track_cmd_name(int cmd)
 {
 	int i = 0;
@@ -2320,7 +2318,6 @@ static int ctrlClient_process_trackMsgEx(Communtication_Head_t *head, void *msg,
 	}
 	return pTrackDlg->ctrlClient_process_trackMsg(head, msg, handle);
 }
-
 int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, void *msg, Commutication_Handle_t handle)
 {
 
@@ -2444,6 +2441,14 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 				//trackstatus_params->isTchTrack = !trackstatus_params->isTchTrack;
 				memcpy(&m_isAlgActivity, trackstatus_params, sizeof(Track_Status_t));
 				m_check_algFlag.SetCheck(m_isAlgActivity.isTchTrack);
+				if (m_isAlgActivity.isTchTrack)
+				{
+					g_drawPS = 0;
+				}
+				else
+				{
+					g_drawPS = 1;
+				}
 				m_check_stuFlag.SetCheck(m_isAlgActivity.isStuTrack);
 			}
 			break;
@@ -2530,7 +2535,6 @@ int CMFCTrackToolsDlg::ctrlClient_init_trackCommuntication()
 	}
 	return  0;
 }
-
 void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO:  在此添加控件通知处理程序代码
@@ -2637,9 +2641,14 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 
 	*pResult = 0;
 }
+
+
 BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: Add your specialized code here and/or call the base class
+	CString str;
+	str.Format("message:%x, Param:%x\r\n", pMsg->message,pMsg->wParam);
+	OutputDebugString(str);
 	if (pMsg->message == WM_KEYDOWN   &&   pMsg->wParam == VK_ESCAPE)
 	{
 		pMsg->wParam = VK_RETURN;   //将ESC键的消息替换为回车键的消息，这样，按ESC的时候  
@@ -2661,18 +2670,29 @@ BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 	{
 		isKeyDown = CTRL_KEY_UP;
 	}
+	if (pMsg->message == WM_KEYUP&&pMsg->wParam == VK_SHIFT)
+	{
+		isKeyDown = CTRL_KEY_UP;
+	}
 	if (pMsg->message == WM_KEYDOWN)
 	{
 		if (GetKeyState(VK_CONTROL) < 0 && GetKeyState(VK_SHIFT) < 0)
 		{
 			isKeyDown = KEY_ERROR;
-			return TRUE;
+			//return TRUE;
+		}
+	}
+	if (pMsg->message == WM_LBUTTONDOWN)
+	{
+		if (pMsg->hwnd == this->m_hWnd)
+		{
+			//MessageBox("Fuck!");
+			this->SetFocus();
 		}
 	}
 
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
-
 BOOL CMFCTrackToolsDlg::connectCam()
 {
 	//连接相机
@@ -2708,10 +2728,10 @@ BOOL CMFCTrackToolsDlg::connectCam()
 	//showImage();
 	return ret;
 }
-
 void CMFCTrackToolsDlg::initCamDlg(int cx,int cy, CRect rct)
 {
 	CRect rsDlgcam;
+	dlgCam.setMainDlg(this);
 	dlgCam.Create(IDD_CAMCONTROL, GetDlgItem(IDD_CAMCONTROL));
 	dlgCam.GetClientRect(rsDlgcam);
 	rsDlgcam.left = rct.left;
@@ -2749,6 +2769,14 @@ void CMFCTrackToolsDlg::OnBnClickedCheck1()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	m_isAlgActivity.isTchTrack = m_check_algFlag.GetCheck();
+	if (m_isAlgActivity.isTchTrack)
+	{
+		g_drawPS = 0;
+	}
+	else
+	{
+		g_drawPS = 1;
+	}
 	ctrlClient_set_track_status(&m_isAlgActivity, m_track_clientHandle);
 }
 
@@ -2766,6 +2794,7 @@ void CMFCTrackToolsDlg::OnBnClickedButtonAbout()
 	// TODO:  在此添加控件通知处理程序代码
 	CAboutDlg dlgAbout;
 	dlgAbout.DoModal();
+	this->SetFocus();
 }
 
 void CMFCTrackToolsDlg::OnBnClickedBtnSave()
@@ -2807,6 +2836,7 @@ void CMFCTrackToolsDlg::OnBnClickedBtnSave()
 	{
 		CString FilePathName = openFileDlg.GetPathName();
 		save_Parameter(FilePathName.GetBuffer(0)/*, &dlgStu.stu_params, &dlgTch.tch_params, &dlgCtrl.ctrl_params*/);
+		this->SetFocus();
 	}
 }
 
@@ -3060,5 +3090,6 @@ void CMFCTrackToolsDlg::OnBnClickedBtnLoad()
 	{
 		CString FilePathName = openFileDlg.GetPathName();
 		load_Parameter(FilePathName.GetBuffer(0));
+		this->SetFocus();
 	}
 }

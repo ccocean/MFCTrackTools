@@ -5,6 +5,7 @@
 #include "MFCTrackTools.h"
 #include "GlobalContrl.h"
 #include "afxdialogex.h"
+#include "MFCTrackToolsDlg.h"
 
 
 // GlobalContrl 对话框
@@ -119,13 +120,17 @@ void GlobalContrl::OnBnClickedBtnCtrlApply()
 	UpdateData(TRUE);
 	if (checkParameters()==0)
 	{
+		HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
+		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 		if (m_Connect_clientHandle)
 		{
 			ctrlClient_set_policy_params(&ctrl_params, m_Connect_clientHandle);
+			pWnd->SetFocus();
 		}
 		else
 		{
 			MessageBox("未连接服务器！");
+			pWnd->SetFocus();
 		}
 	}
 }

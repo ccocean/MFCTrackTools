@@ -122,9 +122,9 @@ int DlgTch::checkParameters()
 			AfxMessageBox(_T("预置位或滑框数据不正确。"));
 			return -1;
 		}
-		else if (int_pos>255)
+		else if (int_pos>50)
 		{
-			AfxMessageBox(_T("预置位个数不能超过255个！"));
+			AfxMessageBox(_T("预置位个数不能超过50个！"));
 			return -1;
 		}
 		else
@@ -170,12 +170,13 @@ void DlgTch::OnBnClickedbtnapply()
 	// TODO:  在此添加控件通知处理程序代码
 	if (checkParameters()==0)
 	{
+		HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
+		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 		if (m_Connect_clientHandle)
 		{
-			HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
-			CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
+			
 			pWnd->dlgCam.setNumOfPreset(tch_params.numOfPos);
-			pWnd->g_drawPS = 1;
+			//pWnd->g_drawPS = 1;
 			pWnd->camPosSlide.center = tch_params.numOfPos / 2;
 			pWnd->camPosSlide.width = tch_params.numOfSlide / 2;
 			pWnd->camPosSlide.left = pWnd->camPosSlide.center - pWnd->camPosSlide.width;
@@ -189,9 +190,11 @@ void DlgTch::OnBnClickedbtnapply()
 			pWnd->pr = { WIDTH, tch_params.threshold.outside + tch_params.tch.y };
 
 			ctrlClient_set_teach_params(&tch_params, m_Connect_clientHandle);
+			pWnd->SetFocus();
 		}
 		else
 		{
+			pWnd->SetFocus();
 			MessageBox("未连接服务器！");
 		}
 	}
