@@ -37,6 +37,7 @@ void trackconnect::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(trackconnect, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_CONNECT, &trackconnect::OnBnClickedButtonConnect)
+	ON_MESSAGE(WM_USER_LOGIN, OnLoginSuccess)
 	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
@@ -61,6 +62,13 @@ int trackconnect::setConectfunCall(initConnectNet fun, void * param)
 	
 	return 0;
 }
+
+LRESULT trackconnect::OnLoginSuccess(WPARAM wParam, LPARAM lParam)
+{
+	OnOK();
+	return 0;
+}
+
 void trackconnect::OnBnClickedButtonConnect()
 {
 	char *fileName = "loginInfo.txt";
@@ -91,7 +99,6 @@ void trackconnect::OnBnClickedButtonConnect()
 	{
 		m_initNetFun(m_DialogParam, &m_connectInfo);
 	}
-
 	BOOL openResult = myFile.Open(fileName, CFile::modeCreate | CFile::modeReadWrite);
 	if (!openResult)
 	{

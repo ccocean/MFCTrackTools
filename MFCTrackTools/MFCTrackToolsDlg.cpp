@@ -53,7 +53,7 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
-//	afx_msg void OnClose();
+	afx_msg void OnClose();
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
@@ -167,7 +167,7 @@ static int video_call_back(Decode_Info_t *pInfo, void*param)
 	CMFCTrackToolsDlg* pSelf = (CMFCTrackToolsDlg*)param;
 	if (pSelf == NULL || pInfo == NULL || pInfo->data == NULL)
 	{
-		OutputDebugString("video_call_back is NULL\n");
+		//OutputDebugString("video_call_back is NULL\n");
 	}
 	pSelf->video_display(pInfo);
 	pSelf->showImage();
@@ -306,7 +306,9 @@ BOOL CMFCTrackToolsDlg::initNetCommuntication()
 
 	
 	m_connectDialog.setConectfunCall(ctrlClient_init_trackCommunticationEx, this);
-	m_connectDialog.DoModal();
+	//INT res = m_connectDialog.DoModal();
+	if (m_connectDialog.DoModal() == IDCANCEL)
+		exit(0);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 
@@ -553,6 +555,9 @@ void CMFCTrackToolsDlg::OnClose()
 
 	//开启跟踪调试
 	ctrlClient_set_track_debug(0, m_track_clientHandle);
+	communtication_set_handleStatus(m_track_clientHandle, STOP_STATUS);
+	stop_stream_stream(m_streamTeaHandle);
+	stop_stream_stream(m_streamStuHandle);
 	m_tch_cam.StreamStop();
 	m_tch_cam.logout();
 
@@ -566,6 +571,7 @@ void CMFCTrackToolsDlg::OnClose()
 	
 	WSACleanup();			//释放网络连接资源
 	skinppExitSkin();
+	exit(0);
 	CDialogEx::OnClose();
 }
 
@@ -2271,7 +2277,7 @@ static int ctrlClient_process_trackHeartEx(char *buff, void * param)
 }
 int CMFCTrackToolsDlg::ctrlClient_process_trackHeart(char *buff)
 {
-	OutputDebugString(_T("ctrlClient_process_trackHeart=====================\n"));
+	//OutputDebugString(_T("ctrlClient_process_trackHeart=====================\n"));
 	return 0;
 }
 static int ctrl_connect_status(Connect_Status status, void * param)
@@ -2476,19 +2482,26 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 		ctrlClient_get_policy_params(m_track_clientHandle);
 		ctrlClient_get_stu_params(m_track_clientHandle);
 		ctrlClient_get_teach_params(m_track_clientHandle);
-		::PostMessage(m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
+		//::PostMessage(m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
+		::PostMessage(m_connectDialog.GetSafeHwnd(), WM_USER_LOGIN, NULL, NULL);
+		//::SetEvent(m_connectDialog.loginSuccess);
 		break;
 	}
 	case CAM_SET_CMD:
 	{
 						//登陆成功，开启跟踪调试
+						::SetEvent(dlgCam.goEvent);
 						break;
 	}
 	case CAM_GET_CMD:
 	{
 						Serial_Position_t *pCamPos = (Serial_Position_t *)msg;
+						CString s;
+						//s.Format("%d,%d$$$$$$$$$$$$\r\n", pCamPos->posit_pan, pCamPos->posit_tilt);
+						//OutputDebugString(s);
 						dlgCam.m_get_panPosit = pCamPos->posit_pan;
 						dlgCam.m_get_tiltPosit = pCamPos->posit_tilt;
+						dlgCam.m_get_zoomValue = pCamPos->coefficient;
 						//MessageBox(temp);
 						::SetEvent(dlgCam.camEvent);
 							break;
@@ -2523,7 +2536,7 @@ int CMFCTrackToolsDlg::ctrlClient_init_trackCommuntication()
 	{
 		//用户名密码登录
 		ctrlClient_login(&m_loginInfo, m_track_clientHandle);
-		OutputDebugString(_T("ctrlClient_init_trackCommuntication is init"));
+		//OutputDebugString(_T("ctrlClient_init_trackCommuntication is init"));
 		return -1;
 	}
 
@@ -2646,9 +2659,9 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: Add your specialized code here and/or call the base class
-	CString str;
-	str.Format("message:%x, Param:%x\r\n", pMsg->message,pMsg->wParam);
-	OutputDebugString(str);
+	//CString str;
+	//str.Format("message:%x, Param:%x\r\n", pMsg->message,pMsg->wParam);
+	//OutputDebugString(str);
 	if (pMsg->message == WM_KEYDOWN   &&   pMsg->wParam == VK_ESCAPE)
 	{
 		pMsg->wParam = VK_RETURN;   //将ESC键的消息替换为回车键的消息，这样，按ESC的时候  
@@ -2704,27 +2717,29 @@ BOOL CMFCTrackToolsDlg::connectCam()
 	{
 		dlgCam.m_CameraControl_tch.startControl(m_cameraInfo.ip[TCH_FEATURE_CAM], m_cameraInfo.nControPort[TCH_FEATURE_CAM]);
 		dlgCam.m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
+		m_tch_cam.StreamStart();
 		ret = TRUE;
 	}
 	else
 	{
 		MessageBox("教师相机连接失败！");
-		return FALSE;
+		ret = FALSE;
 	}
 
 	if (m_stu_cam.login(&m_uiHandle_tch, CAM_USER, CAM_PSWD, m_cameraInfo.ip[STU_FEATURE_CAM], m_cameraInfo.nPort[STU_FEATURE_CAM]))
 	{
 		dlgCam.m_CameraControl_stu.startControl(m_cameraInfo.ip[STU_FEATURE_CAM], m_cameraInfo.nControPort[STU_FEATURE_CAM]);
 		dlgCam.m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
+		m_stu_cam.StreamStart();
 		ret = TRUE;
 	}
 	else
 	{
 		MessageBox("学生相机连接失败！");
-		return FALSE;
+		ret = FALSE;
 	}
-	m_tch_cam.StreamStart();
-	m_stu_cam.StreamStart();
+	
+	
 	//showImage();
 	return ret;
 }

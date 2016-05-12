@@ -47,6 +47,7 @@ public:
 	int m_zoom[4];
 
 	CEvent camEvent;
+	CEvent goEvent;
 	//云台相机控制
 	PanAndTiltCameraControl m_CameraControl_tch;
 	PanAndTiltCameraControl m_CameraControl_stu;
@@ -87,4 +88,5 @@ public:
 	afx_msg void OnBnClickedButton5();
 	CButton m_checkCam;
 	afx_msg void OnBnClickedButtonUp();
+	afx_msg void OnBnClickedButtonLeft();
 };

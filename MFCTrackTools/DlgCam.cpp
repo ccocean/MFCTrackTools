@@ -47,7 +47,8 @@ BEGIN_MESSAGE_MAP(DlgCam, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON3, &DlgCam::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &DlgCam::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON5, &DlgCam::OnBnClickedButton5)
-	ON_BN_CLICKED(IDC_BUTTON_UP, &DlgCam::OnBnClickedButtonUp)
+	//ON_BN_CLICKED(IDC_BUTTON_UP, &DlgCam::OnBnClickedButtonUp)
+	//ON_BN_CLICKED(IDC_BUTTON_LEFT, &DlgCam::OnBnClickedButtonLeft)
 END_MESSAGE_MAP()
 
 
@@ -89,7 +90,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GOUP;
-					cam_param.port_type = TEA_PORT;
+					cam_param.port_type = CAM_TEA;
 					cam_param.speed = speed;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
@@ -104,7 +105,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GOUP;
-					cam_param.port_type = STU_PORT;
+					cam_param.port_type = CAM_STU;
 					cam_param.speed = speed;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
@@ -122,7 +123,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GOLEFT;
-					cam_param.port_type = TEA_PORT;
+					cam_param.port_type = CAM_TEA;
 					cam_param.speed = speed;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
@@ -137,7 +138,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GOLEFT;
-					cam_param.port_type = STU_PORT;
+					cam_param.port_type = CAM_STU;
 					cam_param.speed = speed;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
@@ -155,7 +156,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GORIGHT;
-					cam_param.port_type = TEA_PORT;
+					cam_param.port_type = CAM_TEA;
 					cam_param.speed = speed;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
@@ -170,7 +171,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GORIGHT;
-					cam_param.port_type = STU_PORT;
+					cam_param.port_type = CAM_STU;
 					cam_param.speed = speed;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
@@ -189,7 +190,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GODOWN;
-					cam_param.port_type = TEA_PORT;
+					cam_param.port_type = CAM_TEA;
 					cam_param.speed = speed;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
@@ -205,7 +206,7 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GODOWN;
-					cam_param.port_type = STU_PORT;
+					cam_param.port_type = CAM_STU;
 					cam_param.speed = speed;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
@@ -223,8 +224,8 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GONEAR;
-					cam_param.port_type = TEA_PORT;
-					cam_param.speed = speed;
+					cam_param.port_type = CAM_TEA;
+					cam_param.speed = -1;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
 				}
@@ -238,8 +239,8 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GONEAR;
-					cam_param.port_type = STU_PORT;
-					cam_param.speed = speed;
+					cam_param.port_type = CAM_STU;
+					cam_param.speed = -1;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
 				}
@@ -256,8 +257,8 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GOFAR;
-					cam_param.port_type = TEA_PORT;
-					cam_param.speed = speed;
+					cam_param.port_type = CAM_TEA;
+					cam_param.speed = -1;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
 				}
@@ -271,8 +272,8 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 				if (isComControl)
 				{
 					cam_param.move_type = GOFAR;
-					cam_param.port_type = STU_PORT;
-					cam_param.speed = speed;
+					cam_param.port_type = CAM_STU;
+					cam_param.speed = -1;
 					cam_param.type = CAM_MOVE;
 					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
 				}
@@ -289,46 +290,49 @@ BOOL DlgCam::PreTranslateMessage(MSG* pMsg)
 	{
 		/*HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 		CMFCTrackToolsDlg *m_pDlg = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);*/
-
-		Serial_Param_t cam_param;
-		memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
-		int isComControl = m_checkCam.GetCheck();
-
-		if (m_pDlg->CurSel == TCH_TAB)
+		if (pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMOUT)->m_hWnd || pMsg->hwnd == GetDlgItem(IDC_BUTTON_ZOOMIN)->m_hWnd ||
+			pMsg->hwnd == GetDlgItem(IDC_BUTTON_DOWN)->m_hWnd || pMsg->hwnd == GetDlgItem(IDC_BUTTON_UP)->m_hWnd ||
+			pMsg->hwnd == GetDlgItem(IDC_BUTTON_LEFT)->m_hWnd || pMsg->hwnd == GetDlgItem(IDC_BUTTON_RIGHT)->m_hWnd)
 		{
-			if (isComControl)
+			Serial_Param_t cam_param;
+			memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
+			int isComControl = m_checkCam.GetCheck();
+			if (m_pDlg->CurSel == TCH_TAB)
 			{
-				cam_param.move_type = STOPTURN;
-				cam_param.port_type = TEA_PORT;
-				//cam_param.speed = speed;
-				cam_param.type = CAM_MOVE;
-				ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
-				cam_param.move_type = STOPZ;
-				ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				if (isComControl)
+				{
+					cam_param.move_type = STOPTURN;
+					cam_param.port_type = CAM_TEA;
+					//cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+					cam_param.move_type = STOPZ;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
+					m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
+				}
+
 			}
 			else
 			{
-				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
-				m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
-			}
-			
-		}
-		else
-		{
-			if (isComControl)
-			{
-				cam_param.move_type = STOPTURN;
-				cam_param.port_type = STU_PORT;
-				//cam_param.speed = speed;
-				cam_param.type = CAM_MOVE;
-				ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
-				cam_param.move_type = STOPZ;
-				ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
-			}
-			else
-			{
-				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
-				m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
+				if (isComControl)
+				{
+					cam_param.move_type = STOPTURN;
+					cam_param.port_type = CAM_STU;
+					//cam_param.speed = speed;
+					cam_param.type = CAM_MOVE;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+					cam_param.move_type = STOPZ;
+					ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
+				}
+				else
+				{
+					m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_STOP);
+					m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_ZOOMSTOP);
+				}
 			}
 		}
 	}
@@ -409,7 +413,7 @@ void DlgCam::OnBnClickedButtonHome()
 		if (m_checkCam.GetCheck())
 		{
 			cam_param.move_type = GOHOME;
-			cam_param.port_type = TEA_PORT;
+			cam_param.port_type = CAM_TEA;
 			cam_param.speed = speed;
 			cam_param.type = CAM_MOVE;
 			ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
@@ -424,7 +428,7 @@ void DlgCam::OnBnClickedButtonHome()
 		if (m_checkCam.GetCheck())
 		{
 			cam_param.move_type = GOHOME;
-			cam_param.port_type = STU_PORT;
+			cam_param.port_type = CAM_STU;
 			cam_param.speed = speed;
 			cam_param.type = CAM_MOVE;
 			ctrlClient_set_Camera_params(&cam_param, m_Connect_clientHandle);
@@ -446,6 +450,7 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 	// TODO:  在此添加控件通知处理程序代码
 	/*HWND p_hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 	CMFCTrackToolsDlg *m_pDlg = (CMFCTrackToolsDlg *)FromHandle(p_hWnd);*/
+	CString str;
 	if (numPos <= 0)
 	{
 		MessageBox("没有设置预置位个数！");
@@ -457,22 +462,25 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 		{
 			Serial_Position_t cam_pos;
 			memset(&cam_pos, 0, sizeof(Serial_Position_t));
-			cam_pos.port = TEA_PORT;
+			cam_pos.port = CAM_TEA;
 			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
+			m_txtPreset.SetWindowText("等待获取位置...");
+			WaitForSingleObject(camEvent, INFINITE);
+			str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
+			OutputDebugString(str);
+			m_txtPreset.SetWindowText("预置位获取成功，开始自动分配！");
+			::ResetEvent(camEvent);
 		}
 		else
 		{
 			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		}
-		m_txtPreset.SetWindowText("等待获取位置...");
-		WaitForSingleObject(camEvent, INFINITE);
-		m_txtPreset.SetWindowText("");
+		
 		if (m_get_panPosit>0)
 		{
 			MessageBox("相机位置不在左端。");
 			return;
 		}
-		::ResetEvent(camEvent);
 		m_leftPreset = m_get_panPosit;
 		DWORD *pParams = new DWORD[2];
 		int *params = new int[3];
@@ -492,16 +500,14 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 		{
 			Serial_Position_t cam_pos;
 			memset(&cam_pos, 0, sizeof(Serial_Position_t));
-			cam_pos.port = TEA_PORT;
+			cam_pos.port = CAM_TEA;
 			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
 			m_txtPreset.SetWindowText("等待获取位置...");
 			WaitForSingleObject(camEvent, INFINITE);
+			str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
+			OutputDebugString(str);
 			m_txtPreset.SetWindowText("获取成功，请设置最右端！");
-			CString temp;
-			temp.Format("pan:%d, til:%d", m_get_panPosit, m_get_tiltPosit);
-			m_txtPreset.SetWindowText(temp);
-			/*m_get_panPosit = cam_pos.posit_pan;
-			m_get_tiltPosit = cam_pos.posit_tilt*/;
+			::ResetEvent(camEvent);
 		}
 		else
 		{
@@ -512,7 +518,7 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 			MessageBox("相机位置不在左端。");
 			return;
 		}
-		::ResetEvent(camEvent);
+		
 		m_leftPreset = m_get_panPosit;
 		left = 1;
 	}
@@ -535,10 +541,14 @@ void DlgCam::OnBnClickedButtonRightPreset()
 		{
 			Serial_Position_t cam_pos;
 			memset(&cam_pos, 0, sizeof(Serial_Position_t));
-			cam_pos.port = TEA_PORT;
+			cam_pos.port = CAM_TEA;
 			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
-			m_get_panPosit = cam_pos.posit_pan;
-			m_get_tiltPosit = cam_pos.posit_tilt;
+			m_txtPreset.SetWindowText("等待获取位置...");
+			WaitForSingleObject(camEvent, INFINITE);
+			str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
+			OutputDebugString(str);
+			m_txtPreset.SetWindowText("预置位获取成功，开始自动分配！");
+			::ResetEvent(camEvent);
 		}
 		else
 		{
@@ -569,10 +579,14 @@ void DlgCam::OnBnClickedButtonRightPreset()
 		{
 			Serial_Position_t cam_pos;
 			memset(&cam_pos, 0, sizeof(Serial_Position_t));
-			cam_pos.port = TEA_PORT;
+			cam_pos.port = CAM_TEA;
 			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
-			m_get_panPosit = cam_pos.posit_pan;
-			m_get_tiltPosit = cam_pos.posit_tilt;
+			m_txtPreset.SetWindowText("等待获取位置...");
+			WaitForSingleObject(camEvent, INFINITE);
+			str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
+			OutputDebugString(str);
+			m_txtPreset.SetWindowText("获取成功，请设置最左端！");
+			::ResetEvent(camEvent);
 		}
 		else
 		{
@@ -653,47 +667,129 @@ DWORD WINAPI DlgCam::automaticPreset(LPVOID pParam)
 	int fix = (b - a) % (pDlg->numPos - 1);
 	int num = 0;
 	CString s;
-	for (int i = a; i <= b; i += width)
+	s.Format("a:%d,b:%d\r\n", a, b);
+	OutputDebugString(s);
+	if (pDlg->m_checkCam.GetCheck())
 	{
-		s.Format("正在设置%d号预置位...", num);
-		pDlg->m_txtPreset.SetWindowText(s);
-
-		if (num == pDlg->numPos - 1)
+		Serial_Position_t cam_pos;
+		Serial_Param_t cam_param;
+		
+		for (int i = a; i <= b; i+=width)
 		{
-			while (pDlg->m_get_panPosit != i + fix)
+			if (num == pDlg->numPos - 1)
 			{
-				if (pDlg->m_checkCam.GetCheck())
+				memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
+				cam_param.speed = 0x14;
+				cam_param.port_type = CAM_TEA;
+				cam_param.type = CAM_GDIR;
+				cam_param.position.posit_pan = i+fix;
+				cam_param.position.posit_tilt = pDlg->m_get_tiltPosit;
+				ctrlClient_set_Camera_params(&cam_param, pDlg->m_Connect_clientHandle);
+				WaitForSingleObject(pDlg->goEvent, INFINITE);
+				::ResetEvent(pDlg->goEvent);
+				while (pDlg->m_get_panPosit != i+fix)
 				{
-					Serial_Position_t cam_pos;
-					cam_pos.port = TEA_PORT;
+					cam_pos.port = CAM_TEA;
 					ctrlClient_get_Camera_position(&cam_pos, pDlg->m_Connect_clientHandle);
 					pDlg->m_txtPreset.SetWindowText("等待获取位置...");
 					WaitForSingleObject(pDlg->camEvent, INFINITE);
-					pDlg->m_txtPreset.SetWindowText("");
+					s.Format("获取Pan:%d,TIL:%d\r\n", pDlg->m_get_panPosit, pDlg->m_get_tiltPosit);
+					OutputDebugString(s);
+					::ResetEvent(pDlg->camEvent);
 				}
-				else
+			}
+			else
+			{
+				memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
+				cam_param.speed = 0x14;
+				cam_param.port_type = CAM_TEA;
+				cam_param.type = CAM_GDIR;
+				cam_param.position.posit_pan = i;
+				cam_param.position.posit_tilt = pDlg->m_get_tiltPosit;
+				ctrlClient_set_Camera_params(&cam_param, pDlg->m_Connect_clientHandle);
+				WaitForSingleObject(pDlg->goEvent, INFINITE);
+				::ResetEvent(pDlg->goEvent);
+				while (pDlg->m_get_panPosit != i)
+				{
+					cam_pos.port = CAM_TEA;
+					ctrlClient_get_Camera_position(&cam_pos, pDlg->m_Connect_clientHandle);
+					pDlg->m_txtPreset.SetWindowText("等待获取位置...");
+					WaitForSingleObject(pDlg->camEvent, INFINITE);
+					s.Format("获取Pan:%d,TIL:%d\r\n", pDlg->m_get_panPosit, pDlg->m_get_tiltPosit);
+					OutputDebugString(s);
+					::ResetEvent(pDlg->camEvent);
+				}
+			}
+			//memset(&cam_param, 0, sizeof(Serial_Param_t));
+			cam_param.site_type = SET;
+			cam_param.index = num + 10;
+			cam_param.port_type = CAM_TEA;
+			cam_param.type = CAM_SITE;
+			ctrlClient_set_Camera_params(&cam_param, pDlg->m_Connect_clientHandle);
+			//pDlg->m_txtPreset.SetWindowText(s);
+			WaitForSingleObject(pDlg->goEvent, INFINITE);
+			s.Format("%d号预置位设置成功...", num);
+			OutputDebugString(s);
+			s.Format("Go Direct---Pan:%d,TIL:%d\r\n", pDlg->m_get_panPosit, pDlg->m_get_tiltPosit);
+			OutputDebugString(s);
+			pDlg->m_txtPreset.SetWindowText(s);
+			::ResetEvent(pDlg->goEvent);
+			num++;
+		}
+	}
+	else
+	{
+		for (int i = a; i <= b; i += width)
+		{
+			/*Serial_Position_t cam_pos;
+			Serial_Param_t cam_param;*/
+			//memset(&cam_param, 0, sizeof(Serial_Param_t));//相机串口控制协议
+			//cam_param.speed = 0x14;
+			s.Format("正在设置%d号预置位...", num);
+			pDlg->m_txtPreset.SetWindowText(s);
+
+			if (num == pDlg->numPos - 1)
+			{
+				pDlg->m_CameraControl_tch.move(i + fix, pDlg->m_get_tiltPosit, FALSE);
+				while (pDlg->m_get_panPosit != i + fix)
 				{
 					pDlg->m_CameraControl_tch.getPosit(&pDlg->m_get_panPosit, &pDlg->m_get_tiltPosit, 500);
-					pDlg->m_CameraControl_tch.move(i + fix, pDlg->m_get_tiltPosit, FALSE);
 				}
 			}
-		}
-		else
-		{
-			while (pDlg->m_get_panPosit != i)
+			else
 			{
-				pDlg->m_CameraControl_tch.getPosit(&pDlg->m_get_panPosit, &pDlg->m_get_tiltPosit, 500);
 				pDlg->m_CameraControl_tch.move(i, pDlg->m_get_tiltPosit, FALSE);
+				while (pDlg->m_get_panPosit != i)
+				{
+					pDlg->m_CameraControl_tch.getPosit(&pDlg->m_get_panPosit, &pDlg->m_get_tiltPosit, 500);
+				}
 			}
-		}
 
-		pDlg->m_CameraControl_tch.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num + 10);
-		Sleep(500);
-		s.Format("%d号预置位设置成功...", num);
-		pDlg->m_txtPreset.SetWindowText(s);
-		Sleep(500);
-		num++;
+			//if (pDlg->m_checkCam.GetCheck())
+			//{
+			//	memset(&cam_param, 0, sizeof(Serial_Param_t));
+			//	cam_param.site_type = SET;
+			//	cam_param.index = num + 10;
+			//	cam_param.port_type = CAM_TEA;
+			//	ctrlClient_set_Camera_params(&cam_param, pDlg->m_Connect_clientHandle);
+			//	//pDlg->m_txtPreset.SetWindowText(s);
+			//	WaitForSingleObject(pDlg->camEvent, INFINITE);
+			//	s.Format("%d号预置位设置成功...", num);
+			//	pDlg->m_txtPreset.SetWindowText(s);
+			//	::ResetEvent(pDlg->camEvent);
+			//}
+			//else
+			//{
+			pDlg->m_CameraControl_tch.preset(PANandTILT_CTRL_PTZ_SET_PRESET, num + 10);
+			Sleep(500);
+			s.Format("%d号预置位设置成功...", num);
+			pDlg->m_txtPreset.SetWindowText(s);
+			Sleep(500);
+			//}
+			num++;
+		}
 	}
+	
 	pDlg->left = 0;
 	pDlg->right = 0;
 	pDlg->MessageBox("云台摄像机预置位设置成功！");
@@ -802,11 +898,30 @@ static int countCalib = CALIBRATION_FLAG_NULL;
 void DlgCam::OnBnClickedButCalibration()
 {
 	//采集标定点，左上角
-	m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
-	m_calibPt[0].x = m_get_panPosit;
-	m_calibPt[0].y = m_get_tiltPosit;
-	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
-	m_zoom[0] = m_get_zoomValue;
+	if (m_checkCam.GetCheck())
+	{
+		Serial_Position_t cam_pos;
+		memset(&cam_pos, 0, sizeof(cam_pos));
+		cam_pos.port = CAM_STU;
+		ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
+		//m_txtPreset.SetWindowText("等待获取位置...");
+		WaitForSingleObject(camEvent, INFINITE);
+		m_calibPt[0].x = m_get_panPosit;
+		m_calibPt[0].y = m_get_tiltPosit;
+		m_zoom[0] = m_get_zoomValue;
+		//m_txtPreset.SetWindowText("");
+		::ResetEvent(camEvent);
+	}
+	else
+	{
+		m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_calibPt[0].x = m_get_panPosit;
+		m_calibPt[0].y = m_get_tiltPosit;
+		m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
+		m_zoom[0] = m_get_zoomValue;
+	}
+
+	
 	countCalib |= CALIBRATION_FLAG_LEFT_UP;
 	MessageBox("左上角标定点设置完成！");
 	//CString str;
@@ -843,11 +958,29 @@ void DlgCam::OnBnClickedButAgaincalib()
 void DlgCam::OnBnClickedButton2()
 {
 	//右上角
-	m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
-	m_calibPt[1].x = m_get_panPosit;
-	m_calibPt[1].y = m_get_tiltPosit;
-	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
-	m_zoom[1] = m_get_zoomValue;
+	if (m_checkCam.GetCheck())
+	{
+		Serial_Position_t cam_pos;
+		memset(&cam_pos, 0, sizeof(cam_pos));
+		cam_pos.port = CAM_STU;
+		ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
+		//m_txtPreset.SetWindowText("等待获取位置...");
+		WaitForSingleObject(camEvent, INFINITE);
+		m_calibPt[1].x = m_get_panPosit;
+		m_calibPt[1].y = m_get_tiltPosit;
+		m_zoom[1] = m_get_zoomValue;
+		//m_txtPreset.SetWindowText("");
+		::ResetEvent(camEvent);
+	}
+	else
+	{
+		m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_calibPt[1].x = m_get_panPosit;
+		m_calibPt[1].y = m_get_tiltPosit;
+		m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
+		m_zoom[1] = m_get_zoomValue;
+	}
+	
 	countCalib |= CALIBRATION_FLAG_RIGHT_UP;
 	MessageBox("右上角标定点设置完成！");
 }
@@ -856,11 +989,29 @@ void DlgCam::OnBnClickedButton2()
 void DlgCam::OnBnClickedButton3()
 {
 	//左下角
-	m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
-	m_calibPt[3].x = m_get_panPosit;
-	m_calibPt[3].y = m_get_tiltPosit;
-	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
-	m_zoom[3] = m_get_zoomValue;
+	if (m_checkCam.GetCheck())
+	{
+		Serial_Position_t cam_pos;
+		memset(&cam_pos, 0, sizeof(cam_pos));
+		cam_pos.port = CAM_STU;
+		ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
+		//m_txtPreset.SetWindowText("等待获取位置...");
+		WaitForSingleObject(camEvent, INFINITE);
+		m_calibPt[3].x = m_get_panPosit;
+		m_calibPt[3].y = m_get_tiltPosit;
+		m_zoom[3] = m_get_zoomValue;
+		//m_txtPreset.SetWindowText("");
+		::ResetEvent(camEvent);
+	}
+	else
+	{
+		m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_calibPt[3].x = m_get_panPosit;
+		m_calibPt[3].y = m_get_tiltPosit;
+		m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
+		m_zoom[3] = m_get_zoomValue;
+	}
+
 	countCalib |= CALIBRATION_FLAG_LEFT_DOWN;
 	MessageBox("左下角标定点设置完成！");
 }
@@ -869,11 +1020,29 @@ void DlgCam::OnBnClickedButton3()
 void DlgCam::OnBnClickedButton4()
 {
 	//右下角
-	m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
-	m_calibPt[2].x = m_get_panPosit;
-	m_calibPt[2].y = m_get_tiltPosit;
-	m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
-	m_zoom[2] = m_get_zoomValue;
+	if (m_checkCam.GetCheck())
+	{
+		Serial_Position_t cam_pos;
+		memset(&cam_pos, 0, sizeof(cam_pos));
+		cam_pos.port = CAM_STU;
+		ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
+		//m_txtPreset.SetWindowText("等待获取位置...");
+		WaitForSingleObject(camEvent, INFINITE);
+		m_calibPt[2].x = m_get_panPosit;
+		m_calibPt[2].y = m_get_tiltPosit;
+		m_zoom[2] = m_get_zoomValue;
+//		m_txtPreset.SetWindowText("");
+		::ResetEvent(camEvent);
+	}
+	else
+	{
+		m_CameraControl_stu.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
+		m_calibPt[2].x = m_get_panPosit;
+		m_calibPt[2].y = m_get_tiltPosit;
+		m_CameraControl_stu.getZoom(&m_get_zoomValue, 500);
+		m_zoom[2] = m_get_zoomValue;
+	}
+
 	countCalib |= CALIBRATION_FLAG_RIGHT_DOWN;
 	MessageBox("右下角标定点设置完成！");
 }
@@ -949,10 +1118,4 @@ void DlgCam::OnBnClickedButton5()
 		else if ((countCalib&CALIBRATION_FLAG_LEFT_DOWN) != CALIBRATION_FLAG_LEFT_DOWN)
 			MessageBox("左下角未设标定点！");
 	}
-}
-
-
-void DlgCam::OnBnClickedButtonUp()
-{
-	// TODO:  在此添加控件通知处理程序代码
 }

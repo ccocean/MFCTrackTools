@@ -3,7 +3,7 @@
 #include "afxcmn.h"
 #include <afx.h>
 
-
+#define WM_USER_LOGIN WM_USER + 2
 // connect dialog
 typedef struct
 {
@@ -28,8 +28,9 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-
+	CEvent loginSuccess;
 	afx_msg void OnBnClickedButtonConnect();
+	afx_msg LRESULT OnLoginSuccess(WPARAM wParam, LPARAM lParam);
 	CIPAddressCtrl m_ip;
 	CString m_strIp;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);

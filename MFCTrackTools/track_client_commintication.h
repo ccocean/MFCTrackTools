@@ -46,7 +46,8 @@ using namespace std;
 typedef enum
 {
 	CAM_MOVE = 0,
-	CAM_SITE = 1
+	CAM_SITE = 1,
+	CAM_GDIR = 2
 }Track_type_t;
 
 typedef enum
@@ -64,9 +65,9 @@ typedef enum
 
 typedef enum
 {
-	STU_PORT = 0,
-	TEA_PORT = 1,
-}Comport_Type_t;
+	CAM_TEA = 0,
+	CAM_STU = 1,
+}Cam_Type_t;
 
 typedef enum
 {
@@ -75,23 +76,34 @@ typedef enum
 	CALL = 2
 }Presion_Type_t;
 
-typedef struct Param_t
-{
-	Move_Type_t move_type;
-	Comport_Type_t port_type;
-	Presion_Type_t site_type;
-	int speed;
-	int index;
-	Track_type_t  type;
-} Serial_Param_t;
-
 typedef struct Pos_t
 {
 	int posit_pan;
 	int posit_tilt;
 	int coefficient;
-	Comport_Type_t port;
+	Cam_Type_t port;
 } Serial_Position_t;
+
+typedef struct Param_t
+{
+	Move_Type_t move_type;
+	Cam_Type_t port_type;
+	Presion_Type_t site_type;
+	int speed;
+	int index; //阈值位的号码
+	Track_type_t  type;
+	Serial_Position_t position;
+} Serial_Param_t;
+
+typedef struct Test_t
+{
+	Move_Type_t move_type;
+	Cam_Type_t port_type;
+	Presion_Type_t site_type;
+	int speed;
+	int index; //阈值位的号码
+	Track_type_t  type;
+} Test_Param_t;
 
 typedef struct
 {
