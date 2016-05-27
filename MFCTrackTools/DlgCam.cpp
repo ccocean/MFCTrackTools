@@ -465,22 +465,35 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 			cam_pos.port = CAM_TEA;
 			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
 			m_txtPreset.SetWindowText("等待获取位置...");
-			WaitForSingleObject(camEvent, INFINITE);
-			str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
-			OutputDebugString(str);
-			m_txtPreset.SetWindowText("预置位获取成功，开始自动分配！");
-			::ResetEvent(camEvent);
+			if (WaitForSingleObject(camEvent, 3000) == WAIT_OBJECT_0)
+			{
+				//WaitForSingleObject(camEvent, INFINITE);
+				str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
+				OutputDebugString(str);
+				if (m_get_panPosit > 0)
+				{
+					MessageBox("相机位置不在左端。");
+					return;
+				}
+				else
+				{
+					m_txtPreset.SetWindowText("预置位获取成功，开始自动分配！");
+				}
+				::ResetEvent(camEvent);
+			}
+			else
+			{
+				::ResetEvent(camEvent);
+				MessageBox("获取位置等待失败！请重试!");
+				return;
+			}
 		}
 		else
 		{
 			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		}
 		
-		if (m_get_panPosit>0)
-		{
-			MessageBox("相机位置不在左端。");
-			return;
-		}
+		
 		m_leftPreset = m_get_panPosit;
 		DWORD *pParams = new DWORD[2];
 		int *params = new int[3];
@@ -503,21 +516,34 @@ void DlgCam::OnBnClickedButtonLeftPreset()
 			cam_pos.port = CAM_TEA;
 			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
 			m_txtPreset.SetWindowText("等待获取位置...");
-			WaitForSingleObject(camEvent, INFINITE);
-			str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
-			OutputDebugString(str);
-			m_txtPreset.SetWindowText("获取成功，请设置最右端！");
-			::ResetEvent(camEvent);
+			if (WaitForSingleObject(camEvent, 3000) == WAIT_OBJECT_0)
+			{
+				//WaitForSingleObject(camEvent, INFINITE);
+				str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
+				OutputDebugString(str);
+				if (m_get_panPosit > 0)
+				{
+					MessageBox("相机位置不在左端。");
+					return;
+				}
+				else
+				{
+					m_txtPreset.SetWindowText("获取成功，请设置最右端！");
+				}
+				::ResetEvent(camEvent);
+			}
+			else
+			{
+				::ResetEvent(camEvent);
+				MessageBox("获取位置等待失败！请重试!");
+				return;
+			}
 		}
 		else
 		{
 			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		}
-		if (m_get_panPosit > 0)
-		{
-			MessageBox("相机位置不在左端。");
-			return;
-		}
+		
 		
 		m_leftPreset = m_get_panPosit;
 		left = 1;
@@ -544,21 +570,35 @@ void DlgCam::OnBnClickedButtonRightPreset()
 			cam_pos.port = CAM_TEA;
 			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
 			m_txtPreset.SetWindowText("等待获取位置...");
-			WaitForSingleObject(camEvent, INFINITE);
-			str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
-			OutputDebugString(str);
-			m_txtPreset.SetWindowText("预置位获取成功，开始自动分配！");
-			::ResetEvent(camEvent);
+			if (WaitForSingleObject(camEvent, 3000)==WAIT_OBJECT_0)
+			{
+				//WaitForSingleObject(camEvent, INFINITE);
+				str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
+				OutputDebugString(str);
+				if (m_get_panPosit < 0)
+				{
+					MessageBox("相机位置不在右端。");
+					return;
+				}
+				else
+				{
+					m_txtPreset.SetWindowText("预置位获取成功，开始自动分配！");
+				}
+				::ResetEvent(camEvent);
+			}
+			else
+			{
+				::ResetEvent(camEvent);
+				MessageBox("获取位置等待失败！请重试!");
+				return;
+			}
+			
 		}
 		else
 		{
 			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
 		}
-		if (m_get_panPosit < 0)
-		{
-			MessageBox("相机位置不在右端。");
-			return;
-		}
+		
 		m_rightPreset = m_get_panPosit;
 
 		DWORD *pParams = new DWORD[2];
@@ -582,20 +622,32 @@ void DlgCam::OnBnClickedButtonRightPreset()
 			cam_pos.port = CAM_TEA;
 			ctrlClient_get_Camera_position(&cam_pos, m_Connect_clientHandle);
 			m_txtPreset.SetWindowText("等待获取位置...");
-			WaitForSingleObject(camEvent, INFINITE);
-			str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
-			OutputDebugString(str);
-			m_txtPreset.SetWindowText("获取成功，请设置最左端！");
-			::ResetEvent(camEvent);
+			if (WaitForSingleObject(camEvent, 3000) == WAIT_OBJECT_0)
+			{
+				//WaitForSingleObject(camEvent, INFINITE);
+				str.Format("Pan:%d,TIL:%d\r\n", m_get_panPosit, m_get_tiltPosit);
+				OutputDebugString(str);
+				if (m_get_panPosit < 0)
+				{
+					MessageBox("相机位置不在右端。");
+					return;
+				}
+				else
+				{
+					m_txtPreset.SetWindowText("获取成功，请设置最左端！");
+				}
+				::ResetEvent(camEvent);
+			}
+			else
+			{
+				::ResetEvent(camEvent);
+				MessageBox("获取位置等待失败！请重试!");
+				return;
+			}
 		}
 		else
 		{
 			m_CameraControl_tch.getPosit(&m_get_panPosit, &m_get_tiltPosit, 500);
-		}
-		if (m_get_panPosit < 0)
-		{
-			MessageBox("相机位置不在右端。");
-			return;
 		}
 		m_rightPreset = m_get_panPosit;
 		right = 1;

@@ -480,6 +480,7 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	centre_pt.y = showRectFeature.top + showRectFeature.Height() / 2;
 
 	dlgCam.m_txtPreset.SetWindowText("");
+	dlgCam.m_checkCam.SetCheck(TRUE);
 	//SetTimer(1,40, NULL);
 
 	/*GetModuleFileName(GetModuleHandle(0), m_pExeDir, MAX_PATH);
