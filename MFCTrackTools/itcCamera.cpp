@@ -85,13 +85,13 @@ bool camera::logout()
 	}
 }
 
-bool camera::StreamStart()
+HI_S32 camera::StreamStart()
 {
 	if (m_bConnectFlag)
 	{
 		if (!m_bStreamFlag)
 		{
-			HI_S32 s32Ret = HI_SUCCESS;
+			HI_S32 s32Ret = HI_FAILURE;
 			HI_S_STREAM_INFO_EXT struStreamInfo;
 			m_decoder.init(AV_CODEC_ID_H264);
 			HI_NET_DEV_SetStreamCallBack(m_handle, OnStreamCallback, (HI_VOID*)this);
@@ -103,11 +103,11 @@ bool camera::StreamStart()
 			if (s32Ret == HI_SUCCESS)
 			{
 				m_bStreamFlag = true;
-				return true;
+				return s32Ret;
 			}
 		}
 	}
-	return false;
+	return HI_FAILURE;
 }
 
 bool camera::StreamStop()

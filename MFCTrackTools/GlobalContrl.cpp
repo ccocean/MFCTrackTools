@@ -120,11 +120,15 @@ void GlobalContrl::OnBnClickedBtnCtrlApply()
 	UpdateData(TRUE);
 	if (checkParameters()==0)
 	{
+		logFile.WriteString("----->策略参数检查完毕。");
+		logFile.Write(("\r\n"), 2);
 		HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 		if (m_Connect_clientHandle)
 		{
 			ctrlClient_set_policy_params(&ctrl_params, m_Connect_clientHandle);
+			logFile.WriteString("----->策略参数发送成功。");
+			logFile.Write(("\r\n"), 2);
 			pWnd->SetFocus();
 		}
 		else

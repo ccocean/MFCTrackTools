@@ -26,7 +26,7 @@ public:
 	Mutex m_lock_streamBuffer;
 	myDecoder_t m_decoder;
 	std::deque<cv::Mat> m_stream_buffer;
-	bool StreamStart();
+	HI_S32 StreamStart();
 	bool StreamStop();
 	cv::Mat getImageBuffer();
 

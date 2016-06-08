@@ -286,11 +286,15 @@ void DlgStu::OnBnClickedBtnstuapply()
 	{
 		HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
+		logFile.WriteString("----->学生参数检查完毕。");
+		logFile.Write(("\r\n"), 2);
 		if (m_Connect_clientHandle)
 		{
 			if (stuTrack_check_clientParams(&stu_params) == CHECH_STURRACK_RESULT_OK)
 			{
 				ctrlClient_set_stu_params(&stu_params, m_Connect_clientHandle);
+				logFile.WriteString("----->学生参数发送成功。");
+				logFile.Write(("\r\n"), 2);
 				pWnd->SetFocus();
 			}
 		}

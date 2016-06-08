@@ -20,6 +20,7 @@
 #include <cmath>
 #include "decode.h"
 #include "itcCamera.h"
+#include "..\include\vlc\vlc.h"
 
 
 #define SKINNAME "\\skin\\Longhorn.ssk"
@@ -116,6 +117,8 @@ public:
 	DlgStu dlgStu;
 	DlgCam dlgCam;
 	GlobalContrl dlgCtrl;
+	CFileException fileException;
+	
 	
 	int CurSel;//标签的标志
 	int pic_top = 0;
@@ -150,6 +153,12 @@ public:
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
 	Panoramic_Camera_Info m_cameraInfo;//保存相机信息
+	CString rtspTch, rtspStu;
+	HWND m_dispHwnd;
+	libvlc_instance_t* m_pVlcIns;
+	libvlc_media_t* m_pVlcMediaTch, *m_pVlcMediaStu;
+	libvlc_media_player_t *m_pVlcPlayer;
+	
 	Track_Status_t m_trackstatus;
 	void* m_streamTeaHandle;
 	void* m_streamStuHandle;

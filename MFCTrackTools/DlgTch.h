@@ -50,4 +50,5 @@ public:
 	void setParams(TeaITRACK_Params* params);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnBnClickedbtndefault();
+	CEdit m_editMaxArea;
 };

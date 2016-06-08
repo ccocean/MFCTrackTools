@@ -181,6 +181,8 @@ static int free_stream_message(Stream_Message_t *pStream_messgage)
 	{
 
 		share_outputlog(NS_ERROR, "free_stream_message is fail\n");
+		logFile.WriteString("free_stream_message is fail");
+		logFile.Write(("\r\n"), 2);
 		return -1;
 	}
 
@@ -201,6 +203,8 @@ static int track_process_streamMsg(int msg_code, void *arg)
 	if (NULL == pClient_handle)
 	{
 		OutputDebugString(_T("net_info ==NUL \n"));
+		logFile.WriteString("net_info ==NUL");
+		logFile.Write(("\r\n"), 2);
 		return -1;
 	}
 	if (msg_code < 0)
@@ -216,6 +220,8 @@ static void *track_get_dataEmptyBuf(void *arg, void **pEmptyBufInfo, int data_le
 	if (NULL == arg || data_len <= 0)
 	{
 		OutputDebugString(_T("argpEmptyBufInfo=,data_len=\n"));
+		logFile.WriteString("argpEmptyBufInfo=,data_len");
+		logFile.Write(("\r\n"), 2);
 		return NULL;
 	}
 	char *data_buf = NULL;
@@ -281,7 +287,11 @@ static int  track_process_data(RH_FRAMEHEAD_t *fh, void *pEmptyBufInfo, void *ar
 	}
 	else
 	{
+		CString logStr;
+		logStr.Format("\033[32m""pClient_handle->first_frame: %d ID:%d\n""\033[0m", pClient_handle->first_frame, pStream_message->fh.nChannel);
 		printf("\033[32m""pClient_handle->first_frame: %d ID:%d\n""\033[0m", pClient_handle->first_frame, pStream_message->fh.nChannel);
+		logFile.WriteString(logStr);
+		logFile.Write(("\r\n"), 2);
 		free_stream_message(pStream_message);
 	}
 	pthread_mutex_unlock(&(pClient_handle->lock));
@@ -320,6 +330,8 @@ static int clean_alloc(RecvStream_Handle_t* pStream_handle)
 	if (pStream_handle == NULL)
 	{
 		share_outputlog(NS_ERROR, "clean_alloc is fail\n");
+		logFile.WriteString("clean_alloc is fail");
+		logFile.Write(("\r\n"), 2);
 		return -1;
 	}
 
@@ -381,6 +393,8 @@ static void* stream_pop_thread(void* arg)
 	}
 EXIT:
 	share_outputlog(NS_ERROR, "%s : stream_pop_thread is finsh\n", __FILE__);
+	logFile.WriteString("stream_pop_thread is finsh");
+	logFile.Write(("\r\n"), 2);
 	//clean_alloc(pStream_recv_handle);
 
 	pthread_detach(pthread_self());
@@ -406,6 +420,8 @@ static int stream_setcall_status(Client_Handle_t* pClient_handle, int status)
 	if (pClient_handle == NULL)
 	{
 		OutputDebugString("stream_setcall_status fail\n");
+		logFile.WriteString("stream_setcall_status fail");
+		logFile.Write(("\r\n"), 2);
 		return -1;
 	}
 	pthread_mutex_lock(&(pClient_handle->lock));
@@ -419,6 +435,8 @@ static int stream_getcall_status(Client_Handle_t* pClient_handle)
 	if (pClient_handle == NULL)
 	{
 		OutputDebugString("stream_getcall_status is fail\n");
+		logFile.WriteString("stream_setcall_status fail");
+		logFile.Write(("\r\n"), 2);
 		return -1;
 	}
 	pthread_mutex_lock(&(pClient_handle->lock));
@@ -435,6 +453,8 @@ int ctrlClient_set_stream_display(void* pStream_StuclientHandle, void* pStream_T
 	if (pRecv_streamStu_handle == NULL || pRecv_streamTea_handle == NULL)
 	{
 		OutputDebugString("stream_setcall_status is fial\n");
+		logFile.WriteString("stream_setcall_status fail");
+		logFile.Write(("\r\n"), 2);
 		return -1;
 	}
 	pClient_Stuhandle = (Client_Handle_t*)pRecv_streamStu_handle->outParm;
@@ -474,6 +494,8 @@ void* init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 	if (pClient_handle == NULL)
 	{
 		OutputDebugString(_T("pClient_handle is NULL"));
+		logFile.WriteString("pClient_handle is NULL");
+		logFile.Write(("\r\n"), 2);
 		ret = -1;
 		goto EXIT;
 	}
@@ -481,6 +503,8 @@ void* init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 	if (pClient_handle->streamDecode.data == NULL)
 	{
 		OutputDebugString(_T("pClient_handle->streamDecode.data malloc is NULL"));
+		logFile.WriteString("pClient_handle->streamDecode.data malloc is NULL");
+		logFile.Write(("\r\n"), 2);
 		ret = -1;
 		goto EXIT;
 	}
@@ -513,7 +537,9 @@ void* init_stream_recv(RecvStream_Handle_t* pRecv_stream_handle)
 	if (ret != 0)
 	{
 		ret = -1;
-		OutputDebugString(_T("pthread_create pop_thrrad is NULL"));
+		OutputDebugString(_T("pthread_create pop_thread is NULL"));
+		logFile.WriteString("pthread_create pop_thread is NULL");
+		logFile.Write(("\r\n"), 2);
 		goto EXIT;
 	}
 

@@ -158,6 +158,25 @@ BOOL trackconnect::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+	char *logFileName = "Log.txt";
+	//CFile myFile;
+
+	BOOL openLogResult = logFile.Open(logFileName, CFile::modeCreate | CFile::modeWrite);
+	if (!openLogResult)
+	{
+		MessageBox(_T("打开文件错误！"));
+	}
+	else
+	{
+		logFile.SeekToBegin();
+		CString tmp; //获取系统时间
+		CTime tm;
+		tm = CTime::GetCurrentTime();
+		tmp = tm.Format("现在时间是%Y年%m月%d日%X");
+		logFile.WriteString(tmp);
+		logFile.Write(("\r\n"), 2);
+	}
+
 	char *fileName = "loginInfo.txt";
 	CStdioFile myFile;
 	BOOL openResult = myFile.Open(fileName, CFile::modeRead);

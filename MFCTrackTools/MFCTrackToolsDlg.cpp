@@ -252,6 +252,12 @@ void CMFCTrackToolsDlg::showImage()
 				pDC2->GetSafeHdc(), showRectFeature.left, showRectFeature.top, showRectFeature.Width(), showRectFeature.Height(), 0, 0, bmp_w, bmp_h,
 				m_showImage.imageData, bmi, DIB_RGB_COLORS, SRCCOPY);
 		}
+		else
+		{
+
+			logFile.WriteString("----->教师相机特写没获取到流");
+			logFile.Write(("\r\n"), 2);
+		}
 	}
 	else if (STU_TAB==CurSel)
 	{
@@ -275,6 +281,12 @@ void CMFCTrackToolsDlg::showImage()
 				pDC2->GetSafeHdc(), showRectFeature.left, showRectFeature.top, showRectFeature.Width(), showRectFeature.Height(), 0, 0, bmp_w, bmp_h,
 				m_showImage.imageData, bmi, DIB_RGB_COLORS, SRCCOPY);
 		}
+		else
+		{
+			logFile.WriteString("----->学生相机特写没获取到流");
+			logFile.Write(("\r\n"), 2);
+		}
+		
 	}
 	//绘制特写镜头的十字光标
 	pOldPen = pDC2->SelectObject(&penR);
@@ -323,14 +335,17 @@ BOOL CMFCTrackToolsDlg::ctrlClient_init_Stream()
 	recv_stream_handle.param1 = this;
 	recv_stream_handle.call_back_fun = video_call_back;
 	m_streamTeaHandle = init_stream_recv(&recv_stream_handle);
+	logFile.WriteString("----->教师分析流初始化完毕");
+	logFile.Write(("\r\n"), 2);
 	recv_stream_handle.port = STUDENT_STREAM_PORT;
 	m_streamStuHandle = init_stream_recv(&recv_stream_handle);
+	logFile.WriteString("----->学生分析流初始化完毕");
+	logFile.Write(("\r\n"), 2);
 	return TRUE;
 
 }
 BOOL CMFCTrackToolsDlg::initProgramControl()
 {
-
 	//初始化窗口
 	CRect rs1;
 	CWnd::GetClientRect(rs1);
@@ -569,6 +584,11 @@ void CMFCTrackToolsDlg::OnClose()
 
 	dlgCam.m_CameraControl_tch.stopControl();
 	dlgCam.m_CameraControl_stu.stopControl();
+
+	logFile.Flush();
+	logFile.Close();
+
+
 	
 	WSACleanup();			//释放网络连接资源
 	skinppExitSkin();
@@ -710,6 +730,7 @@ void CMFCTrackToolsDlg::trackdraw()
 
 			pDC->SelectObject(&pOldPen);
 		}
+
 		pOldPen = pDC->SelectObject(&penY);
 		drawRectangle(CPoint(tch.x, tch.y), CPoint(tch.x + tch.width, tch.y + tch.height));
 		pOldPen = pDC->SelectObject(&penG);
@@ -727,7 +748,7 @@ void CMFCTrackToolsDlg::trackdraw()
 				drawRectangle(p1, pt);
 			}
 		}
-		else if (mouseStatus == Mouse_LBUP)
+		else if (mouseStatus == Mouse_LBUP) 
 		{
 			SetDlgItemInt(IDC_editX, p1.x);
 			SetDlgItemInt(IDC_editY, p1.y);
@@ -935,7 +956,8 @@ void CMFCTrackToolsDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				mouseStatus = Mouse_LBDRAG;
 				pA = pB = pC = pD = { 0 };
 			}
-			else */if (pa.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pa.x + 10 && pa.y - 10 <= point.y - pic_top&&point.y - pic_top <= pa.y + 10)
+			else */
+			if (pa.x - 10 <= point.x - MARGIN_LEFT && point.x - MARGIN_LEFT <= pa.x + 10 && pa.y - 10 <= point.y - pic_top&&point.y - pic_top <= pa.y + 10)
 			{
 				if (pa.x!=point.x&&pa.y!=point.y)
 				{
@@ -1319,6 +1341,7 @@ void CMFCTrackToolsDlg::OnMouseMove(UINT nFlags, CPoint point)
 			{
 				/*point.x -= MARGIN_LEFT;
 				point.y -= pic_top;*/
+
 				pa.x += (point.x  - pt.x);
 				pa.y += (point.y  - pt.y);
 
@@ -1821,6 +1844,7 @@ void CMFCTrackToolsDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 	
 	CDialogEx::OnLButtonDblClk(nFlags, point);
 }
+
 void CMFCTrackToolsDlg::updateLines()
 {
 	ln1[0] = pa;
@@ -1836,6 +1860,7 @@ void CMFCTrackToolsDlg::updateLines()
 	ln4[1].x = pd.x + (pc.x - pd.x)*0.2;
 	ln4[1].y = pd.y + (pc.y - pd.y)*0.2;
 }
+
 void CMFCTrackToolsDlg::updateParams(int flag)
 {
 	if (PARAM_POSITION == flag)
@@ -1953,6 +1978,7 @@ void CMFCTrackToolsDlg::updateParams(int flag)
 		ln3[1].y = (int)(pc.y + v2y*width + 0.5);
 	}
 }
+
 void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 {
 	dlgTch.tch_params = *params;
@@ -1989,6 +2015,10 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 	dlgTch.m_editPos.SetWindowText(s);
 	s.Format("%d", params->threshold.targetArea);
 	dlgTch.m_editTargetArea.SetWindowText(s);
+
+	int _maxArea = (int)(params->maxArea * 100);
+	s.Format("%d", _maxArea);
+	dlgTch.m_editMaxArea.SetWindowText(s);
 
 	camPosSlide.center = int_pos / 2;
 	camPosSlide.width = int_slide / 2;
@@ -2043,6 +2073,7 @@ void CMFCTrackToolsDlg::loadParamsFromTch(TeaITRACK_Params* params)
 
 	mouseCnt = 2;
 }
+
 void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 {
 	dlgStu.stu_params = *params;
@@ -2094,7 +2125,6 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 		ln4[1].x = pd.x - v2.x*params->stuTrack_stuWidth_standard[3];
 		ln4[1].y = pd.y - v2.y*params->stuTrack_stuWidth_standard[3];
 	}
-	
 	
 
 	/*switch (dlgStu.m_radioWid)
@@ -2330,6 +2360,8 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 
  	char errMsg[128] = { 0 };
 	if (NULL == head || NULL == msg || NULL == handle) {
+		logFile.WriteString("----->接收信息失败！");
+		logFile.Write(("\r\n"), 2);
 		AfxMessageBox(_T("接收信息失败"));
 		return -1;
 	}
@@ -2339,6 +2371,11 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	if (return_code != 0)
 	{
 		sprintf_s(errMsg, sizeof(errMsg), "%s失败", get_track_cmd_name(head->cmd));
+		CString logStr;
+		logStr.Format("head cmd: %d", head->cmd);
+		logFile.WriteString("----->命令信息，");
+		logFile.WriteString(logStr);
+		logFile.Write(("\r\n"), 2);
 		AfxMessageBox(_T(errMsg));
 		return -1;
 	}
@@ -2367,10 +2404,13 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	{
 		if (head->total_len != sizeof(StuITRACK_ClientParams_t))
 		{
-			
+			logFile.WriteString("----->学生数据信息不匹配！");
+			logFile.Write(("\r\n"), 2);
 		}
 		else
 		{
+			logFile.WriteString("----->学生数据获取成功！");
+			logFile.Write(("\r\n"), 2);
 			StuITRACK_ClientParams_t * stu_params = (StuITRACK_ClientParams_t *)msg;
 			loadParamsFromStu(stu_params);
 			ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, STU_CHANNL);
@@ -2381,10 +2421,13 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	{
 		if (head->total_len != sizeof(TeaITRACK_Params))
 		{
-
+			logFile.WriteString("----->教师数据信息不匹配！");
+			logFile.Write(("\r\n"), 2);
 		}
 		else
 		{
+			logFile.WriteString("----->教师数据获取成功！");
+			logFile.Write(("\r\n"), 2);
 			TeaITRACK_Params * tea_params = (TeaITRACK_Params *)msg;
 			loadParamsFromTch(tea_params);
 			ctrlClient_set_stream_display(m_streamStuHandle, m_streamTeaHandle, TEACH_CHANNL);
@@ -2396,10 +2439,13 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	{
 			if (head->total_len != sizeof(Policy_Set_t))
 			{
-
+				logFile.WriteString("----->策略数据信息不匹配！");
+				logFile.Write(("\r\n"), 2);
 			}
 			else
 			{
+				logFile.WriteString("----->策略数据获取成功！");
+				logFile.Write(("\r\n"), 2);
 				Policy_Set_t * plc_params = (Policy_Set_t *)msg;
 				loadParamsFromPlc(plc_params);
 				//loadParamsFromTch(plc_params);
@@ -2411,19 +2457,39 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	}
 	case GET_CAMERA_INFO:
 	{
+		
 		if (head->total_len != sizeof(Panoramic_Camera_Info))
 		{
+			logFile.WriteString("----->结构体头大小不一致！");
+			logFile.Write(("\r\n"), 2);
 
 		}
 		else
 		{
+			
 			Panoramic_Camera_Info * cameras_params = (Panoramic_Camera_Info *)msg;
 			memcpy(&m_cameraInfo, cameras_params, sizeof(Panoramic_Camera_Info));
 			//获取相机ip
 			if (m_cameraInfo.ip[TCH_FEATURE_CAM]!=NULL&&m_cameraInfo.ip[STU_FEATURE_CAM]!=NULL)
 			{
+				logFile.WriteString("----->教师相机：");
+				logFile.WriteString(m_cameraInfo.ip[TCH_FEATURE_CAM]);
+				logFile.Write(("\r\n"), 2);
+				logFile.WriteString("----->学生相机：");
+				logFile.WriteString(m_cameraInfo.ip[STU_FEATURE_CAM]);
+				logFile.Write(("\r\n"), 2);
 				m_cameraInfo.nPort[TCH_FEATURE_CAM] = FEATURE_CAM_PORT;
 				m_cameraInfo.nPort[STU_FEATURE_CAM] = FEATURE_CAM_PORT;
+				const char* vlcArgs[] =
+				{
+					"-I",
+					"-dummy",
+					"--ignore-config",
+					"--network-caching=500",
+					"--ffmpeg-hw",
+					"--http-reconnect",
+					"--postproc-q=1"
+				};
 				/*m_cameraInfo.nControPort[TCH_FEATURE_CAM] = 1259;
 				m_cameraInfo.nControPort[STU_FEATURE_CAM] = 1259;*/
 				connectCam();
@@ -2431,6 +2497,8 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			else
 			{
 				MessageBox("获取相机IP地址失败！");
+				logFile.WriteString("----->获取相机IP地址失败！");
+				logFile.Write(("\r\n"), 2);
 			}
 		}
 		break;
@@ -2439,10 +2507,13 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	{
 			if (head->total_len != sizeof(Track_Status_t))
 			{
-
+				logFile.WriteString("----->跟踪数据信息不匹配！");
+				logFile.Write(("\r\n"), 2);
 			}
 			else
 			{
+				logFile.WriteString("----->跟踪数据获取成功！");
+				logFile.Write(("\r\n"), 2);
 				Track_Status_t * trackstatus_params = (Track_Status_t *)msg;
 				//trackstatus_params->isStuTrack = !trackstatus_params->isStuTrack;
 				//trackstatus_params->isTchTrack = !trackstatus_params->isTchTrack;
@@ -2475,14 +2546,23 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	case TRACK_LOGIN:
 	{
 		//登陆成功，开启跟踪调试
+		CString logStr;
+		logFile.WriteString("----->登陆成功！");
+		logFile.Write(("\r\n"), 2);
+		logStr.Format("登陆IP地址为：");
+		logStr += m_track_clientHandle->ip;
+		logFile.WriteString(logStr);
+		logFile.Write(("\r\n"), 2);
+
 		Login_t * pLogin_info = (Login_t*)msg;
 		ctrlClient_set_track_debug(1, m_track_clientHandle);
 		ctrlClient_init_Stream();
 		ctrlClient_get_track_status(m_track_clientHandle);
-		ctrlClient_get_camera_params(m_track_clientHandle);
+		
 		ctrlClient_get_policy_params(m_track_clientHandle);
 		ctrlClient_get_stu_params(m_track_clientHandle);
 		ctrlClient_get_teach_params(m_track_clientHandle);
+		ctrlClient_get_camera_params(m_track_clientHandle);
 		//::PostMessage(m_connectDialog.GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 		::PostMessage(m_connectDialog.GetSafeHwnd(), WM_USER_LOGIN, NULL, NULL);
 		//::SetEvent(m_connectDialog.loginSuccess);
@@ -2490,7 +2570,6 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	}
 	case CAM_SET_CMD:
 	{
-						//登陆成功，开启跟踪调试
 						::SetEvent(dlgCam.goEvent);
 						break;
 	}
@@ -2514,6 +2593,8 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 	}
 	}
 	sprintf_s(errMsg, sizeof(errMsg), "%s成功", get_track_cmd_name(head->cmd));
+	logFile.WriteString(errMsg);
+	logFile.Write(("\r\n"), 2);
 	//AfxMessageBox(_T(errMsg));
 	return 0;
 }
@@ -2718,11 +2799,30 @@ BOOL CMFCTrackToolsDlg::connectCam()
 	{
 		dlgCam.m_CameraControl_tch.startControl(m_cameraInfo.ip[TCH_FEATURE_CAM], m_cameraInfo.nControPort[TCH_FEATURE_CAM]);
 		dlgCam.m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
-		m_tch_cam.StreamStart();
-		ret = TRUE;
+		logFile.WriteString("----->教师相机连接成功！");
+		logFile.Write(("\r\n"), 2);
+		HI_S32 camRes = m_tch_cam.StreamStart();
+		if (camRes == HI_SUCCESS)
+		{
+			logFile.WriteString("----->教师相机流打开成功！");
+			logFile.Write(("\r\n"), 2);
+			ret = TRUE;
+		}
+		else
+		{
+			logFile.WriteString("----->教师相机流打开失败！");
+			CString temp;
+			temp.Format("教师特写，err code: %d", camRes);
+			logFile.WriteString(temp);
+			logFile.Write(("\r\n"), 2);
+			MessageBox(temp);
+			ret = FALSE;
+		}
 	}
 	else
 	{
+		logFile.WriteString("----->教师相机连接失败！");
+		logFile.Write(("\r\n"), 2);
 		MessageBox("教师相机连接失败！");
 		ret = FALSE;
 	}
@@ -2731,12 +2831,32 @@ BOOL CMFCTrackToolsDlg::connectCam()
 	{
 		dlgCam.m_CameraControl_stu.startControl(m_cameraInfo.ip[STU_FEATURE_CAM], m_cameraInfo.nControPort[STU_FEATURE_CAM]);
 		dlgCam.m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
-		m_stu_cam.StreamStart();
-		ret = TRUE;
+		logFile.WriteString("----->学生相机连接成功！");
+		logFile.Write(("\r\n"), 2);
+		HI_S32 camRes = m_stu_cam.StreamStart();
+		if (camRes == HI_SUCCESS)
+		{
+			logFile.WriteString("----->学生相机流打开成功！");
+			logFile.Write(("\r\n"), 2);
+			ret = TRUE;
+		}
+		else
+		{
+			logFile.WriteString("----->学生相机流打开失败！");
+			CString temp;
+			temp.Format("学生特写，err code: %d", camRes);
+			logFile.WriteString(temp);
+			logFile.Write(("\r\n"), 2);
+			MessageBox(temp);
+			ret = FALSE;
+		}
+		
 	}
 	else
 	{
 		MessageBox("学生相机连接失败！");
+		logFile.WriteString("----->学生相机连接失败！");
+		logFile.Write(("\r\n"), 2);
 		ret = FALSE;
 	}
 	
@@ -2847,7 +2967,7 @@ void CMFCTrackToolsDlg::OnBnClickedBtnSave()
 	//}
 	CString fileName = _T("params.yml");//默认打开的文件名  
 	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
-	CFileDialog openFileDlg(FALSE, NULL, fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
+	CFileDialog openFileDlg(FALSE, "yml", fileName, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
 	if (openFileDlg.DoModal() == IDOK)
 	{
 		CString FilePathName = openFileDlg.GetPathName();
@@ -2877,6 +2997,7 @@ void CMFCTrackToolsDlg::save_Parameter(std::string filePath/*, StuITRACK_ClientP
 		fs << "outside" << dlgTch.tch_params.threshold.outside;
 		fs << "stand" << dlgTch.tch_params.threshold.stand;
 		fs << "targetArea" << dlgTch.tch_params.threshold.targetArea;
+		fs << "maxArea" << dlgTch.tch_params.maxArea;
 
 
 		//存储学生参数
@@ -2959,6 +3080,7 @@ bool CMFCTrackToolsDlg::load_Parameter(std::string filePath)
 			fs["outside"] >> tch_params.threshold.outside;
 			fs["stand"] >> tch_params.threshold.stand;
 			fs["targetArea"] >> tch_params.threshold.targetArea;
+			fs["maxArea"] >> tch_params.maxArea;
 			fs.release();
 			loadParamsFromTch(&tch_params);
 		}

@@ -19,7 +19,7 @@ typedef struct Tch_Rect_t
 typedef struct Result
 {
 	int status;
-	int pos;
+	int pos; //云台摄像机拍摄的位置
 }Tch_Result_t;
 
 //阈值结构体
@@ -35,11 +35,55 @@ typedef struct 	_TeaITRACK_Params
 	int isSetParams;
 	int numOfPos;
 	int numOfSlide;
+	float maxArea;//比例
 	Tch_Size_t frame;
 	Tch_Rect_t tch;
 	Tch_Rect_t blk;
 	Tch_Threshold_t threshold;
 
 }TeaITRACK_Params;
+
+typedef unsigned long ULINT;
+
+typedef struct AnalysisTimerN
+{
+	ULINT start;
+
+	ULINT end;
+
+	int deltatime;
+
+	//struct AnalysisTimerN* next;
+
+}Analysis_Timer_node;
+
+/*typedef struct AnalysisTimer
+{
+int count;
+Analysis_Timer_node* head;
+Analysis_Timer_node* tail;
+}Analysis_Timer_t;*/
+
+typedef struct StatisticsTimer
+{
+	int count;
+	int deltatime;
+}Statistics_Timer_t;
+
+typedef struct TrackAnalysis
+{
+	Analysis_Timer_node deration;
+
+	Analysis_Timer_node standTimer;//站立时间
+
+	Analysis_Timer_node moveTimer;//移动时间
+
+	//int cntOutside;//下讲台次数
+	Statistics_Timer_t outTimer;//下讲台时间
+
+	//int cntMultiple;//多目标次数
+	Statistics_Timer_t mlpTimer;//多目标时间
+
+}Tch_Analysis_t;
 
 #endif

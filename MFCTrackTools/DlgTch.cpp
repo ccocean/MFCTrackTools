@@ -37,6 +37,7 @@ void DlgTch::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_txtBlkArg, m_txtBlkArg);
 	DDX_Control(pDX, IDC_comboSlide, m_comboSlide);
 	DDX_Control(pDX, IDC_comboStand, m_comboStand);
+	DDX_Control(pDX, IDC_editMaxArea, m_editMaxArea);
 }
 
 
@@ -69,6 +70,7 @@ void DlgTch::setParams(TeaITRACK_Params* params)
 	tch_params.numOfSlide = params->numOfSlide;
 	tch_params.tch = params->tch;
 	tch_params.threshold = params->threshold;
+	tch_params.maxArea = params->maxArea;
 }
 
 void DlgTch::setTrackRects(Tch_Rect_t rc,int flag)
@@ -87,8 +89,9 @@ int DlgTch::checkParameters()
 {
 	CString position, slide;
 	int int_pos, int_slide;
-	CString stand, targetArea, outside;
-	int _stand, _targetArea, _outside;
+	CString stand, targetArea, outside, maxArea;
+	int		_stand, _targetArea, _outside;
+	float _maxArea;
 	if (tch_params.tch.x<0||tch_params.tch.y<0)
 	{
 		MessageBox("教师跟踪区域未设置！");
@@ -137,7 +140,8 @@ int DlgTch::checkParameters()
 	m_comboStand.GetWindowText(stand);
 	m_editTargetArea.GetWindowText(targetArea);
 	m_editOutSide.GetWindowText(outside);
-	if (stand.IsEmpty() || targetArea.IsEmpty() || outside.IsEmpty())
+	m_editMaxArea.GetWindowText(maxArea);
+	if (stand.IsEmpty() || targetArea.IsEmpty() || outside.IsEmpty() || maxArea.IsEmpty())
 	{
 		AfxMessageBox(_T("没有获得阈值数据！"));
 		return -1;
@@ -147,7 +151,8 @@ int DlgTch::checkParameters()
 		_stand = _ttoi(stand)*1000;
 		_targetArea = _ttoi(targetArea);
 		_outside = _ttoi(outside);
-		if (_stand <= 0 || _targetArea <= 0 || _outside <= 0)
+		_maxArea = _ttof(maxArea) / 100;
+		if (_stand <= 0 || _targetArea <= 0 || _outside <= 0 || _maxArea<1)
 		{
 			AfxMessageBox(_T("阈值数据错误！"));
 			return -1;
@@ -157,6 +162,7 @@ int DlgTch::checkParameters()
 			tch_params.threshold.stand = _stand;
 			tch_params.threshold.targetArea = _targetArea;
 			tch_params.threshold.outside = _outside;
+			tch_params.maxArea = _maxArea;
 		}
 	}
 	tch_params.frame.width = WIDTH;
@@ -170,11 +176,13 @@ void DlgTch::OnBnClickedbtnapply()
 	// TODO:  在此添加控件通知处理程序代码
 	if (checkParameters()==0)
 	{
+		
 		HWND hWnd = ::FindWindow(NULL, _T("ITC TrackTools"));
 		CMFCTrackToolsDlg *pWnd = (CMFCTrackToolsDlg *)FromHandle(hWnd);
 		if (m_Connect_clientHandle)
 		{
-			
+			logFile.WriteString("----->教师参数检查完毕。");
+			logFile.Write(("\r\n"), 2);
 			pWnd->dlgCam.setNumOfPreset(tch_params.numOfPos);
 			//pWnd->g_drawPS = 1;
 			pWnd->camPosSlide.center = tch_params.numOfPos / 2;
@@ -190,6 +198,8 @@ void DlgTch::OnBnClickedbtnapply()
 			pWnd->pr = { WIDTH, tch_params.threshold.outside + tch_params.tch.y };
 
 			ctrlClient_set_teach_params(&tch_params, m_Connect_clientHandle);
+			logFile.WriteString("----->教师参数发送成功。");
+			logFile.Write(("\r\n"), 2);
 			pWnd->SetFocus();
 		}
 		else
