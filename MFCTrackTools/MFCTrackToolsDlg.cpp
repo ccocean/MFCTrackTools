@@ -170,7 +170,16 @@ static int video_call_back(Decode_Info_t *pInfo, void*param)
 		//OutputDebugString("video_call_back is NULL\n");
 	}
 	pSelf->video_display(pInfo);
-	pSelf->showImage();
+	//绘制特写镜头的十字光标
+	pSelf->pOldPen = pSelf->pDC2->SelectObject(&pSelf->penR);
+	pSelf->pDC2->MoveTo(CPoint(pSelf->centre_pt.x, pSelf->centre_pt.y - 10));
+	pSelf->pDC2->LineTo(CPoint(pSelf->centre_pt.x, pSelf->centre_pt.y + 10));
+
+	pSelf->pDC2->MoveTo(CPoint(pSelf->centre_pt.x - 10, pSelf->centre_pt.y));
+	pSelf->pDC2->LineTo(CPoint(pSelf->centre_pt.x + 10, pSelf->centre_pt.y));
+
+	pSelf->pDC2->SelectObject(&pSelf->pOldPen);
+	//pSelf->showImage();
 	return 0;
 }
 int CMFCTrackToolsDlg::video_display(Decode_Info_t *pInfo)
@@ -288,15 +297,15 @@ void CMFCTrackToolsDlg::showImage()
 		}
 		
 	}
-	//绘制特写镜头的十字光标
-	pOldPen = pDC2->SelectObject(&penR);
-	pDC2->MoveTo(CPoint(centre_pt.x, centre_pt.y - 10));
-	pDC2->LineTo(CPoint(centre_pt.x, centre_pt.y + 10));
+	////绘制特写镜头的十字光标
+	//pOldPen = pDC2->SelectObject(&penR);
+	//pDC2->MoveTo(CPoint(centre_pt.x, centre_pt.y - 10));
+	//pDC2->LineTo(CPoint(centre_pt.x, centre_pt.y + 10));
 
-	pDC2->MoveTo(CPoint(centre_pt.x - 10, centre_pt.y));
-	pDC2->LineTo(CPoint(centre_pt.x + 10, centre_pt.y));
+	//pDC2->MoveTo(CPoint(centre_pt.x - 10, centre_pt.y));
+	//pDC2->LineTo(CPoint(centre_pt.x + 10, centre_pt.y));
 
-	pDC2->SelectObject(&pOldPen);
+	//pDC2->SelectObject(&pOldPen);
 }
 
 BOOL CMFCTrackToolsDlg::initNetCommuntication()
@@ -364,6 +373,8 @@ BOOL CMFCTrackToolsDlg::initProgramControl()
 	m_picOverall.SetWindowPos(NULL, MARGIN_LEFT, rectTrackClient.top + 20, Frame_Width, Frame_Height, SWP_NOZORDER);
 	m_picFeature.SetWindowPos(NULL, MARGIN_LEFT, rectTrackClient.top + 350, Frame_Width, Frame_Height, SWP_NOZORDER);
 	m_picOverall.GetClientRect(&rs);
+
+	m_dispHwnd = m_picFeature.GetSafeHwnd();
 
 	pic_top = rectTrackClient.top + 20;
 
@@ -2462,7 +2473,6 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 		{
 			logFile.WriteString("----->结构体头大小不一致！");
 			logFile.Write(("\r\n"), 2);
-
 		}
 		else
 		{
@@ -2472,14 +2482,6 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			//获取相机ip
 			if (m_cameraInfo.ip[TCH_FEATURE_CAM]!=NULL&&m_cameraInfo.ip[STU_FEATURE_CAM]!=NULL)
 			{
-				logFile.WriteString("----->教师相机：");
-				logFile.WriteString(m_cameraInfo.ip[TCH_FEATURE_CAM]);
-				logFile.Write(("\r\n"), 2);
-				logFile.WriteString("----->学生相机：");
-				logFile.WriteString(m_cameraInfo.ip[STU_FEATURE_CAM]);
-				logFile.Write(("\r\n"), 2);
-				m_cameraInfo.nPort[TCH_FEATURE_CAM] = FEATURE_CAM_PORT;
-				m_cameraInfo.nPort[STU_FEATURE_CAM] = FEATURE_CAM_PORT;
 				const char* vlcArgs[] =
 				{
 					"-I",
@@ -2490,9 +2492,37 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 					"--http-reconnect",
 					"--postproc-q=1"
 				};
-				/*m_cameraInfo.nControPort[TCH_FEATURE_CAM] = 1259;
-				m_cameraInfo.nControPort[STU_FEATURE_CAM] = 1259;*/
-				connectCam();
+				m_pVlcIns = libvlc_new(sizeof(vlcArgs) / sizeof(vlcArgs[0]), vlcArgs);
+				m_pVlcPlayer = libvlc_media_player_new(m_pVlcIns);
+				libvlc_media_player_set_hwnd(m_pVlcPlayer, m_dispHwnd);
+				libvlc_video_set_aspect_ratio(m_pVlcPlayer, "480:264");
+				CString strTemp;
+				strTemp.Format("%s", m_cameraInfo.ip[TCH_FEATURE_CAM]);
+				m_rtspTch = "rtsp://" + strTemp + ":554";
+				strTemp.Format("%s", m_cameraInfo.ip[STU_FEATURE_CAM]);
+				m_rtspStu = "rtsp://" + strTemp + ":554";
+
+				m_pVlcMediaTch = libvlc_media_new_location(m_pVlcIns, m_rtspTch);
+				m_pVlcMediaStu = libvlc_media_new_location(m_pVlcIns, m_rtspStu);
+				libvlc_media_player_set_media(m_pVlcPlayer, m_pVlcMediaTch);
+				int nRes = libvlc_media_player_play(m_pVlcPlayer);
+				if (nRes == -1)
+				{
+					CString strInfo;
+					strInfo.Format(_T("教师特写流播放失败"));
+					AfxMessageBox(strInfo);
+				}
+
+				logFile.WriteString("----->教师相机：");
+				logFile.WriteString(m_cameraInfo.ip[TCH_FEATURE_CAM]);
+				logFile.Write(("\r\n"), 2);
+				logFile.WriteString("----->学生相机：");
+				logFile.WriteString(m_cameraInfo.ip[STU_FEATURE_CAM]);
+				logFile.Write(("\r\n"), 2);
+				m_cameraInfo.nPort[TCH_FEATURE_CAM] = FEATURE_CAM_PORT;
+				m_cameraInfo.nPort[STU_FEATURE_CAM] = FEATURE_CAM_PORT;
+
+				//connectCam();
 			}
 			else
 			{
@@ -2531,7 +2561,7 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 			}
 			break;
 	}
-	case	SET_TRACK_DEBUG_CMD:
+	case SET_TRACK_DEBUG_CMD:
 	{
 		if (head->total_len != sizeof(int))
 		{
@@ -2634,7 +2664,7 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO:  在此添加控件通知处理程序代码
 	CurSel = m_tabTrack.GetCurSel();
-
+	int nRes;
 	switch (CurSel)
 	{
 	case TCH_TAB:
@@ -2670,6 +2700,15 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUTTON4)->ShowWindow(FALSE);
 		dlgCam.GetDlgItem(IDC_BUTTON5)->ShowWindow(FALSE);
 		ctrlClient_get_teach_params(m_track_clientHandle);
+
+		libvlc_media_player_set_media(m_pVlcPlayer, m_pVlcMediaTch);
+		nRes = libvlc_media_player_play(m_pVlcPlayer);
+		if (nRes == -1)
+		{
+			CString strInfo;
+			strInfo.Format(_T("教师特写流播放失败"));
+			AfxMessageBox(strInfo);
+		}
 		break;
 	case STU_TAB:
 		dlgTch.ShowWindow(FALSE);
@@ -2702,6 +2741,15 @@ void CMFCTrackToolsDlg::OnTcnSelchangetabtrack(NMHDR *pNMHDR, LRESULT *pResult)
 		dlgCam.GetDlgItem(IDC_BUTTON4)->ShowWindow(TRUE);
 		dlgCam.GetDlgItem(IDC_BUTTON5)->ShowWindow(TRUE);
 		ctrlClient_get_stu_params(m_track_clientHandle);
+
+		libvlc_media_player_set_media(m_pVlcPlayer, m_pVlcMediaStu);
+		nRes = libvlc_media_player_play(m_pVlcPlayer);
+		if (nRes == -1)
+		{
+			CString strInfo;
+			strInfo.Format(_T("教师特写流播放失败"));
+			AfxMessageBox(strInfo);
+		}
 		break;
 	case CTRL_TAB:
 		pa = pb = pc = pd = { -10 };
@@ -2781,7 +2829,6 @@ BOOL CMFCTrackToolsDlg::PreTranslateMessage(MSG* pMsg)
 	{
 		if (pMsg->hwnd == this->m_hWnd)
 		{
-			//MessageBox("Fuck!");
 			this->SetFocus();
 		}
 	}

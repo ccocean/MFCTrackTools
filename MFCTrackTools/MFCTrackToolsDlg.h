@@ -153,7 +153,7 @@ public:
 	Track_CamPosSlide_t camPosSlide;
 	TeaITRACK_Params params;
 	Panoramic_Camera_Info m_cameraInfo;//保存相机信息
-	CString rtspTch, rtspStu;
+	CString m_rtspTch, m_rtspStu;
 	HWND m_dispHwnd;
 	libvlc_instance_t* m_pVlcIns;
 	libvlc_media_t* m_pVlcMediaTch, *m_pVlcMediaStu;
