@@ -182,6 +182,7 @@ static int video_call_back(Decode_Info_t *pInfo, void*param)
 	//pSelf->showImage();
 	return 0;
 }
+
 int CMFCTrackToolsDlg::video_display(Decode_Info_t *pInfo)
 {
 	//OutputDebugString("stream=============\n");
@@ -263,7 +264,6 @@ void CMFCTrackToolsDlg::showImage()
 		}
 		else
 		{
-
 			logFile.WriteString("----->教师相机特写没获取到流");
 			logFile.Write(("\r\n"), 2);
 		}
@@ -585,11 +585,11 @@ void CMFCTrackToolsDlg::OnClose()
 	communtication_set_handleStatus(m_track_clientHandle, STOP_STATUS);
 	stop_stream_stream(m_streamTeaHandle);
 	stop_stream_stream(m_streamStuHandle);
-	m_tch_cam.StreamStop();
+	//m_tch_cam.StreamStop();
 	m_tch_cam.logout();
 
 
-	m_stu_cam.StreamStop();
+	//m_stu_cam.StreamStop();
 	m_stu_cam.logout();
 
 
@@ -599,8 +599,27 @@ void CMFCTrackToolsDlg::OnClose()
 	logFile.Flush();
 	logFile.Close();
 
+	/*if (m_pVlcPlayer != NULL)
+	{
+		libvlc_media_player_release(m_pVlcPlayer);
+		m_pVlcPlayer = NULL;
+	}
+	if (m_pVlcMediaTch != NULL)
+	{
+		libvlc_media_release(m_pVlcMediaTch);
+		m_pVlcMediaTch = NULL;
+	}
+	if (m_pVlcMediaStu != NULL)
+	{
+		libvlc_media_release(m_pVlcMediaStu);
+		m_pVlcMediaStu = NULL;
+	}
+	if (m_pVlcIns!=NULL)
+	{
+		libvlc_release(m_pVlcIns);
+		m_pVlcIns = NULL;
+	}*/
 
-	
 	WSACleanup();			//释放网络连接资源
 	skinppExitSkin();
 	exit(0);
@@ -2522,7 +2541,7 @@ int CMFCTrackToolsDlg::ctrlClient_process_trackMsg(Communtication_Head_t *head, 
 				m_cameraInfo.nPort[TCH_FEATURE_CAM] = FEATURE_CAM_PORT;
 				m_cameraInfo.nPort[STU_FEATURE_CAM] = FEATURE_CAM_PORT;
 
-				//connectCam();
+				connectCam();
 			}
 			else
 			{
@@ -2848,23 +2867,26 @@ BOOL CMFCTrackToolsDlg::connectCam()
 		dlgCam.m_CameraControl_tch.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
 		logFile.WriteString("----->教师相机连接成功！");
 		logFile.Write(("\r\n"), 2);
-		HI_S32 camRes = m_tch_cam.StreamStart();
+
+		/*HI_S32 camRes = m_tch_cam.StreamStart();
 		if (camRes == HI_SUCCESS)
 		{
-			logFile.WriteString("----->教师相机流打开成功！");
-			logFile.Write(("\r\n"), 2);
-			ret = TRUE;
+		logFile.WriteString("----->教师相机流打开成功！");
+		logFile.Write(("\r\n"), 2);
+		ret = TRUE;
 		}
 		else
 		{
-			logFile.WriteString("----->教师相机流打开失败！");
-			CString temp;
-			temp.Format("教师特写，err code: %d", camRes);
-			logFile.WriteString(temp);
-			logFile.Write(("\r\n"), 2);
-			MessageBox(temp);
-			ret = FALSE;
-		}
+		logFile.WriteString("----->教师相机流打开失败！");
+		CString temp;
+		temp.Format("教师特写，err code: %d", camRes);
+		logFile.WriteString(temp);
+		logFile.Write(("\r\n"), 2);
+		MessageBox(temp);
+		ret = FALSE;
+		}*/
+
+		ret = TRUE;
 	}
 	else
 	{
@@ -2880,7 +2902,8 @@ BOOL CMFCTrackToolsDlg::connectCam()
 		dlgCam.m_CameraControl_stu.keepInstruct(PANandTILT_CTRL_PTZ_FOCUSAUTO);//设置相机为自动对焦
 		logFile.WriteString("----->学生相机连接成功！");
 		logFile.Write(("\r\n"), 2);
-		HI_S32 camRes = m_stu_cam.StreamStart();
+
+		/*HI_S32 camRes = m_stu_cam.StreamStart();
 		if (camRes == HI_SUCCESS)
 		{
 			logFile.WriteString("----->学生相机流打开成功！");
@@ -2896,8 +2919,9 @@ BOOL CMFCTrackToolsDlg::connectCam()
 			logFile.Write(("\r\n"), 2);
 			MessageBox(temp);
 			ret = FALSE;
-		}
-		
+		}*/
+
+		ret = TRUE;
 	}
 	else
 	{
@@ -2906,7 +2930,6 @@ BOOL CMFCTrackToolsDlg::connectCam()
 		logFile.Write(("\r\n"), 2);
 		ret = FALSE;
 	}
-	
 	
 	//showImage();
 	return ret;
@@ -3269,6 +3292,7 @@ void CMFCTrackToolsDlg::OnBnClickedBtnLoad()
 	default:
 		break;
 	}*/
+
 	CString filter = _T("文件 (*.yml)|*.yml|文件（*.xml)|*.xml||");		//文件过虑的类型  
 	CFileDialog openFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
 	if (openFileDlg.DoModal() == IDOK)

@@ -52,6 +52,7 @@ void DlgStu::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_RADIO_AGL_LEFTUP, m_radioAgl);
 	DDX_Control(pDX, IDC_SLIDER_WIDTH, m_sliderWidth);
 	DDX_Radio(pDX, IDC_RADIO_WIDTH_LEFTUP, m_radioWid);
+	DDX_Control(pDX, IDC_EDIT1, m_edtStandThres);
 }
 
 

@@ -155,6 +155,7 @@ public:
 	Panoramic_Camera_Info m_cameraInfo;//保存相机信息
 	CString m_rtspTch, m_rtspStu;
 	HWND m_dispHwnd;
+
 	libvlc_instance_t* m_pVlcIns;
 	libvlc_media_t* m_pVlcMediaTch, *m_pVlcMediaStu;
 	libvlc_media_player_t *m_pVlcPlayer;
