@@ -84,4 +84,5 @@ public:
 	afx_msg void OnBnClickedRadioWidthRightup();
 	afx_msg void OnBnClickedRadioWidthLeftdn();
 	afx_msg void OnBnClickedRadioWidthRightdn();
+	CEdit m_edtStandThres;
 };

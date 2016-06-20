@@ -112,6 +112,9 @@ void DlgStu::setParams(StuITRACK_ClientParams_t* params)
 	stu_params.stuTrack_vertex[2] = params->stuTrack_vertex[2];
 	stu_params.stuTrack_vertex[3] = params->stuTrack_vertex[3];
 	stu_params.width = params->width;
+	stu_params.stuTrack_standCount_threshold = params->stuTrack_standCount_threshold;
+	stu_params.stuTrack_sitdownCount_threshold = params->stuTrack_sitdownCount_threshold;
+	stu_params.stuTrack_standup_threshold = params->stuTrack_standup_threshold;
 	
 	stu_params.stretchingAB[0] = params->stretchingAB[0];
 	stu_params.stretchingAB[1] = params->stretchingAB[1];
@@ -125,9 +128,9 @@ void DlgStu::setParams(StuITRACK_ClientParams_t* params)
 
 int DlgStu::checkParameters()
 {
-	CString standAgl,  moveDev, moveDly;
-	int _standAgl,  _moveDly;
-	double _moveDev;
+	CString standAgl,  moveDev, moveDly, standFrm, sitFrm, standThres;
+	int _standAgl,  _moveDly, _standFrm, _sitFrm;
+	double _moveDev, _standThres;
 	if (stu_params.stuTrack_vertex[0].x <= 0 || stu_params.stuTrack_vertex[0].y <= 0)
 	{
 		MessageBox("顶点位置错误！");
@@ -152,7 +155,10 @@ int DlgStu::checkParameters()
 	/*_moveDly = m_comboDly.GetCurSel();*/
 	m_comboDly.GetWindowText(moveDly);
 	//m_edtMoveDly.GetWindowText(moveDly);
-	if (standAgl.IsEmpty()||moveDev.IsEmpty()||moveDly.IsEmpty())
+	m_edtStandFrm.GetWindowTextA(standFrm);
+	m_edtSitFrm.GetWindowTextA(sitFrm);
+	m_edtStandThres.GetWindowTextA(standThres);
+	if (standAgl.IsEmpty()||moveDev.IsEmpty()||moveDly.IsEmpty()||standFrm.IsEmpty()||sitFrm.IsEmpty()||standThres.IsEmpty())
 	{
 		MessageBox("数据不能为空！");
 		return -1;
@@ -164,6 +170,10 @@ int DlgStu::checkParameters()
 		_sitFrm = 5;*/
 		_moveDev = _ttof(moveDev)/100;
 		_moveDly = (int)(_ttof(moveDly)*1000);
+
+		_standFrm = _ttof(standFrm) * 25;
+		_sitFrm = _ttof(sitFrm) * 25;
+		_standThres = _ttof(standThres) / 100;
 		if (_standAgl<0)
 		{
 			MessageBox("起立角度偏移数据错误！");
@@ -196,6 +206,9 @@ int DlgStu::checkParameters()
 	stu_params.flag_setting = TRUE;
 	stu_params.stuTrack_debugMsg_flag = 1;
 	stu_params.stuTrack_Draw_flag = TRUE;
+	stu_params.stuTrack_standCount_threshold = _standFrm;
+	stu_params.stuTrack_sitdownCount_threshold = _sitFrm;
+	stu_params.stuTrack_standup_threshold = _standThres;
 	return 0;
 }
 void DlgStu::setConnectHandle(Commutication_Handle_t pConnect_clientHandle)

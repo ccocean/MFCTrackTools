@@ -2225,6 +2225,16 @@ void CMFCTrackToolsDlg::loadParamsFromStu(StuITRACK_ClientParams_t* params)
 
 	s.Format("%.1f", params->stuTrack_moveDelayed_threshold/1000.0);
 	index=dlgStu.m_comboDly.FindString(0, s);
+
+	s.Format("%.1f", params->stuTrack_standCount_threshold / 25.0);
+	dlgStu.m_edtStandFrm.SetWindowText(s);
+
+	s.Format("%.1f", params->stuTrack_sitdownCount_threshold / 25.0);
+	dlgStu.m_edtSitFrm.SetWindowText(s);
+
+	s.Format("%d", (int)(params->stuTrack_standup_threshold * 100));
+	dlgStu.m_edtStandThres.SetWindowText(s);
+
 	if (index!=CB_ERR)
 	{
 		dlgStu.m_comboDly.SetCurSel(index);
